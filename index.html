@@ -360,6 +360,13 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
 .gap.ok{width:auto;min-width:14px;border-bottom-color:var(--yes);color:var(--yes);font-weight:700;font-size:var(--t6);background:var(--yes-bg)}
 .gap.no{border-bottom-color:var(--no);background:var(--no-bg)}
 .sent u{text-decoration-thickness:2px;text-underline-offset:4px}
+/* ---- v12: the reveal keeps the question and says why ---- */
+.sent mark{background:color-mix(in srgb,var(--band) 16%,transparent);color:var(--band);font-weight:650;border-radius:6px;padding:0 3px}
+.ra.long{font-size:var(--t5)}
+.workbox{width:100%;text-align:left;margin-top:8px;padding:12px 14px;border-radius:14px;background:#F6F3EE}
+.workbox .rl{margin:0 0 6px}
+.workbox p{margin:0 0 6px;font-size:var(--t4);line-height:1.5;color:var(--ink)}
+.workbox p:last-child{margin-bottom:0}
 
 /* ---- the house brand, course layer ---- */
 .mwrap{display:flex;justify-content:center;margin:2px 0 4px}
@@ -415,7 +422,7 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
    written for it, seeded so a question is stable while on screen and different
    next visit. */
 /* Bumped once per phase of work, shown small under "About this course". */
-const VERSION="v11";
+const VERSION="v12";
 const R = s => { let x=(s*1103515245+12345)&0x7fffffff; return ()=>(x=(x*1103515245+12345)&0x7fffffff)/0x7fffffff; };
 const pick=(r,a)=>a[Math.floor(r()*a.length)];
 const shuffle=(r,a)=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
@@ -697,6 +704,137 @@ const GEN={
  },
 };
 
+
+
+/* ================= why the answer is the answer =================
+   v12: "Show me the answer" printed the answer and nothing else, and after
+   two misses every question in a subtopic got the same hint. This layer sits
+   on top of the generators without touching what they ask or accept: each
+   question also carries
+     work  - two or three short lines saying why the answer is right,
+     tip   - the hint for this question after two misses,
+     traps - for a choice, what the wrong option the child picked means;
+             for a typed answer, a function that looks at what they typed.
+   Language: Year 6 terms, one idea per sentence, no metaphors. */
+const DEF={
+ noun:"A noun names a person, place, thing or idea.",
+ verb:"A verb is a doing or being word. It tells you what happens.",
+ adjective:"An adjective describes a noun.",
+ adverb:"An adverb tells you how, when, where or how often something happens.",
+ pronoun:"A pronoun takes the place of a noun: I, you, she, it, we, them.",
+ determiner:"A determiner comes before a noun and tells you which one or how many: the, a, my, those, three.",
+ preposition:"A preposition shows where or when, and comes before a noun: under, through, beside.",
+ conjunction:"A conjunction joins words or clauses: and, but, because, although, when."};
+const PRULE={
+ comma:"A pair of commas goes round extra information. The sentence still makes sense without it.",
+ list:"Commas separate the things in a list. Use and, not a comma, before the last one.",
+ brackets:"Brackets go round extra information. The sentence still makes sense without it.",
+ dash:"A dash joins two main clauses, or adds extra information at the end.",
+ semicolon:"A semi-colon joins two main clauses that are closely linked. Each side makes sense on its own.",
+ colon:"A colon goes after a main clause, before a list or an explanation.",
+ hyphen:"A hyphen joins two words to make one describing word, like ready-made."};
+const FUNCDEF={statement:"tells you something and ends with a full stop.",
+ question:"asks something and ends with a question mark.",
+ command:"tells someone to do something. It usually starts with a verb.",
+ exclamation:"starts with What or How, has a verb, and ends with an exclamation mark."};
+const FUNCEND={statement:".",question:"?",command:".",exclamation:"!"};
+const CLAUSEDEF={"main clause":"makes sense on its own.",
+ "subordinate clause":"has a verb, starts with a word like because, as or before, and does not make sense on its own.",
+ "relative clause":"starts with who, which or that and tells you more about a noun.",
+ "noun phrase":"is a group of words built around a noun. It has no verb."};
+const MODALDEF={certain:"will and must say it is certain to happen.",
+ possible:"might, may and could say it is possible.",expected:"should says it ought to happen."};
+const SYNG={vast:"very big",unpleasant:"not nice",agreeable:"nice to be with",rapid:"fast",ancient:"very old",
+ courageous:"brave",furious:"very angry",miserable:"very unhappy"};
+const ANTG={rough:["bumpy","smooth"],vivid:["bright and strong","dull"],ancient:["very old","modern"],
+ generous:["happy to give","selfish"],shallow:["not deep","deep"],temporary:["lasting a short time","permanent"]};
+const PREMEAN={im:"not",in:"not",dis:"not, or the opposite",un:"not",de:"undo or remove",re:"again",
+ over:"too much",mis:"wrongly",sub:"under or below"};
+const STDNOTE={were:"We is more than one person, so use were. Use was with I, he, she and it.",
+ did:"done needs have, has or had before it. On its own, use did.",
+ those:"Them is never used before a noun. Use those: those tricks.",
+ "doesn't":"She is one person, so use doesn't. Use don't with I, you, we and they.",
+ saw:"seen needs have, has or had before it. On its own, use saw.",
+ "could have":"Write could have. It sounds like could of when people speak quickly."};
+const APOSNOTE={
+ "The car's horn beeps loudly.":"One car owns the horn, so add 's to car: car's.",
+ "The teachers' staffroom was full of books.":"More than one teacher, and teachers already ends in s, so add ' after the s: teachers'.",
+ "My sister's bike is red.":"One sister owns the bike, so add 's to sister: sister's.",
+ "The children's coats are wet.":"Children already means more than one, and does not end in s, so add 's: children's.",
+ "Tom's one of those boys who's always happy to help.":"Tom's means Tom is. Who's means who is. Whose is about owning, so it is wrong here.",
+ "James's dog barked.":"James owns the dog. For a name, add 's even if it ends in s: James's."};
+const an=w=>(/^[aeiou]/i.test(w)?"an ":"a ")+w, An=w=>{const x=an(w);return x[0].toUpperCase()+x.slice(1)};
+const bold=q=>((String(q.q||"").match(/<b>([^<]+)<\/b>/g)||[]).map(x=>x.replace(/<\/?b>/g,"")));
+function missing(full,short){
+ const f=full.replace(/\s/g,""), sh=short.replace(/'/g,"");
+ let a=0; while(a<sh.length&&f[a]===sh[a]) a++;
+ let b=0; while(b<sh.length-a&&f[f.length-1-b]===sh[sh.length-1-b]) b++;
+ return f.slice(a,f.length-b);
+}
+const EXPLAIN={
+ wordClass(q){ const c=q.lab, n=q.a.length;
+  return {work:[`${q.a.join(", ")} ${n>1?"are "+c+"s":"is "+an(c)}.`,DEF[c]],tip:DEF[c]}; },
+ wcName(q){ const wd=bold(q)[0], traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=`${DEF[o]} Is that what "${wd}" is doing here?`; });
+  return {work:[`"${wd}" is ${an(q.a)} in this sentence.`,DEF[q.a]],tip:"Ask what the word is doing in this sentence, not what it usually is.",traps}; },
+ punct(q){ const p=PUNCT.filter(x=>x.sent===q.sent)[0]||{}, rk=/list/.test(p.ask||"")?"list":q.lab;
+  return {work:[q.sent.replace(/\|/g,""),PRULE[rk]],tip:PRULE[rk]}; },
+ apostrophe(q){ const traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=o.indexOf("'")<0?"This one has no apostrophe. Something belongs to someone here, so it needs one.":"Check who owns it. One owner: add 's. More than one owner ending in s: add ' after the s."; });
+  return {work:[q.a,APOSNOTE[q.a]||""].filter(Boolean),tip:"Find the owner first. Then put the apostrophe straight after the owner's name.",traps}; },
+ contract(q){ const full=bold(q)[0]||"", a=String(q.a);
+  const note=full==="will not"?"will not becomes won't. It changes more than most: learn it.":`The apostrophe takes the place of the missing letters "${missing(full,a)}".`;
+  return {work:[`${full} → ${a}`,note],tip:"Find the letters that drop out. The apostrophe goes in their place.",
+   trap:typed=>norm(typed).indexOf("'")<0?"Remember the apostrophe. It goes where the letters are missing.":"Check where the apostrophe is. It goes exactly where letters were taken out."}; },
+ func(q){ const traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=`${An(o)} ${FUNCDEF[o]} Does this one?`; });
+  return {work:[q.sent+FUNCEND[q.a],`It is ${an(q.a)}. ${An(q.a)} ${FUNCDEF[q.a]}`],tip:"Read it aloud. Does it tell, ask, order or exclaim?",traps}; },
+ syn(q){ const wd=bold(q)[0], row=SYN.filter(r=>r[0]===wd)[0]||[], traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=o===row[2]?"That word means the opposite. You need a word that means the same.":`Put "${o}" in place of "${wd}". Does it mean the same?`; });
+  return {work:[`"${wd}" and "${q.a}" both mean ${SYNG[wd]||"the same thing"}.`],tip:"Swap each choice into a sentence. Keep the one that means the same.",traps}; },
+ ant(q){ const wd=bold(q)[0], g=ANTG[wd]||["",""], traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=`"${o}" is not the opposite. "${wd}" means ${g[0]}. Which choice means the reverse?`; });
+  return {work:[`"${wd}" means ${g[0]}. The opposite is "${q.a}".`],tip:"Check the question: same, or opposite?",traps}; },
+ prefix(q){ const wd=bold(q)[0], row=PREFIX.filter(r=>r[1]===wd)[0]||[];
+  return {work:[`${row[0]} + ${wd} = ${q.a}`,`${row[0]}- means ${PREMEAN[row[0]]||"something new"}.`],
+   tip:"Say it with each prefix: un, dis, im, in, re, mis, de, over, sub. Which one makes a real word?",
+   trap:typed=>norm(typed).endsWith(wd)?"That prefix does not make a real word here. Say the others aloud.":`Keep every letter of the root word: ${row[0]} + ${wd}.`}; },
+ suffix(q){ const [suf,wd]=bold(q), full=String(q.a);
+  const note=full.startsWith(wd)?"The root word stays the same.":`The ${wd.slice(-1)} at the end of ${wd} drops off before the suffix.`;
+  return {work:[`${wd} + ${suf} = ${full}`,note],tip:"Join them, then check the spelling where they meet.",
+   trap:typed=>norm(typed)===norm(wd+suf)&&norm(wd+suf)!==norm(full)?`Check where they join: ${note}`:null}; },
+ standard(q){ const traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=STDNOTE[q.a]; });
+  return {work:[q.sent.replace("______",q.a),STDNOTE[q.a]],tip:"Read it in your best school voice. Which sounds right in writing?",traps}; },
+ formal(q){ const inf=bold(q)[0], traps={};
+  q.opts.forEach(o=>{ if(o!==q.a){ const r=FORMAL.filter(x=>x[1]===o)[0]; traps[o]=`"${o}" is formal, but it means "${r?r[0]:"something else"}".`; } });
+  return {work:[`"${q.a}" is the formal word for "${inf}".`],tip:"Find the choice that means the same, and sounds like a letter to a head teacher.",traps}; },
+ clause(q){ const traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=`${An(o)} ${CLAUSEDEF[o]} Is the underlined part like that?`; });
+  return {work:[`The underlined part is ${an(q.a)}.`,`${An(q.a)} ${CLAUSEDEF[q.a]}`],tip:"Cover the rest. Does the underlined part have a verb? Does it make sense alone?",traps}; },
+ tense(q){ const wd=bold(q)[0], name=(String(q.q).match(/the (.+) tense/)||[])[1]||"", a=String(q.a);
+  const how={"present":"It happens now. With he, she or it, add -s.","past":"It already happened.",
+   "past progressive":"was or were + -ing: it was going on in the past.","past perfect":"had + the past form: it happened before something else in the past."}[name]||"";
+  return {work:[`${wd} → ${a}`,`${name[0].toUpperCase()+name.slice(1)} tense: ${how}`],tip:"Find the time clue, like yesterday or while. It tells you the tense.",
+   trap:typed=>{ const t2=norm(typed);
+    if(t2===norm(wd)) return "The verb needs to change. Look for the time clue in the sentence.";
+    if(/progressive/.test(name)&&!/^(was|were) /.test(t2)) return "The past progressive needs was or were, then the -ing word.";
+    if(/perfect/.test(name)&&!/^had /.test(t2)) return "The past perfect needs had in front.";
+    return null; }}; },
+ modal(q){ const wd=bold(q)[0], traps={};
+  q.opts.forEach(o=>{ if(o!==q.a) traps[o]=`${MODALDEF[o][0].toUpperCase()+MODALDEF[o].slice(1)} Is "${wd}" one of those?`; });
+  return {work:[`"${wd}" shows it is ${q.a}.`,MODALDEF[q.a][0].toUpperCase()+MODALDEF[q.a].slice(1)],tip:"How sure is it? Certain, possible, or what ought to happen?",traps}; },
+ voice(q){ const row=VOICE.filter(r=>r[0]===q.sent)[0]||[], act=q.a==="active";
+  const rule=act?"In the active, the person or thing doing it comes first.":"In the passive, the thing it happens to comes first. Look for was, were, is or are + a verb.";
+  const traps={}; traps[act?"passive":"active"]=rule;
+  return {work:[`${act?"Active":"Passive"}: ${row[0]}`,`${act?"Passive":"Active"}: ${row[1]}`,rule],tip:"Who or what comes first: the doer, or the thing it happened to?",traps}; },
+ spell(q){ const set=SPELL.filter(x=>x.w.some(y=>y[0]===q.a))[0]||{r:""}, a=String(q.a);
+  return {work:[q.sent.replace(/_+/,a),`Spelling pattern: ${set.r}`],tip:`Say it slowly in parts. Pattern: ${set.r}.`,
+   trap:typed=>{ const t2=norm(typed); let k=0; while(k<t2.length&&t2[k]===a[k]) k++;
+    return k>=a.length-4?`The start is right. Check the ending: ${set.r}.`:"Say the word slowly in parts and check each part."; }}; },
+};
+for(const k in EXPLAIN){ const f=GEN[k];
+ GEN[k]=function(r,lvl,arg){ const q=f(r,lvl,arg); try{ Object.assign(q,EXPLAIN[k](q)); }catch(e){} return q; }; }
 
 /* ================= the eight topics =================
    Weighted by the whole 70-mark test across 2024, 2025 and 2026 \u2014 not by
@@ -1351,6 +1489,7 @@ const T={
  tapgap:{en:"Tap where it goes",fr:"Touche l\u2019endroit"},
  listen:{en:"Hear the word",fr:"\u00c9couter le mot"},
  check:{en:"Check",fr:"V\u00e9rifier"},
+ whyans:{en:"Why",fr:"Pourquoi"},
  /* v11 */
  situation:{en:"Why it matters",fr:"Pourquoi c\u2019est utile"},
  example:{en:"Worked example",fr:"Exemple d\u00e9taill\u00e9"},
@@ -1808,16 +1947,13 @@ function sessionHTML(){
   <div class="sesbar"><i style="width:${V.i/V.qs.length*100}%"></i></div>
   <p class="sestop">${esc(cur.s[L]||cur.s.en)}</p>
   <div class="card">${!V.shown&&V.miss>=2?stuckNote(LESSON(cur.s),"sesShow"):""}
-   ${V.shown
-   ? `<div class="reveal"><p class="rl">${esc(t("theans"))}</p>
-      <p class="ra">${esc(Array.isArray(cur.q.a)?cur.q.a.join(", "):cur.q.a)}</p></div>`
-   : SESBODY(cur.q)}
+   ${V.shown?revealHTML(cur.q):SESBODY(cur.q)}
    <div class="tally">${dots}</div></div>
   ${V.shown?`<button class="go2" onclick="sesNext()">${esc(t("moveon"))}</button>`:""}
   </div>`;
 }
 function sesShow(){V.shown=true;render()}
-function sesNext(){V.shown=false;V.i++;V.typed="";V.pick=null;V.miss=0;render()}
+function sesNext(){V.shown=false;V.i++;V.typed="";V.pick=null;V.miss=0;V.trap=undefined;render()}
 function sessionDone(){
  const today=TODAY();
  if(S.lastDay!==today){
@@ -1855,7 +1991,7 @@ function openStop(id){
  V={s:"stop",id,ph:"lesson",i:0,step:0,g:0,typed:"",pick:null,bad:0,miss:0,why:{},topicFrom:lastTopic};
  S.at={id,ph:"lesson",i:0}; save(); render();
 }
-function newQ(){const s=byId(V.id);V.q=GEN[s.g](R(Date.now()%99991+V.i*7919),s.lvl||1,s.arg);V.typed="";V.pick=null;V.miss=0}
+function newQ(){const s=byId(V.id);V.q=GEN[s.g](R(Date.now()%99991+V.i*7919),s.lvl||1,s.arg);V.typed="";V.pick=null;V.miss=0;V.trap=undefined}
 function stopHTML(){
  const s=byId(V.id), T2=LESSON(s);
  if(V.ph==="lesson") return lessonHTML(s,T2);
@@ -2035,6 +2171,7 @@ function tapGap(i,done){
 function tapOpt(o,done){
  const q=V.q||V.qs[V.i];
  V.pick=o;
+ if(String(o)!==String(q.a)&&q.traps&&q.traps[o]) V.trap=q.traps[o];
  finish(String(o)===String(q.a),done);
  render();
 }
@@ -2042,6 +2179,7 @@ function typeCheck(done){
  const el=document.getElementById("win"); if(el) V.typed=el.value;
  if(!V.typed.trim()) return;
  const q=V.q||V.qs[V.i];
+ if(norm(V.typed)!==norm(q.a)&&q.trap){ const m=q.trap(V.typed); if(m) V.trap=m; }
  finish(norm(V.typed)===norm(q.a),done);
  render();
 }
@@ -2067,11 +2205,7 @@ function drillHTML(s,T2){
  return `<div class="wrap"><p class="step">${esc(s[L]||s.en)} \u00b7 ${V.i+1} ${esc(t("of"))} ${s.n}</p>
   ${phaseBar(2)}
   <div class="card">${!V.shown&&V.miss>=2?stuckNote(T2,"giveUp",V.bad>=3?againBtn(s):""):""}
-   ${V.shown?"":qBody(q,false)+peekHTML(T2)}
-   ${V.shown?`<div class="reveal"><p class="rl">${esc(t("theans"))}</p>
-     <p class="ra">${esc(Array.isArray(q.a)?q.a.join(", "):q.a)}</p>
-     ${q.clip||q.ask==="type"?`<button class="listen" onclick="say('${String(q.a).replace(/'/g,"\\'")}')">
-      <span>\u{1f50a}</span>${esc(t("hearit"))}</button>`:""}</div>`:""}
+   ${V.shown?revealHTML(q):qBody(q,false)+peekHTML(T2)}
    ${!V.shown&&V.miss<2&&V.bad>=3?againBtn(s):""}
    <div class="tally">${dots}</div></div>
   ${V.shown?`<button class="go2" onclick="moveOn()">${esc(t("moveon"))}</button>`:""}
@@ -2079,10 +2213,28 @@ function drillHTML(s,T2){
 }
 /* v11: the hint and the way out sit at the top of the card, where a stuck child
    is looking; under the answers they were often off the bottom of the screen. */
+/* v12: the hint is about this question: what the wrong choice they made
+   means if we can tell, otherwise the tip for this kind of question. */
 function stuckNote(T2,giveFn,extra){
- const txt=T2?w(T2.steps[0],"why"):"";
+ const q=V.q||(V.qs&&V.qs[V.i]&&V.qs[V.i].q)||{};
+ const txt=V.trap||q.tip||(T2?w(T2.steps[0],"why"):"");
  return `<div class="note stuck">${txt?`<span>${esc(t("look"))} \u2014 ${esc(txt)}</span>`:""}
   <span class="stuckbtns"><button class="go2 quiet small" onclick="${giveFn}()">${esc(t("giveup"))}</button>${extra||""}</span></div>`;
+}
+/* v12: the reveal shows the question with the answer put into it, then why */
+function revealHTML(q){
+ let sent="";
+ if(q.ask==="tapWords") sent=q.sent.split("|").map((p,i)=>i%2&&q.a.includes(p)?`<mark>${esc(p)}</mark>`:esc(p)).join("");
+ else if(q.ask==="tapGaps") sent=q.sent.split("|").map((p,i)=>i%2?`<mark>${esc(p.trim())}</mark>${/^\s/.test(p)?"":""}`:esc(p)).join("");
+ else if(q.ask==="type"&&q.sent&&/_{3,}/.test(q.sent)) sent=esc(q.sent).replace(/_{3,}/,`<mark>${esc(q.a)}</mark>`);
+ else if(q.marked) sent=q.marked.split("|").map((p,i)=>i%2?`<u>${esc(p)}</u>`:esc(p)).join("");
+ else if(q.sent) sent=esc(q.sent);
+ const ans=Array.isArray(q.a)?q.a.join(", "):String(q.a);
+ const ask=q.ask==="choose"||(q.ask==="type"&&!/_{3,}/.test(q.sent||""));
+ return `${sent?`<p class="sent">${sent}</p>`:""}${ask?`<p class="qq">${q.q}</p>`:""}
+  <div class="reveal"><p class="rl">${esc(t("theans"))}</p><p class="ra${ans.length>16?" long":""}">${esc(ans)}</p>
+   ${q.clip||q.ask==="type"?`<button class="listen" onclick="say('${String(q.a).replace(/'/g,"\\'")}')"><span>\u{1f50a}</span>${esc(t("hearit"))}</button>`:""}</div>
+  ${(()=>{ const wk=(q.work||[]).filter(x=>norm(x)!==norm(ans)); return wk.length?`<div class="workbox"><p class="rl">${esc(t("whyans"))}</p>${wk.map(x=>`<p>${esc(x)}</p>`).join("")}</div>`:""; })()}`;
 }
 function againBtn(s){
  return `<button class="go2 warm small" onclick="backToLesson()">${(VIDEO[s.g]||{})[L]?"\u25b6 "+esc(t("vidagain")):esc(t("exagain"))}</button>`;
