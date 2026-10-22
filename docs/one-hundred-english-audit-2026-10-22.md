@@ -82,5 +82,4 @@ Sentence length was already short (Flesch-Kincaid about grade 3). The difficulty
   removed lessons went with them.
 - **The S41 bank includes "increase":** its in- is not the negative prefix the lesson teaches. Consider
   replacing it.
-- **Geometry-style surfaces are not needed here.** Reading comprehension is still out of scope, as the
-  README says.
+- **Reading comprehension** is still out of scope, as the README says.
