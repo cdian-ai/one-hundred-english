@@ -80,6 +80,6 @@ Sentence length was already short (Flesch-Kincaid about grade 3). The difficulty
 - **Videos:** there are none. When they are recorded, they should follow the new lessons.
 - **French:** the app reads only English (`L` is fixed). No French was added, and the old French strings in
   removed lessons went with them.
-- **The S41 bank includes "increase":** its in- is not the negative prefix the lesson teaches. Consider
-  replacing it.
+- **The S41 bank had "increase"**, whose in- is not the negative prefix the lesson teaches. It was replaced
+  with "incorrect" after the audit.
 - **Reading comprehension** is still out of scope, as the README says.
