@@ -363,6 +363,18 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
 /* ---- v12: the reveal keeps the question and says why ---- */
 .sent mark{background:color-mix(in srgb,var(--band) 16%,transparent);color:var(--band);font-weight:650;border-radius:6px;padding:0 3px}
 .ra.long{font-size:var(--t5)}
+/* ---- v13: the sentence picture ---- */
+.seebox{width:100%;margin:2px 0 10px;padding:14px 12px;border-radius:14px;background:#F7F8FC;
+ font-size:var(--t5);line-height:2.2;text-align:center;color:var(--ink)}
+.seebox.sm{font-size:var(--t4);line-height:2;padding:10px;margin:6px 0 0;text-align:left}
+.s1{background:color-mix(in srgb,var(--band) 18%,transparent);color:var(--band);font-weight:650;border-radius:6px;padding:1px 4px}
+.s2{background:var(--sun-bg);color:#6A4A05;font-weight:650;border-radius:6px;padding:1px 4px}
+.su{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.sx{text-decoration:line-through;text-decoration-color:var(--no);text-decoration-thickness:2px;color:var(--muted)}
+.sa{color:var(--yes);font-weight:700;background:var(--yes-bg);border-radius:6px;padding:1px 3px}
+.lab{display:inline-flex;flex-direction:column;align-items:center;vertical-align:top;line-height:1.5}
+.lab small{font-size:var(--t1);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);line-height:1}
+.pic{width:100%;max-width:300px;height:auto;display:block;margin:4px auto 8px}
 .workbox{width:100%;text-align:left;margin-top:8px;padding:12px 14px;border-radius:14px;background:#F6F3EE}
 .workbox .rl{margin:0 0 6px}
 .workbox p{margin:0 0 6px;font-size:var(--t4);line-height:1.5;color:var(--ink)}
@@ -422,7 +434,7 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
    written for it, seeded so a question is stable while on screen and different
    next visit. */
 /* Bumped once per phase of work, shown small under "About this course". */
-const VERSION="v12";
+const VERSION="v13";
 const R = s => { let x=(s*1103515245+12345)&0x7fffffff; return ()=>(x=(x*1103515245+12345)&0x7fffffff)/0x7fffffff; };
 const pick=(r,a)=>a[Math.floor(r()*a.length)];
 const shuffle=(r,a)=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
@@ -705,6 +717,70 @@ const GEN={
 };
 
 
+
+
+/* ================= pictures for English =================
+   v13: the maths app draws fractions and columns; here the thing being taught
+   is a sentence, so the picture is the sentence itself with the part that
+   matters marked the way a teacher would mark it on the board. Lessons write
+   it as markup and each step redraws it:
+     [[x]]  the thing being taught      {{x}}  the other part
+     __x__  underlined (as in the test) ~~x~~  crossed out
+     ^^x^^  added in                    a <label> after any of them tags it.
+   Three small drawn models sit beside it for questions: a scale (when it
+   happened, how certain, how formal), word-building blocks, and the gaps
+   between words for punctuation. */
+const SEE=/(\[\[(.+?)\]\]|\{\{(.+?)\}\}|__(.+?)__|~~(.+?)~~|\^\^(.+?)\^\^)(?:<([^<>]{1,32})>)?/g;
+function seeHTML(str){
+ if(!str) return "";
+ let out="", last=0, m; SEE.lastIndex=0;
+ while((m=SEE.exec(str))){
+  out+=esc(str.slice(last,m.index));
+  const cls=m[2]!==undefined?"s1":m[3]!==undefined?"s2":m[4]!==undefined?"su":m[5]!==undefined?"sx":"sa";
+  const txt=m[2]??m[3]??m[4]??m[5]??m[6];
+  const span=`<span class="${cls}">${esc(txt)}</span>`;
+  out+=m[7]?`<span class="lab">${span}<small>${esc(m[7])}</small></span>`:span;
+  last=SEE.lastIndex;
+ }
+ return out+esc(str.slice(last));
+}
+const seePlain=str=>String(str||"").replace(SEE,(...m)=>(m[2]??m[3]??m[4]??m[5]??m[6]));
+const PSVG=(w,h,inner,label)=>`<svg class="pic" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(label)}">${inner}</svg>`;
+const ptx=(x,y,s2,o)=>{o=o||{};return `<text x="${x}" y="${y}" text-anchor="${o.a||"middle"}" font-size="${o.fs||12}" fill="${o.c||"var(--muted)"}"${o.b?' font-weight="650"':""}>${esc(s2)}</text>`;};
+/* scale: labelled points on a line; `at` marks one, `from` an arrow start */
+function scaleSVG(points,at,label){
+ const W=280, x=i=>24+i*(W-48)/(points.length-1);
+ let s=`<line x1="24" y1="30" x2="${W-24}" y2="30" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/>`;
+ points.forEach((p,i)=>{ const on=i===at;
+  s+=`<circle cx="${x(i)}" cy="30" r="${on?9:5}" fill="${on?"var(--band)":"#fff"}" stroke="${on?"var(--band)":"var(--line)"}" stroke-width="2"/>`+
+   ptx(x(i),58,p,{c:on?"var(--band)":"var(--muted)",b:on,fs:on?13:12}); });
+ return PSVG(W,68,s,label);
+}
+/* blocks: word parts joined with + and an = result ("?" until revealed) */
+function blocksSVG(parts,result,label){
+ const cw=c=>Math.max(44,String(c).length*10+20);
+ let x=6, s="";
+ parts.forEach((p,i)=>{ const w2=cw(p.t);
+  if(i) { s+=ptx(x+8,34,"+",{fs:18,c:"var(--ink2)"}); x+=18; }
+  s+=`<rect x="${x}" y="12" width="${w2}" height="34" rx="9" fill="${p.k===1?"color-mix(in srgb,var(--band) 18%,#fff)":p.k===2?"var(--sun-bg)":"#fff"}" stroke="${p.k===1?"var(--band)":p.k===2?"var(--sun)":"var(--line)"}" stroke-width="2"/>`+
+   ptx(x+w2/2,35,p.t,{fs:16,b:true,c:p.k===1?"var(--band)":p.k===2?"#6A4A05":"var(--ink)"});
+  x+=w2+4; });
+ if(result!==undefined){ s+=ptx(x+10,35,"=",{fs:18,c:"var(--ink2)"}); x+=24;
+  s+=ptx(x,35,result,{a:"start",fs:17,b:true,c:result==="?"?"var(--muted)":"var(--yes)"}); x+=String(result).length*10+10; }
+ return PSVG(Math.max(200,x+6),58,s,label);
+}
+/* the drawing for a question: shown on the first two of a subtopic, and in
+   the reveal, where it carries the answer */
+const QPIC={
+ tense(q,rv){ const name=(String(q.q).match(/the (.+) tense/)||[])[1]||"";
+  return scaleSVG(["before","past","now","later"],/perfect/.test(name)?0:/past/.test(name)?1:2,`When it happens: the ${name} tense`); },
+ modal(q,rv){ return scaleSVG(["possible","expected","certain"],rv?["possible","expected","certain"].indexOf(q.a):-1,"How sure: possible, expected or certain"); },
+ formal(q,rv){ const inf=bold(q)[0]; return blocksSVG([{t:inf}],rv?q.a:"?",`Informal ${inf}, formal ${rv?q.a:"?"}`); },
+ prefix(q,rv){ const wd=bold(q)[0], row=PREFIX.filter(r=>r[1]===wd)[0]||[];
+  return blocksSVG([{t:rv?row[0]:"?",k:2},{t:wd,k:1}],rv?q.a:undefined,`A prefix added to ${wd}`); },
+ suffix(q,rv){ const [suf,wd]=bold(q); return blocksSVG([{t:wd,k:1},{t:suf,k:2}],rv?q.a:"?",`${wd} plus ${suf}`); },
+ contract(q,rv){ const full=bold(q)[0]||""; return blocksSVG(full.split(" ").map((t2,i)=>({t:t2,k:i?2:1})),rv?q.a:"?",`${full} shortened`); },
+};
 
 /* ================= why the answer is the answer =================
    v12: "Show me the answer" printed the answer and nothing else, and after
@@ -1947,7 +2023,7 @@ function sessionHTML(){
   <div class="sesbar"><i style="width:${V.i/V.qs.length*100}%"></i></div>
   <p class="sestop">${esc(cur.s[L]||cur.s.en)}</p>
   <div class="card">${!V.shown&&V.miss>=2?stuckNote(LESSON(cur.s),"sesShow"):""}
-   ${V.shown?revealHTML(cur.q):SESBODY(cur.q)}
+   ${V.shown?revealHTML(cur.q,cur.s):SESBODY(cur.q)}
    <div class="tally">${dots}</div></div>
   ${V.shown?`<button class="go2" onclick="sesNext()">${esc(t("moveon"))}</button>`:""}
   </div>`;
@@ -2031,11 +2107,12 @@ function lessonHTML(s,T2){
 function exampleHTML(s,T2){
  const n=T2.steps.length, upto=Math.min(V.step||0,n-1), last=upto>=n-1;
  return `<div class="card lesson ex" id="ex">
-  ${T2.show?`<div class="qmid${T2.show.length>24?" long":""}">${esc(T2.show)}</div>`:""}
+  ${T2.show?`<div class="qmid${T2.show.length>24?" long":""}">${esc(seePlain(T2.show))}</div>`:""}
+  ${T2.steps[upto].see?`<div class="seebox" aria-live="polite">${seeHTML(T2.steps[upto].see)}</div>`:""}
   <div class="exsteps">${T2.steps.slice(0,upto+1).map((st,i)=>{
    const open=!!(V.why||{})[i];
    return `<button class="sbtn${i<upto?" old":""}" onclick="showWhy(${i})" aria-expanded="${open}">
-    <b>${esc(st.line)}</b><span>${esc(st[L]||st.en)}</span>
+    <b>${esc(seePlain(st.line))}</b><span>${esc(st[L]||st.en)}</span>
     ${open?`<i>${esc(w(st,"why"))}</i>`:(i===upto?`<small>${esc(t("tapwhy"))}</small>`:"")}</button>`;
   }).join("")}</div>
   ${last?"":`<div class="exnav"><button class="go2" onclick="stepNext()">${esc(t("nextstep"))}</button>
@@ -2205,7 +2282,7 @@ function drillHTML(s,T2){
  return `<div class="wrap"><p class="step">${esc(s[L]||s.en)} \u00b7 ${V.i+1} ${esc(t("of"))} ${s.n}</p>
   ${phaseBar(2)}
   <div class="card">${!V.shown&&V.miss>=2?stuckNote(T2,"giveUp",V.bad>=3?againBtn(s):""):""}
-   ${V.shown?revealHTML(q):qBody(q,false)+peekHTML(T2)}
+   ${V.shown?revealHTML(q,s):(V.i<2&&QPIC[s.g]?QPIC[s.g](q,false):"")+qBody(q,false)+peekHTML(T2)}
    ${!V.shown&&V.miss<2&&V.bad>=3?againBtn(s):""}
    <div class="tally">${dots}</div></div>
   ${V.shown?`<button class="go2" onclick="moveOn()">${esc(t("moveon"))}</button>`:""}
@@ -2222,7 +2299,7 @@ function stuckNote(T2,giveFn,extra){
   <span class="stuckbtns"><button class="go2 quiet small" onclick="${giveFn}()">${esc(t("giveup"))}</button>${extra||""}</span></div>`;
 }
 /* v12: the reveal shows the question with the answer put into it, then why */
-function revealHTML(q){
+function revealHTML(q,s){
  let sent="";
  if(q.ask==="tapWords") sent=q.sent.split("|").map((p,i)=>i%2&&q.a.includes(p)?`<mark>${esc(p)}</mark>`:esc(p)).join("");
  else if(q.ask==="tapGaps") sent=q.sent.split("|").map((p,i)=>i%2?`<mark>${esc(p.trim())}</mark>${/^\s/.test(p)?"":""}`:esc(p)).join("");
@@ -2231,7 +2308,8 @@ function revealHTML(q){
  else if(q.sent) sent=esc(q.sent);
  const ans=Array.isArray(q.a)?q.a.join(", "):String(q.a);
  const ask=q.ask==="choose"||(q.ask==="type"&&!/_{3,}/.test(q.sent||""));
- return `${sent?`<p class="sent">${sent}</p>`:""}${ask?`<p class="qq">${q.q}</p>`:""}
+ const pic=s&&QPIC[s.g]?QPIC[s.g](q,true):"";
+ return `${sent?`<p class="sent">${sent}</p>`:""}${ask?`<p class="qq">${q.q}</p>`:""}${pic}
   <div class="reveal"><p class="rl">${esc(t("theans"))}</p><p class="ra${ans.length>16?" long":""}">${esc(ans)}</p>
    ${q.clip||q.ask==="type"?`<button class="listen" onclick="say('${String(q.a).replace(/'/g,"\\'")}')"><span>\u{1f50a}</span>${esc(t("hearit"))}</button>`:""}</div>
   ${(()=>{ const wk=(q.work||[]).filter(x=>norm(x)!==norm(ans)); return wk.length?`<div class="workbox"><p class="rl">${esc(t("whyans"))}</p>${wk.map(x=>`<p>${esc(x)}</p>`).join("")}</div>`:""; })()}`;
