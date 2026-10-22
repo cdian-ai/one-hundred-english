@@ -45,9 +45,14 @@ which this engine does. The app says GPS and covers GPS.
 paper: tap the words, tap where the punctuation goes, choose one, or write it.
 No keypad — this is not maths.
 
-Video first, with a jump index into it per step; a quick reminder card for
-checking mid-question; then practice. Until a film exists the full written
-explanation shows instead.
+Every subtopic has its own lesson, laid out the same way: what the test
+question looks like, the key words with plain definitions, why it matters, a
+worked example built up step by step on a marked-up sentence, another example,
+a test-style question, and a mistake to spot. Then one done together, then
+practice. In practice the steps are a tap away, a wrong answer gets a hint
+about the mistake made, and "Show me the answer" says why. When a video
+exists it plays first and the written lesson sits behind "Read it instead".
+See `docs/one-hundred-english-audit-2026-10-22.md`.
 
     VIDEO.apostrophe = { en:"vid/apostrophe-en.mp4", fr:"vid/apostrophe-fr.mp4" };
 

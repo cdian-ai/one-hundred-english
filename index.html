@@ -330,13 +330,13 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
 .sbtn{display:block;width:100%;border:0;border-left:3px solid var(--band);background:transparent;
  font:inherit;text-align:left;padding:8px 4px 8px 12px;cursor:pointer;color:inherit;min-height:44px}
 .sbtn:active{background:#F2F4FB}
-.sbtn b{display:block;font-size:var(--t5);color:var(--ink)}
-.sbtn span{display:block;font-size:var(--t4);color:var(--ink2);margin-top:3px;line-height:1.5}
-.sbtn i{display:block;font-style:normal;font-size:var(--t3);color:#6A4A05;background:var(--sun-bg);
+.sbtn>b{display:block;font-size:var(--t5);color:var(--ink)}
+.sbtn>span{display:block;font-size:var(--t4);color:var(--ink2);margin-top:3px;line-height:1.5}
+.sbtn>i{display:block;font-style:normal;font-size:var(--t3);color:#6A4A05;background:var(--sun-bg);
  border-radius:10px;padding:7px 10px;margin-top:7px;line-height:1.5}
-.sbtn small{display:inline-block;font-size:var(--t2);color:var(--muted);margin-top:4px}
+.sbtn>small{display:inline-block;font-size:var(--t2);color:var(--muted);margin-top:4px}
 .sbtn.old{border-left-color:var(--line)}
-.sbtn.old b{color:var(--band)}
+.sbtn.old>b{color:var(--band)}
 .exnav{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin-top:12px}
 .exnav .go2{margin-top:0;flex:1 1 auto}
 .linkbtn{border:0;background:transparent;font:inherit;font-size:var(--t3);color:var(--ink2);
@@ -374,6 +374,25 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
 .sa{color:var(--yes);font-weight:700;background:var(--yes-bg);border-radius:6px;padding:1px 3px}
 .lab{display:inline-flex;flex-direction:column;align-items:center;vertical-align:top;line-height:1.5}
 .lab small{font-size:var(--t1);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);line-height:1}
+/* ---- v14: the lesson as a learning designer would lay it out ---- */
+.intest{display:flex;gap:9px;align-items:flex-start;margin:4px 0 6px;padding:10px 13px;border-radius:14px;
+ background:#fff;border:1.5px dashed var(--line);font-size:var(--t3);color:var(--ink2);line-height:1.5}
+.intest b{color:var(--band);white-space:nowrap}
+.card.kwcard{align-items:stretch;text-align:left;padding:14px 16px;gap:8px}
+.kw{margin:0;font-size:var(--t4);line-height:1.5;color:var(--ink)}
+.kw b{color:var(--band)}
+.blank{display:inline-block;width:3.2em;border-bottom:2px solid var(--ink2);height:1em;vertical-align:-2px}
+.fold{display:flex;align-items:center;justify-content:space-between;width:100%;margin:16px 0 8px;padding:12px 14px;
+ border-radius:14px;border:1.5px solid var(--line);background:#fff;font:inherit;font-size:var(--t5);font-weight:650;
+ color:var(--ink);cursor:pointer;text-align:left;min-height:48px}
+.fold small{font-size:var(--t3);font-weight:600;color:var(--muted)}
+.wq{margin:0 0 8px;font-size:var(--t4);line-height:1.5;color:var(--ink2)}
+.mlines{display:flex;flex-direction:column;gap:6px;width:100%}
+.mline{border:1.5px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:var(--t4);
+ color:var(--ink);padding:10px 14px;text-align:left;cursor:pointer;min-height:44px;line-height:1.6}
+.mline.bad{border-color:var(--no);background:var(--no-bg)}
+.mline.nope{border-color:var(--yes);background:var(--yes-bg)}
+.fixnote{max-width:none;margin-top:10px}
 .pic{width:100%;max-width:300px;height:auto;display:block;margin:4px auto 8px}
 .workbox{width:100%;text-align:left;margin-top:8px;padding:12px 14px;border-radius:14px;background:#F6F3EE}
 .workbox .rl{margin:0 0 6px}
@@ -434,7 +453,7 @@ main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:aut
    written for it, seeded so a question is stable while on screen and different
    next visit. */
 /* Bumped once per phase of work, shown small under "About this course". */
-const VERSION="v13";
+const VERSION="v14";
 const R = s => { let x=(s*1103515245+12345)&0x7fffffff; return ()=>(x=(x*1103515245+12345)&0x7fffffff)/0x7fffffff; };
 const pick=(r,a)=>a[Math.floor(r()*a.length)];
 const shuffle=(r,a)=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
@@ -733,18 +752,23 @@ const GEN={
 const SEE=/(\[\[(.+?)\]\]|\{\{(.+?)\}\}|__(.+?)__|~~(.+?)~~|\^\^(.+?)\^\^)(?:<([^<>]{1,32})>)?/g;
 function seeHTML(str){
  if(!str) return "";
- let out="", last=0, m; SEE.lastIndex=0;
- while((m=SEE.exec(str))){
+ if(/_{3,}/.test(str)) return String(str).split(/_{3,}/).map(seeHTML).join('<span class="blank"></span>');
+ const re=new RegExp(SEE.source,"g");   /* a fresh pattern each call: marks can sit inside an underline */
+ let out="", last=0, m;
+ while((m=re.exec(str))){
   out+=esc(str.slice(last,m.index));
   const cls=m[2]!==undefined?"s1":m[3]!==undefined?"s2":m[4]!==undefined?"su":m[5]!==undefined?"sx":"sa";
   const txt=m[2]??m[3]??m[4]??m[5]??m[6];
-  const span=`<span class="${cls}">${esc(txt)}</span>`;
+  const span=`<span class="${cls}">${new RegExp(SEE.source).test(txt)?seeHTML(txt):esc(txt)}</span>`;
   out+=m[7]?`<span class="lab">${span}<small>${esc(m[7])}</small></span>`:span;
-  last=SEE.lastIndex;
+  last=re.lastIndex;
  }
  return out+esc(str.slice(last));
 }
-const seePlain=str=>String(str||"").replace(SEE,(...m)=>(m[2]??m[3]??m[4]??m[5]??m[6]));
+/* the same text with the marks taken off: the labels go, a blank stays a blank */
+const seePlain=str=>{ let x=String(str||"").replace(/_{3,}/g,"\u0000"), y;
+ while((y=x.replace(new RegExp(SEE.source,"g"),(...m)=>(m[2]??m[3]??m[4]??m[5]??m[6])))!==x) x=y;
+ return x.replace(/<[^<>]{1,32}>/g,"").replace(/\u0000/g,"___"); };
 const PSVG=(w,h,inner,label)=>`<svg class="pic" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(label)}">${inner}</svg>`;
 const ptx=(x,y,s2,o)=>{o=o||{};return `<text x="${x}" y="${y}" text-anchor="${o.a||"middle"}" font-size="${o.fs||12}" fill="${o.c||"var(--muted)"}"${o.b?' font-weight="650"':""}>${esc(s2)}</text>`;};
 /* scale: labelled points on a line; `at` marks one, `from` an arrow start */
@@ -922,7 +946,7 @@ const CAMPS=[
   sub_fr:"20 des 70 points \u2014 la plus grande partie", stops:[
   {g:"spell",arg:"S38",n:10,code:"S38",en:"Adding endings to longer words",fr:"Ajouter des terminaisons",
    sub_en:"rewarded, developed, examiner",sub_fr:"rewarded, developed, examiner"},
-  {g:"spell",arg:"S41",n:8,code:"S41",en:"Prefixes",fr:"Pr\u00e9fixes",sub_en:"impossible, increase",sub_fr:"impossible, increase"},
+  {g:"spell",arg:"S41",n:8,code:"S41",en:"Spelling words with prefixes",fr:"Pr\u00e9fixes",sub_en:"impossible, increase",sub_fr:"impossible, increase"},
   {g:"spell",arg:"S47",n:10,code:"S47",en:"Endings that sound like shun",fr:"Terminaisons en shun",
    sub_en:"session, solution, registration",sub_fr:"session, solution"},
   {g:"spell",arg:"S56",n:8,code:"S56",en:"-able and -ible",fr:"-able et -ible",sub_en:"probably, affordable",sub_fr:"probably, affordable"},
@@ -944,7 +968,7 @@ const CAMPS=[
   {g:"punct",arg:"colon",n:8,code:"G5.10",en:"Colons",fr:"Deux-points",sub_en:"before a list or an explanation",sub_fr:"avant une liste"},
   {g:"punct",arg:"hyphen",n:8,code:"G5.13",en:"Hyphens",fr:"Traits d'union",sub_en:"ready-made, build-up",sub_fr:"ready-made"},
   {g:"apostrophe",n:12,code:"G5.8",en:"Apostrophes",fr:"Apostrophes",sub_en:"owning things, and missing letters",sub_fr:"possession et lettres manquantes"},
-  {g:"contract",n:10,code:"G5.8",en:"Shortened words",fr:"Formes contract\u00e9es",sub_en:"don't, she'll, won't",sub_fr:"don't, she'll"},
+  {g:"contract",n:10,code:"G5.8",en:"Contractions",fr:"Formes contract\u00e9es",sub_en:"don't, she'll, won't",sub_fr:"don't, she'll"},
  ]},
  {id:"t2", em:"\u{1f3f7}\ufe0f", en:"Word classes", fr:"Classes de mots",
   sub_en:"13 marks \u2014 knowing what each word is doing",
@@ -969,508 +993,1262 @@ const CAMPS=[
  {id:"t4", em:"\u{1f517}", en:"Clauses and phrases", fr:"Propositions et groupes",
   sub_en:"5 marks \u2014 how sentences are put together",
   sub_fr:"5 points \u2014 la construction des phrases", stops:[
-  {g:"clause",n:12,code:"G3.1 / G3.4",en:"Main, subordinate, relative",fr:"Principale, subordonn\u00e9e, relative",
+  {g:"clause",n:12,code:"G3.1 / G3.4",en:"Main, subordinate and relative clauses",fr:"Principale, subordonn\u00e9e, relative",
    sub_en:"asked 13 times in three years",sub_fr:"13 fois en trois ans"},
  ]},
  {id:"t5", em:"\u{1f4d6}", en:"Vocabulary", fr:"Vocabulaire",
   sub_en:"5 marks \u2014 word meanings and word building",
   sub_fr:"5 points \u2014 sens et construction des mots", stops:[
-  {g:"syn",n:10,code:"G6.1",en:"Words that mean the same",fr:"Synonymes",sub_en:"the most-asked code of all",sub_fr:"le code le plus demand\u00e9"},
-  {g:"ant",n:8,code:"G6.1",en:"Words that mean the opposite",fr:"Antonymes",sub_en:"rough and smooth",sub_fr:"rough / smooth"},
+  {g:"syn",n:10,code:"G6.1",en:"Synonyms",fr:"Synonymes",sub_en:"the most-asked code of all",sub_fr:"le code le plus demand\u00e9"},
+  {g:"ant",n:8,code:"G6.1",en:"Antonyms",fr:"Antonymes",sub_en:"rough and smooth",sub_fr:"rough / smooth"},
   {g:"prefix",n:10,code:"G6.2",en:"Prefixes",fr:"Pr\u00e9fixes",sub_en:"im-, dis-, re-, over-",sub_fr:"im-, dis-, re-"},
   {g:"suffix",n:10,code:"G6.3",en:"Suffixes",fr:"Suffixes",sub_en:"-ment, -ous, -ness, -ise",sub_fr:"-ment, -ous"},
  ]},
  {id:"t6", em:"\u{1f3a9}", en:"Standard English", fr:"Anglais standard",
   sub_en:"3 marks \u2014 and how formal to be",
   sub_fr:"3 points \u2014 et le niveau de langue", stops:[
-  {g:"standard",n:10,code:"G7.1",en:"We were, not we was",fr:"La forme correcte",sub_en:"the ones that catch people out",sub_fr:"les pi\u00e8ges classiques"},
+  {g:"standard",n:10,code:"G7.1",en:"Standard English",fr:"La forme correcte",sub_en:"we were, not we was; did, not done",sub_fr:"les pi\u00e8ges classiques"},
   {g:"formal",n:10,code:"G7.2",en:"Formal and informal",fr:"Formel et informel",sub_en:"ask or request, buy or purchase",sub_fr:"ask / request"},
  ]},
  {id:"t7", em:"\u{1f4ac}", en:"Kinds of sentence", fr:"Types de phrases",
   sub_en:"3 marks \u2014 statement, question, command, exclamation",
   sub_fr:"3 points \u2014 les quatre types", stops:[
-  {g:"func",n:12,code:"G2.1\u2013G2.4",en:"Which kind is it?",fr:"Quel type ?",
+  {g:"func",n:12,code:"G2.1\u2013G2.4",en:"Kinds of sentence",fr:"Quel type ?",
    sub_en:"and the punctuation that goes with each",sub_fr:"et la ponctuation qui va avec"},
  ]},
 ];
 
 
+/* ================= the lessons =================
+   v14: one lesson per subtopic (37), keyed "generator:arg" where a generator
+   serves several subtopics. Written by a learning-design brief to the level
+   of Year 5/6 GPS materials: the test's own terms, each defined the first
+   time in plain words; one idea per sentence (mean 7 words, none over 22);
+   no metaphors; examples from school and home; the SATs question words.
+   Each lesson: what the test asks (inTest), key words, why it matters
+   (story), a worked example whose steps carry a marked-up picture (see),
+   guided practice, another example, a test-style question and a mistake
+   to spot. The app is English-only, so there is no French. */
 const TEACH={
-"spell": {
+"spell:S38": {title:"Adding endings to longer words",
+ inTest:"Write the missing word: We were ___ for our hard work.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word, like -ed, -ing or -er."},
+  {term:"syllable", def:"is one beat in a word. pre-fer has two syllables."}],
  story:[
-  {em:"📻", en:"You hear a word, and a sentence with a gap. You write the word in.",
-   fr:"Tu entends un mot, et une phrase avec un trou. Tu écris le mot."},
-  {em:"🧩", en:"Twenty words, twenty marks. Each one belongs to a spelling pattern, and the patterns come back every year.",
-   fr:"Vingt mots, vingt points. Chacun suit un motif, et les motifs reviennent chaque année."}],
- show:"endings that sound like shun",
+  {em:"🏃", en:"Leo is beginning a race. Begin gets two n's: beginning."},
+  {em:"🎁", en:"Leo offered his drink to Zara. Offer gets one r: offered. The beat in the word tells you which."}],
+ show:"prefer → preferred",
  steps:[
-  {line:"session, solution, station", en:"Say the word slowly and listen for the pattern at the end.",
-   fr:"Dis le mot lentement et écoute le motif à la fin.",
-   why_en:"Most spelling marks are lost by writing what a word sounds like. The pattern tells you more than the sound.",
-   why_fr:"On perd la plupart des points en écrivant ce qu'on entend. Le motif en dit plus que le son."},
-  {line:"\u2013tion, \u2013sion, \u2013ssion, \u2013cian", en:"Four spellings, one sound. Which one you need depends on the word it came from.",
-   fr:"Quatre orthographes, un seul son. Cela dépend du mot d'origine.",
-   why_en:"solve becomes solution, permit becomes permission. Find the word underneath.",
-   why_fr:"solve donne solution, permit donne permission. Cherche le mot d'origine."},
-  {line:"write it, then read it back", en:"Check it looks right, not just sounds right.",
-   fr:"Vérifie que ça a l'air juste, pas seulement que ça sonne juste.",
-   why_en:"You have seen these words in books hundreds of times. Trust your eye.",
-   why_fr:"Tu as vu ces mots des centaines de fois. Fais confiance à ton œil."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"Write: sug___ (an idea you offer)", ask_fr:"Écris : sug___ (une idée qu'on propose)", a:"suggestion"},
-   {ask_en:"Write: solu___ (an answer to a problem)", ask_fr:"Écris : solu___ (une réponse à un problème)", a:"solution"},
-   {ask_en:"Write: regist___ (taking the register)", ask_fr:"Écris : regist___ (l'appel)", a:"registration"},
- ]}
-},
+  {line:"Look at the last three letters.", en:"prefer ends in a consonant, one vowel, then one consonant: f, e, r.", why_en:"Vowels are a, e, i, o and u. Point to the last vowel and the letter after it.", see:"pref[[e]]<vowel>{{r}}<consonant>"},
+  {line:"Find the loud beat.", en:"Say the word slowly: pre-FER. The loud beat is on the last syllable.", why_en:"Clap the word. Listen for the clap you say most strongly.", see:"pre + [[FER]]<loud beat>"},
+  {line:"Double the last letter, then add -ed.", en:"The loud beat is at the end, so you double the r.", why_en:"Write the root word, add one more r, then add the ending.", see:"prefer + ^^r^^ + ed → prefe[[rr]]ed"}],
+ guided:{steps:[
+   {ask_en:"Add -ing to begin (be-GIN): Amina is ___ to read.", a:"beginning"},
+   {ask_en:"Add -ed to develop (de-VEL-op): After a few days, the seeds ___ shoots.", a:"developed"},
+   {ask_en:"Add -ed to reward. It ends in two consonants, r and d, so do not double: We were ___ for our hard work.", a:"rewarded"}]},
+ examples:[
+  {show:"differ → differed",
+   steps:[
+    {line:"Look at the last three letters.", en:"differ ends in f, e, r. That is one vowel and one consonant.", why_en:"So far it looks just like prefer.", see:"diff[[e]]<vowel>{{r}}<consonant>"},
+    {line:"Find the loud beat.", en:"Say it slowly: DIF-fer. The loud beat is on the first syllable.", why_en:"Clap it. The strong clap comes first this time.", see:"[[DIF]]<loud beat> + fer"},
+    {line:"Do not double. Just add -ed.", en:"The loud beat is not at the end, so keep one r.", why_en:"Only double when the loud beat is on the last syllable.", see:"differ + ^^ed^^ → diffe[[r]]ed"}]}],
+ test:{en:"Write the missing word.",
+  show:"The school is ___ its minibus. (replacing)",
+  steps:[
+   {line:"Find the root word and the suffix.", en:"The root word is replace. The suffix is -ing.", why_en:"A root word is the word you start with, before anything is added.", see:"[[replace]] + {{ing}}"},
+   {line:"Check the last letter.", en:"replace ends in e. The suffix -ing starts with a vowel.", why_en:"When the root word ends in e and the suffix starts with a vowel, take the e off.", see:"replac~~e~~ + {{ing}}"},
+   {line:"Add the suffix and read it back.", en:"Write replac, then ing.", why_en:"Read the whole sentence with your word in it.", see:"The school is [[replac]]^^ing^^ its minibus."}]},
+ mistake:{lines:["Leo preferred the blue team.", "The second experiment differred from the first.", "Amina was beginning to feel tired."],
+  wrong:1,
+  fix_en:"differ has its loud beat at the start: DIF-fer. So do not double the r. The right spelling is differed."}},
 
-"punct": {
+"spell:S41": {title:"Prefixes",
+ inTest:"Write the missing word: The joke was so funny it was ___ not to laugh.",
+ key:[
+  {term:"prefix", def:"is a group of letters added to the start of a word to change its meaning."},
+  {term:"root word", def:"is the word you start with, before a prefix or suffix is added."}],
  story:[
-  {em:"🚦", en:"Punctuation is not decoration. It tells the reader where to stop, where to pause, and what belongs together.",
-   fr:"La ponctuation n'est pas décorative. Elle dit où s'arrêter, où faire une pause, et ce qui va ensemble."},
-  {em:"✌️", en:"Brackets and paired commas always come in twos. If you have put one in, you owe the sentence another.",
-   fr:"Les parenthèses et les virgules doubles vont par deux. Si tu en mets une, la phrase en attend une autre."}],
- show:"She decided, although she was tired, that she would go.",
+  {em:"🧩", en:"Priya could not finish the puzzle. It was impossible."},
+  {em:"➕", en:"im + possible = impossible. The prefix joins on. The root word stays the same."}],
+ show:"im + mature → immature",
  steps:[
-  {line:"find the extra bit", en:"Read the sentence without the middle part. Does it still work?",
-   fr:"Lis la phrase sans la partie du milieu. Est-ce qu'elle tient encore ?",
-   why_en:"If it still works, that middle part is extra information and needs a pair of marks around it.",
-   why_fr:"Si elle tient, cette partie est une information supplémentaire et demande une paire de signes."},
-  {line:"put a mark at each end", en:"One before the extra bit, one after.",
-   fr:"Un signe avant, un signe après.",
-   why_en:"One comma on its own is the commonest punctuation mistake there is. They come in pairs.",
-   why_fr:"Une seule virgule est l'erreur la plus courante. Elles vont par paires."},
-  {line:"read it aloud", en:"The pause should fall where the marks are.",
-   fr:"La pause doit tomber là où sont les signes.",
-   why_en:"If you would not pause there when speaking, the mark is probably in the wrong place.",
-   why_fr:"Si tu ne ferais pas de pause là en parlant, le signe est sans doute mal placé."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"How many commas does an interruption need? Type the number", ask_fr:"Combien de virgules pour une incise ? Tape le nombre", a:"2"},
-   {ask_en:"How many brackets? Type the number", ask_fr:"Combien de parenthèses ? Tape le nombre", a:"2"},
-   {ask_en:"How many semi-colons join two sentences? Type the number", ask_fr:"Combien de points-virgules relient deux phrases ?", a:"1"},
- ]}
-},
+  {line:"Find the root word.", en:"The root word is mature. It means grown-up and sensible.", why_en:"Cover the prefix with your finger. What is left is the root word.", see:"[[mature]]"},
+  {line:"Choose the prefix.", en:"Use im- before a root word starting with m or p.", why_en:"Use il- before l, ir- before r, and im- before m or p.", see:"^^im^^ + [[mature]]"},
+  {line:"Join them. Keep every letter.", en:"The m from im- sits next to the m from mature. So there are two m's.", why_en:"Do not take any letters away. Write the prefix, then the whole root word.", see:"i{{m}}[[m]]ature"}],
+ guided:{steps:[
+   {ask_en:"Add a prefix to legal to mean not legal: It is ___ to park here.", a:"illegal"},
+   {ask_en:"Add a prefix to regular to mean not regular: The bus times were ___.", a:"irregular"},
+   {ask_en:"Add dis- to satisfied: Mei was ___ with her drawing.", a:"dissatisfied"}]},
+ examples:[
+  {show:"dis + appointed → disappointed",
+   steps:[
+    {line:"Find the root word.", en:"The root word is appointed. It starts with a.", why_en:"Cover the prefix with your finger to find it.", see:"[[appointed]]"},
+    {line:"Add the prefix.", en:"The prefix is dis-. It ends in s.", why_en:"The root word starts with a, not s. So no extra s is needed.", see:"^^dis^^ + [[appointed]]"},
+    {line:"Join them. Count the letters.", en:"One s from dis-, two p's from appointed.", why_en:"Write dis, then the whole root word. Nothing is added or taken away.", see:"di{{s}}[[appointed]]"}]}],
+ test:{en:"Write the missing word.",
+  show:"The joke was so funny it was ___ not to laugh. (impossible)",
+  steps:[
+   {line:"Find the root word.", en:"The root word is possible.", why_en:"Spell the root word first: p-o-s-s-i-b-l-e.", see:"[[possible]]"},
+   {line:"Choose the prefix.", en:"possible starts with p, so use im-.", why_en:"im- goes before m or p.", see:"^^im^^ + [[possible]]"},
+   {line:"Join them and check.", en:"Keep both s's from possible.", why_en:"Read the sentence back with your word in it.", see:"The joke was so funny it was ^^im^^[[possible]] not to laugh."}]},
+ mistake:{lines:["It is illegal to park here.", "The rules seemed unnecesary to Kofi.", "Mei was dissatisfied with her drawing."],
+  wrong:1,
+  fix_en:"The root word necessary has two s's. Keep every letter: un + necessary = unnecessary."}},
 
-"apostrophe": {
+"spell:S47": {title:"Endings that sound like shun",
+ inTest:"Write the missing word: I have a ___ to your problem.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word, like -tion or -cian."},
+  {term:"root word", def:"is the word you start with, before anything is added."}],
  story:[
-  {em:"🐕", en:"Two jobs, one mark. An apostrophe either shows that something belongs to someone, or that letters are missing.",
-   fr:"Deux rôles, un seul signe. L'apostrophe montre la possession, ou des lettres manquantes."},
-  {em:"👥", en:"The dog's bowl is one dog. The dogs' bowl is more than one dog. That single mark changes how many dogs there are.",
-   fr:"The dog's bowl : un chien. The dogs' bowl : plusieurs. Ce petit signe change le nombre de chiens."}],
- show:"the car's horn",
+  {em:"🎵", en:"Kofi plays music. He is a musician. music ends in c, so the job ends in -cian."},
+  {em:"💡", en:"Aisha suggests a game. Her idea is a suggestion. suggest ends in t, so it ends in -tion."}],
+ show:"suggest → suggestion",
  steps:[
-  {line:"who owns it?", en:"Work out the owner first, before you write anything.",
-   fr:"Trouve d'abord le propriétaire, avant d'écrire quoi que ce soit.",
-   why_en:"The apostrophe goes straight after the owner, and the owner is not always what you expect.",
-   why_fr:"L'apostrophe suit le propriétaire, et ce n'est pas toujours celui qu'on croit."},
-  {line:"one owner: 's", en:"One car, so the apostrophe goes before the s: the car's horn.",
-   fr:"Une voiture : l'apostrophe avant le s.",
-   why_en:"You are not making it plural. You are saying it belongs to one thing.",
-   why_fr:"Tu ne mets pas au pluriel. Tu dis que ça appartient à une chose."},
-  {line:"more than one: s'", en:"Several teachers, so the apostrophe goes after the s: the teachers' room.",
-   fr:"Plusieurs professeurs : l'apostrophe après le s.",
-   why_en:"Say the owner out loud first. If it already ends in s, the apostrophe goes after it.",
-   why_fr:"Dis d'abord le propriétaire. S'il finit déjà par s, l'apostrophe vient après."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"One girl owns a bag. Write: the g___ bag", ask_fr:"Une fille, un sac. Écris : the g___ bag", a:"girl's"},
-   {ask_en:"Three girls share a room. Write: the g___ room", ask_fr:"Trois filles, une chambre. Écris : the g___ room", a:"girls'"},
-   {ask_en:"Write the short form of 'it is'", ask_fr:"Écris la forme courte de « it is »", a:"it's"},
- ]}
-},
+  {line:"Find the root word.", en:"suggestion comes from the verb suggest.", why_en:"Take off the shun sound. Ask: what word is left?", see:"[[suggest]]"},
+  {line:"Look at its last letter.", en:"suggest ends in t.", why_en:"Root words ending in t or te take -tion. Those ending in c take -cian. Those ending in ss or mit take -ssion.", see:"sugges[[t]]<ends in t>"},
+  {line:"Keep the t. Add -ion.", en:"The t stays, so the word ends in -tion.", why_en:"Write the root word, then add ion.", see:"sugges[[t]]^^ion^^"}],
+ guided:{steps:[
+   {ask_en:"invent → a new thing someone made: an ___", a:"invention"},
+   {ask_en:"electric → a person who fixes wires: an ___", a:"electrician"},
+   {ask_en:"discuss → a talk about something: a ___", a:"discussion"}]},
+ examples:[
+  {show:"permit → permission",
+   steps:[
+    {line:"Find the root word.", en:"permission comes from permit. It means to allow.", why_en:"Take off the shun sound and find the word underneath.", see:"[[permit]]"},
+    {line:"Look at its last letters.", en:"permit ends in mit.", why_en:"Words ending in mit do not keep the t. They take -ssion.", see:"per[[mit]]<ends in mit>"},
+    {line:"Swap the t for -ssion.", en:"Take off the t. Add ssion.", why_en:"Count the s's: there are two.", see:"permi~~t~~^^ssion^^"}]}],
+ test:{en:"Write the missing word.",
+  show:"The children were asked to be quiet during ___. (registration)",
+  steps:[
+   {line:"Find the root word.", en:"registration comes from register.", why_en:"Think of the register your teacher takes each morning.", see:"[[register]]"},
+   {line:"Listen to the end.", en:"You hear ay-shun at the end. That is spelt -ation.", why_en:"-ation is the most common shun ending of all.", see:"regist{{er}} + ^^ation^^"},
+   {line:"Join them and check.", en:"The e before the r drops out.", why_en:"Say it slowly: reg-is-tra-tion. There is no sound for that e.", see:"regist~~e~~r^^ation^^ → [[registration]]"}]},
+ mistake:{lines:["The band needed a new musition.", "We had a discussion about pets.", "Dad gave us permission to go."],
+  wrong:0,
+  fix_en:"music ends in c, so the person ends in -cian. The right spelling is musician."}},
 
-"contract": {
+"spell:S56": {title:"-able and -ible",
+ inTest:"Write the missing word: The new phone is lightweight and ___.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word, like -able or -ible."},
+  {term:"root word", def:"is the word you start with, before anything is added."}],
  story:[
-  {em:"✂️", en:"Two words squeezed into one, with an apostrophe standing where the missing letters used to be.",
-   fr:"Deux mots serrés en un, avec une apostrophe à la place des lettres manquantes."},
-  {em:"📍", en:"do not becomes don't. The apostrophe sits exactly where the o was, not where the gap between words was.",
-   fr:"do not devient don't. L'apostrophe est là où était le o, pas là où était l'espace."}],
+  {em:"📱", en:"Sam can afford the phone. It is affordable. afford is a whole word, so use -able."},
+  {em:"😖", en:"The smell was horrible. horr is not a word, so use -ible."}],
+ show:"afford → affordable",
+ steps:[
+  {line:"Cover the ending.", en:"Cover the able or ible sound. Look at what is left.", why_en:"Put your finger over the last part of the word.", see:"[[afford]] + {{able / ible}}"},
+  {line:"Is it a whole word?", en:"afford is a whole word. You can say: I can afford it.", why_en:"If what is left is a whole word, use -able. If not, it is usually -ible.", see:"[[afford]]<whole word>"},
+  {line:"Add -able.", en:"Write the root word. Then add able.", why_en:"Read it back: affordable.", see:"[[afford]]^^able^^"}],
+ guided:{steps:[
+   {ask_en:"Add -able to enjoy: The trip was very ___.", a:"enjoyable"},
+   {ask_en:"Write the -ly form of possible (change le to ly): We could ___ win.", a:"possibly"},
+   {ask_en:"memory, take off the y, then add -able: Sports day was a ___ event.", a:"memorable"}]},
+ examples:[
+  {show:"terrible → terribly",
+   steps:[
+    {line:"Cover the ending.", en:"Cover the ible. What is left is terr.", why_en:"terr is not a whole word. So the word ends in -ible.", see:"[[terr]]<not a word> + {{ible}}"},
+    {line:"Look at the end.", en:"terrible ends in le.", why_en:"To make an adverb, you change le to ly. An adverb tells you how something happens.", see:"terrib~~le~~"},
+    {line:"Add ly.", en:"Write terrib, then ly.", why_en:"-ible becomes -ibly. -able becomes -ably.", see:"terrib^^ly^^ → [[terribly]]"}]}],
+ test:{en:"Write the missing word.",
+  show:"I will ___ go to the museum on Saturday. (probably)",
+  steps:[
+   {line:"Find the word it comes from.", en:"probably comes from probable.", why_en:"Say: it is probable. That means it will most likely happen.", see:"[[probable]]"},
+   {line:"Change le to ly.", en:"Take off the le. Add ly.", why_en:"-able becomes -ably.", see:"probab~~le~~^^ly^^"},
+   {line:"Check the sentence.", en:"probably is an adverb. It tells you how likely the trip is.", why_en:"Read the whole sentence with your word in it.", see:"I will [[probably]] go to the museum on Saturday."}]},
+ mistake:{lines:["The film was enjoyible.", "The sofa was comfortable.", "The fog was terrible."],
+  wrong:0,
+  fix_en:"enjoy is a whole word, so add -able. The right spelling is enjoyable."}},
+
+"spell:S60": {title:"Silent letters",
+ inTest:"Write the missing word: There was a brave ___ in the story.",
+ key:[
+  {term:"silent letter", def:"is a letter you write but do not say, like the k in knee."}],
+ story:[
+  {em:"🏰", en:"Tomasz read a story about a knight. You say nite, but you write k-n-i-g-h-t."},
+  {em:"👀", en:"Silent letters are not heard. You learn them by looking at the word."}],
+ show:"knight",
+ steps:[
+  {line:"Say the word.", en:"knight sounds like nite.", why_en:"Say it slowly. Listen to each sound.", see:"knight"},
+  {line:"Spot the silent letters.", en:"The k is silent. The gh is silent too.", why_en:"Point to each letter. Ask: do I hear it?", see:"[[k]]<silent>ni[[gh]]<silent>t"},
+  {line:"Remember the pattern.", en:"kn at the start often says n.", why_en:"Say the silent letters in your head as you write: k-night.", see:"[[kn]]ight, [[kn]]ee, [[kn]]ock"}],
+ guided:{steps:[
+   {ask_en:"Jack hurt his ___ at football. (silent k)", a:"knee"},
+   {ask_en:"Please ___ your name on the card. (silent w)", a:"write"},
+   {ask_en:"Ola cut her ___ on the paper. (silent b)", a:"thumb"}]},
+ examples:[
+  {show:"island",
+   steps:[
+    {line:"Say the word.", en:"island sounds like eye-land.", why_en:"You cannot hear an s at all.", see:"island"},
+    {line:"Spot the silent letter.", en:"The s is silent.", why_en:"Look for the letter you do not say.", see:"i[[s]]<silent>land"},
+    {line:"Split it into two words.", en:"An island is land in the water. Think: is + land.", why_en:"Say it the way it is spelt in your head: is-land.", see:"{{is}} + [[land]]"}]}],
+ test:{en:"Write the missing word.",
+  show:"I've been ___ a jumper. (knitting)",
+  steps:[
+   {line:"Find the root word.", en:"knitting comes from knit.", why_en:"knit starts with a silent k, like knee and knight.", see:"[[k]]<silent>nit"},
+   {line:"Add -ing.", en:"knit has a short i sound and ends in one t.", why_en:"Double the t before you add -ing.", see:"knit + ^^t^^ + ing"},
+   {line:"Check the sentence.", en:"Read it back with your word in it.", why_en:"Look for the silent k and the two t's.", see:"I've been [[k]]ni{{tt}}ing a jumper."}]},
+ mistake:{lines:["Jack hurt his nee at football.", "Amina wrote a poem.", "The lamb ran across the field."],
+  wrong:0,
+  fix_en:"knee starts with a silent k. The right sentence is: Jack hurt his knee at football."}},
+
+"spell:S61": {title:"Homophones",
+ inTest:"Write the missing word: We used plain ___ to make bread.",
+ key:[
+  {term:"homophone", def:"is a word that sounds the same as another word but has a different spelling and meaning."}],
+ story:[
+  {em:"🍞", en:"Zara bakes bread with flour. She puts a flower in a vase."},
+  {em:"👂", en:"flour and flower sound the same. The sentence tells you which one to write."}],
+ show:"We used plain flour to make bread.",
+ steps:[
+  {line:"Hear the word.", en:"The word sounds like flower. It could be flour or flower.", why_en:"Think of both spellings before you write.", see:"We used plain __?__ to make bread."},
+  {line:"Think about the meaning.", en:"The sentence is about making bread.", why_en:"Ask: is it something you bake with, or something that grows?", see:"We used plain __?__ to make {{bread}}."},
+  {line:"Write the right spelling.", en:"You bake with flour.", why_en:"flower is a plant. flour is for baking.", see:"We used plain [[flour]] to make {{bread}}."}],
+ guided:{steps:[
+   {ask_en:"Leo ___ the ball to Sam. (threw or through?)", a:"threw"},
+   {ask_en:"We waited in the ___ to buy tickets.", a:"queue"},
+   {ask_en:"A bee landed on a ___ in the garden. (flour or flower?)", a:"flower"}]},
+ examples:[
+  {show:"They passed a bridge on their way to school.",
+   steps:[
+    {line:"Hear the word.", en:"It could be passed or past.", why_en:"Both sound the same. Look at the rest of the sentence.", see:"They __?__ a bridge on their way to school."},
+    {line:"Look for a verb.", en:"A verb is a doing word. This sentence needs one.", why_en:"passed is a verb. It is pass with -ed, so it happened in the past.", see:"{{They}} __?__ a bridge on their way to school."},
+    {line:"Write passed.", en:"There is no other verb, so you need passed.", why_en:"If the sentence already has a verb, like walked, use past: We walked past the bridge.", see:"{{They}} [[passed]]<verb> a bridge on their way to school."}]}],
+ test:{en:"Write the missing word.",
+  show:"The children walked home ___ the park. (through)",
+  steps:[
+   {line:"Hear the word.", en:"It could be through or threw.", why_en:"threw is the past tense of throw. through means in one side and out the other.", see:"The children walked home __?__ the park."},
+   {line:"Think about the meaning.", en:"The children went in one side of the park and out the other.", why_en:"Nobody is throwing anything. So it is not threw.", see:"The children {{walked}} home __?__ the park."},
+   {line:"Write the right spelling.", en:"Write through.", why_en:"through has ough in the middle: t-h-r-o-u-g-h.", see:"The children {{walked}} home [[through]] the park."}]},
+ mistake:{lines:["Mei threw the ball to her dog.", "We drove passed the school.", "Kofi waited in the queue."],
+  wrong:1,
+  fix_en:"drove is already the verb, so you need past, not passed. The right sentence is: We drove past the school."}},
+
+"spell:S53": {title:"Words ending -cious and -tious",
+ inTest:"Write the missing word. You hear the word, then a sentence with a gap.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word, like -ous or -ly."},
+  {term:"root word", def:"is the word you start with, before you add a prefix or a suffix."}],
+ story:[
+  {em:"🍲", en:"Delicious, suspicious and nutritious all end with the same sound: shuss."},
+  {em:"🔍", en:"That sound can be spelt -cious or -tious. A word you already know tells you which one."}],
+ show:"suspicious",
+ steps:[
+  {line:"Listen for the shuss ending.", en:"Say the word slowly: sus-pi-cious. The last part sounds like shuss.", why_en:"Clap each part as you say it. The last clap is the ending you need to check.", see:"sus + pi + [[cious]]<shuss>"},
+  {line:"Think of a word in the same family.", en:"Suspicious comes from suspicion. Suspicion has a c in it.", why_en:"Ask yourself: is there a shorter word inside this one? Write it down first.", see:"[[suspicion]] → {{suspici}}^^ous^^"},
+  {line:"Keep the same letter.", en:"The family word has a c, so you write -cious.", why_en:"A word with -ce or -cion becomes -cious: space, spacious; grace, gracious.", see:"suspi[[c]]ion → suspi[[c]]^^ious^^"},
+  {line:"Write it and read it back.", en:"Check every letter: s-u-s-p-i-c-i-o-u-s.", why_en:"Cover the word, then look again. Ask: does it look right?", see:"[[suspicious]]"}],
+ guided:{steps:[
+   {ask_en:"Space becomes ___ (a room with lots of space). Type the word.", a:"spacious"},
+   {ask_en:"Grace becomes ___ (kind and polite). Type the word.", a:"gracious"},
+   {ask_en:"Caution becomes ___ (being careful). Type the word.", a:"cautious"}]},
+ examples:[
+  {show:"nutritious",
+   steps:[
+    {line:"Listen for the shuss ending.", en:"Say it slowly: nu-tri-tious. It ends with the same shuss sound.", why_en:"The sound is the same as suspicious, but the spelling is not.", see:"nu + tri + [[tious]]<shuss>"},
+    {line:"Find the family word.", en:"Nutritious comes from nutrition. Nutrition ends in -tion.", why_en:"A word ending -tion becomes -tious: ambition, ambitious; infection, infectious.", see:"[[nutrition]] → {{nutriti}}^^ous^^"},
+    {line:"Keep the t.", en:"The family word has a t, so you write -tious.", why_en:"Do not swap the t for a c. Keep the letter from the family word.", see:"nutri[[t]]ion → nutri[[t]]^^ious^^"}]}],
+ test:{en:"Write the missing word. The meal was ___.",
+  show:"The meal was __delicious__.",
+  steps:[
+   {line:"Hear the word in the sentence.", en:"The word is delicious. It means it tasted very good.", why_en:"Listen to the whole sentence. It tells you which word is meant.", see:"The meal was [[delicious]]."},
+   {line:"Say it in parts.", en:"de-li-cious. The ending sounds like shuss.", why_en:"Write the first parts: de, li. Then think about the ending.", see:"de + li + [[cious]]"},
+   {line:"No family word? Use -cious.", en:"There is no shorter word inside delicious. Most of these words use -cious.", why_en:"Think of words you know, like precious and vicious. Then read it back.", see:"deli[[c]]^^ious^^"}]},
+ mistake:{lines:["The cat was suspicious of the new food.", "The cook served a nutricious meal.", "The meal was delicious."],
+  wrong:1,
+  fix_en:"Nutritious comes from nutrition, which has a t. Keep the t: The cook served a nutritious meal."}},
+
+"spell:S54": {title:"Words ending -tial and -cial",
+ inTest:"Write the missing word. You hear the word, then a sentence with a gap.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word."},
+  {term:"vowel", def:"is one of the letters a, e, i, o or u. All the other letters are consonants."}],
+ story:[
+  {em:"📱", en:"Social, special and potential all end with the sound shul."},
+  {em:"👀", en:"Look at the letter just before the ending. It tells you whether to write -cial or -tial."}],
+ show:"social",
+ steps:[
+  {line:"Listen for the shul ending.", en:"Say it slowly: so-cial. The last part sounds like shul.", why_en:"Clap each part. The last clap is the ending you need to check.", see:"so + [[cial]]<shul>"},
+  {line:"Look at the letter before it.", en:"The letter before the ending is o. O is a vowel.", why_en:"Write the start of the word. Then look at its last letter.", see:"s[[o]]<vowel> + ?ial"},
+  {line:"After a vowel, write -cial.", en:"A vowel comes before the ending, so you write -cial.", why_en:"Other words like this: special, official, crucial, facial.", see:"s[[o]]^^cial^^"},
+  {line:"Write it and read it back.", en:"Check every letter: s-o-c-i-a-l.", why_en:"Cover the word, then look again. Ask: does it look right?", see:"[[social]]"}],
+ guided:{steps:[
+   {ask_en:"spe + ___ (better than normal). Type the whole word.", a:"special"},
+   {ask_en:"par + ___ (only some of it). Type the whole word.", a:"partial"},
+   {ask_en:"essen + ___ (something you really need). Type the whole word.", a:"essential"}]},
+ examples:[
+  {show:"potential",
+   steps:[
+    {line:"Listen for the shul ending.", en:"Say it slowly: po-ten-tial. It ends with the same shul sound.", why_en:"The sound is the same as social, but the spelling is not.", see:"po + ten + [[tial]]<shul>"},
+    {line:"Look at the letter before it.", en:"The letter before the ending is n. N is a consonant.", why_en:"A consonant is any letter that is not a, e, i, o or u.", see:"pote[[n]]<consonant> + ?ial"},
+    {line:"After a consonant, write -tial.", en:"A consonant comes before the ending, so you write -tial.", why_en:"Other words like this: partial, essential, confidential. A few words break the rule, such as initial and financial. Learn those by heart.", see:"pote[[n]]^^tial^^"}]}],
+ test:{en:"Write the missing word. The guide showed us the ___ dining room.",
+  show:"The guide showed us the __residential__ dining room.",
+  steps:[
+   {line:"Hear the word in the sentence.", en:"The word is residential. It means a place where people live or stay.", why_en:"Listen to the whole sentence. It tells you which word is meant.", see:"The guide showed us the [[residential]] dining room."},
+   {line:"Say it in parts.", en:"res-i-den-tial. The ending sounds like shul.", why_en:"Write the first parts: res, i, den. Then think about the ending.", see:"res + i + den + [[tial]]"},
+   {line:"Check the letter before it.", en:"The letter before the ending is n, a consonant. So write -tial.", why_en:"Read it back letter by letter: r-e-s-i-d-e-n-t-i-a-l.", see:"reside[[n]]^^tial^^"}]},
+ mistake:{lines:["My coach says I have a lot of potencial.", "It is important to stay safe on social media.", "Today is a special day."],
+  wrong:0,
+  fix_en:"The letter before the ending is n, a consonant, so it needs -tial: My coach says I have a lot of potential."}},
+
+"spell:S55": {title:"Words ending -ant, -ance, -ent and -ence",
+ inTest:"Write the missing word. You hear the word, then a sentence with a gap.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word."},
+  {term:"word family", def:"is a group of words that share the same root word, like confident and confidence."}],
+ story:[
+  {em:"👂", en:"When you say elegant or confident, the ending sounds like unt. You cannot hear if it is a or e."},
+  {em:"👪", en:"Words in the same family keep the same letter. If you know one, you know the other."}],
+ show:"reluctance",
+ steps:[
+  {line:"Listen for the ending.", en:"Say it slowly: re-luc-tance. The ending could be -ance or -ence.", why_en:"Clap each part. The last clap is the ending you need to check.", see:"re + luc + [[t?nce]]"},
+  {line:"Think of a family word.", en:"Reluctance is in the same family as reluctant.", why_en:"Ask yourself: do I know the -ant or -ent word that goes with this one?", see:"[[reluctant]] → reluctance"},
+  {line:"Keep the same letter.", en:"Reluctant has an a, so reluctance has an a too.", why_en:"-ant goes with -ance. -ent goes with -ence.", see:"reluct[[a]]nt → reluct[[a]]^^nce^^"},
+  {line:"Write it and read it back.", en:"Check every letter: r-e-l-u-c-t-a-n-c-e.", why_en:"Cover the word, then look again. Ask: does it look right?", see:"[[reluctance]]"}],
+ guided:{steps:[
+   {ask_en:"Elegant goes with ___ (being graceful and stylish). Type the word.", a:"elegance"},
+   {ask_en:"Confident goes with ___ (feeling sure of yourself). Type the word.", a:"confidence"},
+   {ask_en:"Hesitation goes with ___ (not sure, slow to act). Type the -ant word.", a:"hesitant"}]},
+ examples:[
+  {show:"confidence",
+   steps:[
+    {line:"Listen for the ending.", en:"Say it slowly: con-fi-dence. The ending could be -ance or -ence.", why_en:"This time the family word has an e, not an a.", see:"con + fi + [[d?nce]]"},
+    {line:"Think of a family word.", en:"Confidence is in the same family as confident.", why_en:"Say the family word in a spelling voice: con-fi-DENT. It helps you hear the e.", see:"[[confident]] → confidence"},
+    {line:"Keep the same letter.", en:"Confident has an e, so confidence has an e too.", why_en:"Also use e after a soft c or soft g sound: innocent, decent, intelligent.", see:"confid[[e]]nt → confid[[e]]^^nce^^"}]}],
+ test:{en:"Write the missing word. The silver necklace was ___.",
+  show:"The silver necklace was __elegant__.",
+  steps:[
+   {line:"Hear the word in the sentence.", en:"The word is elegant. It means graceful and stylish.", why_en:"Listen to the whole sentence. It tells you which word is meant.", see:"The silver necklace was [[elegant]]."},
+   {line:"Say it in parts.", en:"el-e-gant. The ending sounds like unt.", why_en:"Write the first parts: el, e. Then think about the ending.", see:"el + e + [[g?nt]]"},
+   {line:"Use a spelling voice.", en:"Say it the way it is spelt: el-e-GANT. It ends in -ant, like elegance.", why_en:"A spelling voice says every letter clearly. Then read the word back.", see:"eleg[[a]]^^nt^^"}]},
+ mistake:{lines:["The silver necklace was elegant.", "After some reluctance, Dad agreed we could stay up.", "He played with great confidance."],
+  wrong:2,
+  fix_en:"Confidence comes from confident, which has an e. Keep the e: He played with great confidence."}},
+
+"spell:S59": {title:"Words with ough",
+ inTest:"Write the missing word. You hear the word, then a sentence with a gap.",
+ key:[
+  {term:"ough", def:"is a group of four letters that can make lots of different sounds."}],
+ story:[
+  {em:"🔤", en:"Rough, through, thought and though all have ough. Each one sounds different."},
+  {em:"🗂️", en:"Sort ough words into groups by their sound. Then learn one group at a time."}],
+ show:"thought",
+ steps:[
+  {line:"Listen to the word.", en:"Say it slowly: thought. It rhymes with sort.", why_en:"Say the word out loud. Listen for the sound in the middle.", see:"th + [[ought]]<or + t>"},
+  {line:"Find its sound group.", en:"The or sound with a t is often spelt ought.", why_en:"Other words in this group: bought, brought, fought, ought.", see:"b[[ought]] · br[[ought]] · f[[ought]] · th[[ought]]"},
+  {line:"Write it in parts.", en:"Write the start, th. Then add ought.", why_en:"Thought is the past tense of think. Past tense means it already happened.", see:"{{th}} + ^^ought^^"},
+  {line:"Read it back.", en:"Check every letter: t-h-o-u-g-h-t.", why_en:"Cover the word, then look again. Ask: does it look right?", see:"[[thought]]"}],
+ guided:{steps:[
+   {ask_en:"I ___ a new pencil case yesterday. (the past tense of buy)", a:"bought"},
+   {ask_en:"The path was bumpy and ___. (it rhymes with stuff)", a:"rough"},
+   {ask_en:"Have you had ___ to eat? (it means as much as you need)", a:"enough"}]},
+ examples:[
+  {show:"rough",
+   steps:[
+    {line:"Listen to the word.", en:"Say it slowly: rough. It rhymes with stuff.", why_en:"This ough makes a different sound from thought.", see:"r + [[ough]]<uff>"},
+    {line:"Find its sound group.", en:"The uff sound can be spelt ough.", why_en:"Other words in this group: tough and enough. Learn these three together.", see:"r[[ough]] · t[[ough]] · en[[ough]]"},
+    {line:"Do not write the sound.", en:"Ruff and rough sound the same. Rough is the word that means bumpy.", why_en:"Write r, then ough. Read it back to check.", see:"~~ruff~~ → r^^ough^^"}]}],
+ test:{en:"Write the missing word. We walked ___ the tunnel.",
+  show:"We walked __through__ the tunnel.",
+  steps:[
+   {line:"Hear the word in the sentence.", en:"The word is through. It means in one side and out of the other.", why_en:"Threw sounds the same, but threw is the past tense of throw. Listen to the sentence to choose.", see:"We walked [[through]] the tunnel."},
+   {line:"Find its sound.", en:"Through rhymes with zoo. Here ough makes an oo sound.", why_en:"Say it slowly: thr + oo. The oo part is spelt ough.", see:"thr + [[ough]]<oo>"},
+   {line:"Write it and read it back.", en:"Check every letter: t-h-r-o-u-g-h.", why_en:"Through has no t at the end. Thought does.", see:"thr^^ough^^"}]},
+ mistake:{lines:["I did a rough sketch before painting.", "I thort about it all night.", "We walked through the tunnel."],
+  wrong:1,
+  fix_en:"Thort is written the way it sounds. The or sound with a t is spelt ought: I thought about it all night."}},
+
+"spell:mixed": {title:"How to tackle the spelling test",
+ inTest:"Write the missing word. You hear each word, then a sentence with a gap. There are 20 words.",
+ key:[
+  {term:"syllable", def:"is one beat in a word. Dis-ap-point-ed has four syllables."},
+  {term:"spelling pattern", def:"is a group of letters that keeps coming back, like -tion, -cious or ough."}],
+ story:[
+  {em:"📻", en:"In the spelling test, you hear a word and a sentence with a gap. You write the word in the gap."},
+  {em:"🧩", en:"Each word follows a spelling pattern you have practised. Use the same five steps for every word."}],
+ show:"disappointed",
+ steps:[
+  {line:"Listen to the word and sentence.", en:"Listen to the word: disappointed. Then listen to the sentence.", why_en:"The sentence tells you which word it is. Ava was disappointed to miss the trip.", see:"Ava was [[disappointed]] to miss the trip."},
+  {line:"Say it in parts.", en:"Say it slowly and clap each syllable: dis-ap-point-ed.", why_en:"Write one syllable at a time. Long words become short parts.", see:"[[dis]] + {{ap}} + [[point]] + {{ed}}"},
+  {line:"Find the pattern.", en:"Dis is a prefix. A prefix is letters added to the start of a word.", why_en:"Find the root word: appointed. Add dis to the front. Do not add or drop any letters.", see:"^^dis^^ + [[appointed]]"},
+  {line:"Write it, then read it back.", en:"Read it letter by letter: d-i-s-a-p-p-o-i-n-t-e-d.", why_en:"Cover it, then look again. Ask: does it look right?", see:"[[disappointed]]"}],
+ guided:{steps:[
+   {ask_en:"Say it in parts and write it: sug-ges-tion (an idea you offer).", a:"suggestion"},
+   {ask_en:"Add the suffix -ly to frequent: We ___ go to the beach in summer.", a:"frequently"},
+   {ask_en:"Write the word with a silent s: The swans nested on an ___ in the lake.", a:"island"}]},
+ examples:[
+  {show:"nutritious",
+   steps:[
+    {line:"Listen to the word and sentence.", en:"The cook served a nutritious meal. Nutritious means good for your body.", why_en:"This time the pattern is at the end of the word, not the start.", see:"The cook served a [[nutritious]] meal."},
+    {line:"Say it in parts.", en:"Clap each syllable: nu-tri-tious.", why_en:"The last part sounds like shuss. Check that part carefully.", see:"{{nu}} + {{tri}} + [[tious]]"},
+    {line:"Find the pattern.", en:"Nutritious comes from nutrition. Keep the t, so write -tious.", why_en:"A family word often tells you the letters you cannot hear.", see:"nutri[[t]]ion → nutri[[t]]^^ious^^"},
+    {line:"Write it, then read it back.", en:"Check every letter: n-u-t-r-i-t-i-o-u-s.", why_en:"If a word looks wrong, try writing it another way on scrap paper.", see:"[[nutritious]]"}]}],
+ test:{en:"Write the missing word. The goalkeeper defended ___ during the match.",
+  show:"The goalkeeper defended __confidently__ during the match.",
+  steps:[
+   {line:"Listen to the word and sentence.", en:"The word is confidently. It tells you how the goalkeeper defended.", why_en:"Listen to the whole sentence before you start writing.", see:"The goalkeeper defended [[confidently]] during the match."},
+   {line:"Say it in parts.", en:"Clap each syllable: con-fi-dent-ly.", why_en:"Write one syllable at a time.", see:"{{con}} + {{fi}} + [[dent]] + ^^ly^^"},
+   {line:"Find the pattern.", en:"The root word is confident. Add the suffix -ly to the end.", why_en:"Keep every letter of confident, including the t. Then add ly.", see:"[[confident]] + ^^ly^^"},
+   {line:"Write it, then read it back.", en:"Check every letter: c-o-n-f-i-d-e-n-t-l-y.", why_en:"Ask: does it look right? Then move on to the next word.", see:"[[confidently]]"}]},
+ mistake:{lines:["We were rewarded for our hard work.", "After a few days, the seeds developped shoots.", "Ava was disappointed to miss the trip."],
+  wrong:1,
+  fix_en:"Develop ends in one p. Just add -ed and do not double the p: After a few days, the seeds developed shoots."}},
+
+"punct:comma": {title:"Commas and brackets",
+ inTest:"Insert a pair of commas (or brackets) in the correct places.",
+ key:[
+  {term:"parenthesis", def:"is extra information added to a sentence. It goes between a pair of commas, brackets or dashes."},
+  {term:"brackets ( )", def:"come in a pair. They go around extra information."}],
+ story:[
+  {em:"🎸", en:"Mr Khan plays the guitar. Who is Mr Khan? You can add extra words to tell the reader: our new teacher."},
+  {em:"✌️", en:"The extra words need a mark at each end. That shows the reader where they start and where they stop."}],
+ show:"Mr Khan, our new teacher, plays the guitar.",
+ steps:[
+  {line:"Find the extra information.", en:"The words 'our new teacher' tell you more about Mr Khan.", why_en:"Look for words that tell you more about the noun just before them. A noun is a person, place or thing.", see:"Mr Khan [[our new teacher]] plays the guitar."},
+  {line:"Cover it and read again.", en:"Read the sentence without those words: Mr Khan plays the guitar. It still makes sense.", why_en:"If the sentence still makes sense without the words, they are a parenthesis.", see:"{{Mr Khan}} ~~our new teacher~~ {{plays the guitar.}}"},
+  {line:"Put a comma at each end.", en:"Put one comma before the extra words. Put one comma after them.", why_en:"Commas around extra information always come in a pair. Count them: you need two.", see:"Mr Khan^^,^^ [[our new teacher]]^^,^^ plays the guitar."},
+  {line:"Brackets do the same job.", en:"You can use a pair of brackets instead of the commas.", why_en:"Use the mark that the question asks for. Brackets also come in a pair.", see:"Mr Khan ^^(^^[[our new teacher]]^^)^^ plays the guitar."}],
+ guided:{steps:[
+   {ask_en:"Add a pair of commas. Type the word just before the first comma: Zara my best friend lives next door.", a:"Zara"},
+   {ask_en:"Now type the word just before the second comma: Zara my best friend lives next door.", a:"friend"},
+   {ask_en:"Commas in a list go between the items, not before 'and'. Type the word just before the comma: We need eggs flour and milk.", a:"eggs"}]},
+ examples:[
+  {show:"We packed sandwiches, crisps, apples and juice.",
+   steps:[
+    {line:"Find the items in the list.", en:"There are four things in the list.", why_en:"Say each item to yourself. Each one is a separate thing.", see:"We packed [[sandwiches]] [[crisps]] [[apples]] and [[juice]]."},
+    {line:"Put a comma between the items.", en:"A comma goes after each item, up to the word 'and'.", why_en:"The comma takes the place of the word 'and' between items.", see:"We packed [[sandwiches]]^^,^^ [[crisps]]^^,^^ [[apples]] and [[juice]]."},
+    {line:"No comma before 'and'.", en:"The word 'and' already joins the last two items.", why_en:"Before the last item, write 'and' instead of a comma.", see:"We packed sandwiches, crisps, [[apples]] {{and}} [[juice]]."}]}],
+ test:{en:"Insert a pair of brackets in the correct places.",
+  show:"Priya (the tallest girl in our class) reached the top shelf.",
+  steps:[
+   {line:"Find the extra information.", en:"The words 'the tallest girl in our class' tell you more about Priya.", why_en:"These words describe the noun Priya.", see:"Priya [[the tallest girl in our class]] reached the top shelf."},
+   {line:"Cover it and read again.", en:"Priya reached the top shelf. It still makes sense.", why_en:"The sentence works without the words, so they are a parenthesis.", see:"{{Priya}} ~~the tallest girl in our class~~ {{reached the top shelf.}}"},
+   {line:"Put a bracket at each end.", en:"One bracket goes before 'the'. The other goes after 'class'.", why_en:"Check you have put in two brackets, one at each end.", see:"Priya ^^(^^[[the tallest girl in our class]]^^)^^ reached the top shelf."}]},
+ mistake:{lines:["Leo, my cousin, is coming to tea.", "Leo, my cousin is coming to tea.", "Leo (my cousin) is coming to tea."],
+  wrong:1,
+  fix_en:"The second sentence has only one comma. The extra words need a comma at each end: Leo, my cousin, is coming to tea."}},
+
+"punct:semicolon": {title:"Semi-colons and dashes",
+ inTest:"Insert a semi-colon (or a dash) in the correct place.",
+ key:[
+  {term:"semi-colon ( ; )", def:"joins two main clauses that are closely linked."},
+  {term:"main clause", def:"makes sense on its own as a sentence."}],
+ story:[
+  {em:"🍽️", en:"Amina was hungry. She had missed lunch. These two sentences are about the same thing."},
+  {em:"🔗", en:"You can join them with a semi-colon or a dash. This shows the reader that the two ideas belong together."}],
+ show:"Amina was hungry; she had missed lunch.",
+ steps:[
+  {line:"Find the two parts.", en:"The sentence has two parts. Each part has its own verb: 'was' and 'had missed'.", why_en:"A verb is a doing or being word. Look for one in each part.", see:"[[Amina was hungry]] {{she had missed lunch}}"},
+  {line:"Check each part makes sense alone.", en:"'Amina was hungry.' 'She had missed lunch.' Both make sense on their own.", why_en:"Cover one part. If the other part still makes sense as a sentence, it is a main clause.", see:"[[Amina was hungry.]] {{She had missed lunch.}}"},
+  {line:"Put the semi-colon in the gap.", en:"The semi-colon goes between the two main clauses.", why_en:"Do not use a capital letter after a semi-colon. The sentence carries on.", see:"[[Amina was hungry]]^^;^^ {{she had missed lunch.}}"},
+  {line:"A dash can do the same job.", en:"A dash ( – ) can also join two main clauses. It is a little less formal.", why_en:"Use the mark the question asks for. Leave a space on each side of the dash.", see:"[[Amina was hungry]] ^^–^^ {{she had missed lunch.}}"}],
+ guided:{steps:[
+   {ask_en:"Add a semi-colon. Type the word just before it: The bus was late we missed the start of the show.", a:"late"},
+   {ask_en:"Add a semi-colon. Type the word just after it: Tomasz loves football he plays every Saturday.", a:"he"},
+   {ask_en:"Add a dash. Type the word just before it: I need a new pencil mine has snapped.", a:"pencil"}]},
+ examples:[
+  {show:"Sam stayed inside because it was raining.",
+   steps:[
+    {line:"Find the two parts.", en:"The parts are 'Sam stayed inside' and 'because it was raining'.", why_en:"Look for where a new idea starts.", see:"[[Sam stayed inside]] {{because it was raining.}}"},
+    {line:"Check each part makes sense alone.", en:"'Because it was raining.' does not make sense on its own. It is not a main clause.", why_en:"Words like 'because', 'when' and 'if' start a part that cannot stand alone.", see:"[[Sam stayed inside.]] __because__ {{it was raining.}}"},
+    {line:"No semi-colon here.", en:"The word 'because' already joins the two parts. A semi-colon is only for two main clauses.", why_en:"Take out 'because' and you have two main clauses. Then a semi-colon works: Sam stayed inside; it was raining.", see:"[[Sam stayed inside]]^^;^^ ~~because~~ {{it was raining.}}"}]}],
+ test:{en:"Insert a semi-colon in the correct place.",
+  show:"The film was very long; Kofi fell asleep before the end.",
+  steps:[
+   {line:"Find the two parts.", en:"The parts are 'The film was very long' and 'Kofi fell asleep before the end'.", why_en:"Look for the second verb, 'fell'. The new part starts with the word before it.", see:"[[The film was very long]] {{Kofi fell asleep before the end}}"},
+   {line:"Check each part makes sense alone.", en:"Both parts make sense as sentences, so both are main clauses.", why_en:"Read each part on its own. If both work, you can use a semi-colon.", see:"[[The film was very long.]] {{Kofi fell asleep before the end.}}"},
+   {line:"Put the semi-colon in the gap.", en:"The semi-colon goes after 'long'.", why_en:"Keep 'Kofi' with a capital letter because it is a name.", see:"[[The film was very long]]^^;^^ {{Kofi fell asleep before the end.}}"}]},
+ mistake:{lines:["Zara loves painting; she paints every weekend.", "Zara loves painting; every weekend.", "Zara loves painting – she paints every weekend."],
+  wrong:1,
+  fix_en:"'Every weekend' does not make sense on its own, so it is not a main clause. Write: Zara loves painting; she paints every weekend."}},
+
+"punct:colon": {title:"Colons",
+ inTest:"Insert a colon in the correct place.",
+ key:[
+  {term:"colon ( : )", def:"comes before a list or an explanation."}],
+ story:[
+  {em:"🎒", en:"Leo packed three things for the trip. Which three things? The reader wants to know."},
+  {em:"👉", en:"A colon points to what comes next. It tells the reader: here is the list."}],
+ show:"Leo packed three things for the trip: a coat, a torch and a map.",
+ steps:[
+  {line:"Find the list.", en:"The list is 'a coat, a torch and a map'.", why_en:"Look for the items. They often have commas between them.", see:"Leo packed three things for the trip [[a coat, a torch and a map.]]"},
+  {line:"Check the first part makes sense alone.", en:"'Leo packed three things for the trip.' This makes sense on its own.", why_en:"The words before a colon must make sense on their own as a sentence.", see:"{{Leo packed three things for the trip.}} [[a coat, a torch and a map]]"},
+  {line:"Put the colon before the list.", en:"The colon goes straight after 'trip', just before the first item.", why_en:"Do not use a capital letter after the colon. The list starts with a small letter.", see:"{{Leo packed three things for the trip}}^^:^^ [[a coat, a torch and a map.]]"}],
+ guided:{steps:[
+   {ask_en:"Add a colon. Type the word just before it: You will need three things a pencil, a ruler and a rubber.", a:"things"},
+   {ask_en:"Add a colon. Type the word just before it: Aisha has two pets a hamster and a goldfish.", a:"pets"},
+   {ask_en:"A colon can come before an explanation. Type the word just before it: Jack was soaking wet he had fallen in the pond.", a:"wet"}]},
+ examples:[
+  {show:"Priya was delighted: she had won the race.",
+   steps:[
+    {line:"Find the two parts.", en:"The parts are 'Priya was delighted' and 'she had won the race'.", why_en:"This time there is no list. Look for where the second idea starts.", see:"[[Priya was delighted]] {{she had won the race}}"},
+    {line:"Does the second part explain the first?", en:"Why was Priya delighted? Because she had won the race.", why_en:"Ask 'why?' about the first part. If the second part answers it, a colon fits.", see:"[[Priya was delighted]] {{she had won the race}}<explains why>"},
+    {line:"Put the colon in the gap.", en:"The colon goes after 'delighted'.", why_en:"The first part must still make sense on its own. 'Priya was delighted.' does.", see:"[[Priya was delighted]]^^:^^ {{she had won the race.}}"}]}],
+ test:{en:"Insert a colon in the correct place.",
+  show:"On holiday, we visited three countries: France, Spain and Italy.",
+  steps:[
+   {line:"Find the list.", en:"The list is 'France, Spain and Italy'.", why_en:"The items are the names of the three countries.", see:"On holiday, we visited three countries [[France, Spain and Italy.]]"},
+   {line:"Check the first part makes sense alone.", en:"'On holiday, we visited three countries.' This makes sense on its own.", why_en:"If the words before the gap make a sentence, the colon can go there.", see:"{{On holiday, we visited three countries.}} [[France, Spain and Italy]]"},
+   {line:"Put the colon before the list.", en:"The colon goes after 'countries'.", why_en:"Only one colon is needed. It goes just before the first item.", see:"{{On holiday, we visited three countries}}^^:^^ [[France, Spain and Italy.]]"}]},
+ mistake:{lines:["My bag holds: a book, a pen and a drink.", "My bag holds three things: a book, a pen and a drink."],
+  wrong:0,
+  fix_en:"'My bag holds' does not make sense on its own, so a colon cannot go after it. Write: My bag holds three things: a book, a pen and a drink."}},
+
+"punct:hyphen": {title:"Hyphens",
+ inTest:"Insert a hyphen in the correct place.",
+ key:[
+  {term:"hyphen ( - )", def:"joins two words, or parts of a word, so that they work together."}],
+ story:[
+  {em:"🦈", en:"'A man eating shark' could mean a man who is eating a shark."},
+  {em:"🔗", en:"'A man-eating shark' is a shark that eats people. The hyphen shows which words go together."}],
+ show:"a man-eating shark",
+ steps:[
+  {line:"Read it without a hyphen.", en:"'A man eating shark' could mean two different things.", why_en:"When a phrase could mean two things, check if two words should be joined.", see:"a [[man]] {{eating shark}}"},
+  {line:"Find the words that work together.", en:"'Man' and 'eating' go together. Together they describe the shark.", why_en:"Ask: which words join up to tell you about the noun? Here the noun is 'shark'.", see:"a [[man eating]] {{shark}}"},
+  {line:"Join them with a hyphen.", en:"Put the hyphen between 'man' and 'eating'. Leave no spaces around it.", why_en:"A hyphen is short and has no spaces. A dash is longer and has a space on each side.", see:"a [[man]]^^-^^[[eating]] {{shark}}"}],
+ guided:{steps:[
+   {ask_en:"Add a hyphen. Type the word just before it: We bought a ready made cake.", a:"ready"},
+   {ask_en:"Add a hyphen. Type the word just after it: There was a build up of traffic.", a:"up"},
+   {ask_en:"Type the two words joined with a hyphen: Mei met a well known author.", a:"well-known"}]},
+ examples:[
+  {show:"Dad will re-cover the old sofa.",
+   steps:[
+    {line:"Read it without a hyphen.", en:"'Dad will recover the old sofa.' Recover means to get better after being ill.", why_en:"A sofa cannot get better, so this meaning is wrong.", see:"Dad will [[recover]] the old sofa."},
+    {line:"Find the prefix.", en:"A prefix is a group of letters added to the start of a word. Here the prefix is 're'. It means 'again'.", why_en:"Dad will cover the sofa again with new fabric.", see:"Dad will [[re]]{{cover}} the old sofa."},
+    {line:"Add a hyphen after the prefix.", en:"re-cover means to cover again. The hyphen keeps the two meanings apart.", why_en:"Use a hyphen after 're' when the joined word already means something else.", see:"Dad will [[re]]^^-^^{{cover}} the old sofa."}]}],
+ test:{en:"Insert a hyphen in the correct place.",
+  show:"Zara chose a sugar-free drink.",
+  steps:[
+   {line:"Find the noun.", en:"The noun is 'drink'. Which words tell you about it?", why_en:"Look at the words just before the noun.", see:"Zara chose a sugar free [[drink]]."},
+   {line:"Find the words that work together.", en:"'Sugar' and 'free' go together. They tell you the drink has no sugar.", why_en:"The drink is not 'sugar' and it is not 'free'. It is 'sugar free'.", see:"Zara chose a {{sugar free}} [[drink]]."},
+   {line:"Join them with a hyphen.", en:"The hyphen goes between 'sugar' and 'free'.", why_en:"No spaces go around a hyphen.", see:"Zara chose a {{sugar}}^^-^^{{free}} [[drink]]."}]},
+ mistake:{lines:["We had a last-minute change of plan.", "Tomasz will re-cover his book with new paper.", "The dog-ran across the field."],
+  wrong:2,
+  fix_en:"'Dog' and 'ran' do not join up to describe anything, so they need no hyphen. Write: The dog ran across the field."}},
+
+"apostrophe": {title:"Apostrophes",
+ inTest:"Tick one sentence that uses apostrophes correctly.",
+ key:[
+  {term:"apostrophe ( ' )", def:"shows that something belongs to someone, or that letters are missing."},
+  {term:"possession", def:"means owning something. An apostrophe can show who the owner is."}],
+ story:[
+  {em:"🐕", en:"The dog's bowl is empty. That is one dog with one bowl."},
+  {em:"🐕🐕", en:"The dogs' bowl is empty. That is more than one dog sharing a bowl. The apostrophe tells you how many owners."}],
+ show:"My sister's bike is red.",
+ steps:[
+  {line:"Find the owner.", en:"Ask: whose bike is it? It belongs to my sister.", why_en:"Find the owner first. The apostrophe goes straight after the owner.", see:"My {{sister}} [[bike]] is red."},
+  {line:"One owner: add 's.", en:"There is one sister, so add an apostrophe and then s.", why_en:"One owner: write the owner word, then 's.", see:"My {{sister}}^^'s^^ [[bike]] is red."},
+  {line:"More than one, ending in s: add '.", en:"Two sisters share a bedroom. 'Sisters' already ends in s, so add only an apostrophe.", why_en:"Say the owner word. If it means more than one and ends in s, put the apostrophe after the s.", see:"My {{sisters}}^^'^^ [[bedroom]] is big."},
+  {line:"More than one, no s: add 's.", en:"'Children' means more than one child, but it does not end in s. Add 's.", why_en:"Words like children, men and women take 's: the children's coats.", see:"The {{children}}^^'s^^ [[coats]] are wet."}],
+ guided:{steps:[
+   {ask_en:"One girl owns a bag. Write the missing word: the ___ bag", a:"girl's"},
+   {ask_en:"Three girls share a room. Write the missing word: the ___ room", a:"girls'"},
+   {ask_en:"The toys belong to the children. Write the missing word: the ___ toys", a:"children's"}]},
+ examples:[
+  {show:"Tom's one of those boys who's always happy to help.",
+   steps:[
+    {line:"Is anything owned here?", en:"Nothing belongs to Tom. These apostrophes show missing letters.", why_en:"Ask: does Tom own something? If not, the apostrophe may show missing letters.", see:"[[Tom's]] one of those boys [[who's]] always happy to help."},
+    {line:"Say the full words.", en:"Tom's means 'Tom is'. Who's means 'who is'.", why_en:"Read the sentence with the full words. If it makes sense, the apostrophe is right.", see:"[[Tom is]] one of those boys [[who is]] always happy to help."},
+    {line:"who's or whose?", en:"Whose asks who owns something: Whose coat is this? Here you need 'who is', so write who's.", why_en:"Swap in 'who is'. If it makes sense, write who's. If not, write whose.", see:"Tom^^'^^s one of those boys who^^'^^s always happy to help."}]}],
+ test:{en:"Tick one sentence that uses an apostrophe correctly. (More than one teacher shares the room.)",
+  show:"The teachers' staffroom was full of books.",
+  steps:[
+   {line:"Find the owner.", en:"The staffroom belongs to the teachers.", why_en:"Read the clue in brackets. It tells you there is more than one teacher.", see:"The {{teachers}} [[staffroom]] was full of books."},
+   {line:"Does the owner word end in s?", en:"'Teachers' means more than one, and it ends in s.", why_en:"More than one owner, ending in s, means the apostrophe goes after the s.", see:"The {{teachers}}<ends in s> [[staffroom]] was full of books."},
+   {line:"Put the apostrophe after the s.", en:"Tick the sentence with teachers'.", why_en:"teacher's would mean one teacher. teachers with no apostrophe shows no owner at all.", see:"The {{teachers}}^^'^^ [[staffroom]] was full of books."}]},
+ mistake:{lines:["James's dog barked at the postman.", "The childrens' coats are wet.", "The car's horn beeps loudly."],
+  wrong:1,
+  fix_en:"'Children' already means more than one, and it does not end in s. Add 's: The children's coats are wet."}},
+
+"contract": {title:"Contractions",
+ inTest:"Write the contracted form of the words in bold.",
+ key:[
+  {term:"contraction", def:"is a short form of two words, such as don't for do not."},
+  {term:"apostrophe ( ' )", def:"shows where the missing letters were."}],
+ story:[
+  {em:"💬", en:"When we talk, we often join two words. We say 'I'm' instead of 'I am'."},
+  {em:"✂️", en:"When you write the short form, some letters are left out. An apostrophe goes in their place."}],
  show:"do not → don't",
  steps:[
-  {line:"find the missing letters", en:"In do not, the letter that disappears is the o in not.",
-   fr:"Dans do not, la lettre qui disparaît est le o de not.",
-   why_en:"Knowing which letter went missing tells you exactly where the apostrophe goes.",
-   why_fr:"Savoir quelle lettre a disparu dit exactement où va l'apostrophe."},
-  {line:"apostrophe in its place", en:"don't, not do'nt.",
-   fr:"don't, pas do'nt.",
-   why_en:"The apostrophe marks the hole, not the join. That is the whole rule.",
-   why_fr:"L'apostrophe marque le trou, pas la jointure. C'est toute la règle."},
-  {line:"the odd ones", en:"will not becomes won't, which changes more than it should.",
-   fr:"will not devient won't, qui change plus que prévu.",
-   why_en:"There are only a few like that. Learn won't and you have learned most of them.",
-   why_fr:"Il n'y en a que quelques-unes. Apprends won't et tu les as presque toutes."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"Write the short form of 'cannot'", ask_fr:"Écris la forme courte de « cannot »", a:"can't"},
-   {ask_en:"Write the short form of 'they have'", ask_fr:"Écris la forme courte de « they have »", a:"they've"},
-   {ask_en:"Write the short form of 'will not'", ask_fr:"Écris la forme courte de « will not »", a:"won't"},
- ]}
-},
+  {line:"Write the two words.", en:"Start with the full words: do not.", why_en:"Always start from the full words. Then you can see what changes.", see:"[[do]] {{not}}"},
+  {line:"Take out the missing letter.", en:"Push the two words together. The o in 'not' is left out.", why_en:"Say the short form aloud. The sound you no longer hear is the missing letter.", see:"[[do]]n~~o~~t"},
+  {line:"Put the apostrophe in the gap.", en:"The apostrophe goes where the o was: don't.", why_en:"Put the apostrophe where the letters are missing, not where the two words meet.", see:"[[do]]n^^'^^t"}],
+ guided:{steps:[
+   {ask_en:"Write the contracted form of 'I am'.", a:"I'm"},
+   {ask_en:"Write the contracted form of 'she will'.", a:"she'll"},
+   {ask_en:"Write the contracted form of 'cannot'.", a:"can't"}]},
+ examples:[
+  {show:"will not → won't",
+   steps:[
+    {line:"Write the two words.", en:"Start with the full words: will not.", why_en:"This one is different. Some letters change, not just go missing.", see:"[[will]] {{not}}"},
+    {line:"The first word changes.", en:"'will' changes to 'wo'. The o in 'not' is left out.", why_en:"Learn this one by heart. You cannot work it out from the letters.", see:"~~will~~ ^^wo^^n~~o~~t"},
+    {line:"Put the apostrophe in the gap.", en:"The apostrophe goes where the o was: won't.", why_en:"Check it: won't means will not. 'I won't be late' means 'I will not be late'.", see:"[[wo]]n^^'^^t"}]}],
+ test:{en:"Write the contracted form of the words in bold: They have finished their lunch.",
+  show:"they have → they've",
+  steps:[
+   {line:"Write the two words.", en:"Start with the full words: they have.", why_en:"Find the two words you need to join.", see:"[[they]] {{have}}"},
+   {line:"Take out the missing letters.", en:"Push the words together. The h and the a in 'have' are left out.", why_en:"Say 'they've' aloud. You hear 've' but not 'ha'.", see:"[[they]]~~ha~~ve"},
+   {line:"Put the apostrophe in the gap.", en:"The apostrophe goes where 'ha' was: they've.", why_en:"One apostrophe is enough, even when two letters are missing.", see:"[[they]]^^'^^ve"}]},
+ mistake:{lines:["We should've left earlier.", "We should of left earlier.", "We shouldn't have left so late."],
+  wrong:1,
+  fix_en:"'Should of' is wrong. The full words are 'should have', so the contraction is should've: We should've left earlier."}},
 
-"wordClass": {
+"wordClass:noun": {title:"Nouns",
+ inTest:"Circle all the nouns in the sentence below.",
+ key:[
+  {term:"noun", def:"names a person, place, animal, thing or idea."},
+  {term:"abstract noun", def:"names something you cannot see or touch, like courage or fun."}],
  story:[
-  {em:"🧰", en:"Every word in a sentence has a job. The word class is the name of the job, not the name of the word.",
-   fr:"Chaque mot a un rôle. La classe du mot, c'est le nom du rôle, pas du mot."},
-  {em:"🔁", en:"The same word can do different jobs. 'He folds the letter' — verb. 'The letter had folds' — noun.",
-   fr:"Un même mot peut avoir plusieurs rôles. « He folds » : verbe. « had folds » : nom."}],
- show:"The crumbling castle stood on the hill.",
+  {em:"🎒", en:"Zara packs her bag, her lunch and her book. Each of those words names a thing."},
+  {em:"🏷️", en:"Words that name things are called nouns. Some nouns name feelings or ideas, like fun or courage."}],
+ show:"My brother lost his shoes at the park.",
  steps:[
-  {line:"what is it doing here?", en:"Ask what the word is doing in this sentence, not what it usually is.",
-   fr:"Demande ce que le mot fait dans cette phrase, pas ce qu'il est d'habitude.",
-   why_en:"This is the trick the test uses most: a word you know as one class doing another job.",
-   why_fr:"C'est le piège le plus fréquent du test : un mot connu qui change de rôle."},
-  {line:"nouns name, verbs do", en:"castle and hill name things. stood is what happened.",
-   fr:"castle et hill nomment des choses. stood est ce qui s'est passé.",
-   why_en:"If you can put 'the' in front of it, it is probably a noun.",
-   why_fr:"Si tu peux mettre « the » devant, c'est sans doute un nom."},
-  {line:"adjectives and adverbs describe", en:"crumbling describes the castle. An adverb would describe the standing.",
-   fr:"crumbling décrit le château. Un adverbe décrirait l'action.",
-   why_en:"Adjectives describe things, adverbs describe actions. That is the difference in one line.",
-   why_fr:"Les adjectifs décrivent des choses, les adverbes des actions. Voilà la différence."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"In 'the tiny bird sang', which word is the noun?", ask_fr:"Dans « the tiny bird sang », quel est le nom ?", a:"bird"},
-   {ask_en:"Which word is the verb?", ask_fr:"Quel est le verbe ?", a:"sang"},
-   {ask_en:"Which word is the adjective?", ask_fr:"Quel est l'adjectif ?", a:"tiny"},
- ]}
-},
+  {line:"Look for people first.", en:"Ask: who is in this sentence?", why_en:"brother names a person. So brother is a noun.", see:"My [[brother]]<noun> lost his shoes at the park."},
+  {line:"Then look for things and places.", en:"Ask: what things are there? Where does it happen?", why_en:"shoes are things. park is a place. Both are nouns.", see:"My [[brother]]<noun> lost his [[shoes]]<noun> at the [[park]]<noun>."},
+  {line:"Check with 'a' or 'the'.", en:"Put 'a' or 'the' in front of the word.", why_en:"If it makes sense, the word is probably a noun. 'the lost' does not make sense, so lost is not a noun.", see:"^^a^^ [[brother]] · ^^the^^ [[shoes]] · ^^the^^ [[park]] · ~~the lost~~"}],
+ guided:{steps:[
+   {ask_en:"Type the noun: The kitten slept soundly.", a:"kitten"},
+   {ask_en:"Type the noun that names a place: Kofi swam in the pool.", a:"pool"},
+   {ask_en:"Type the abstract noun: Mei felt great joy.", a:"joy"}]},
+ examples:[
+  {show:"Leo had a long swim after school.",
+   steps:[
+    {line:"Find the names and places.", en:"Leo is a name. school is a place.", why_en:"Leo is a proper noun. A proper noun is the name of one person or place. It starts with a capital letter.", see:"[[Leo]]<noun> had a long swim after [[school]]<noun>."},
+    {line:"Check words that look like actions.", en:"swim is often a verb. Here it has 'a long' in front of it.", why_en:"When 'a' or 'the' comes in front, the word is naming a thing. So swim is a noun here.", see:"[[Leo]]<noun> had {{a long}} [[swim]]<noun> after [[school]]<noun>."},
+    {line:"Compare it with a verb.", en:"In 'Leo swims every day', swims is the action.", why_en:"Always ask what the word does in THIS sentence. Then decide.", see:"Leo [[swims]]<verb> every day."}]}],
+ test:{en:"Circle all the nouns in the sentence below.",
+  show:"Aisha carried the heavy box into the kitchen.",
+  steps:[
+   {line:"Find the person.", en:"Aisha is a name, so it is a noun.", why_en:"Names of people always count as nouns.", see:"[[Aisha]]<noun> carried the heavy box into the kitchen."},
+   {line:"Find the things and places.", en:"box is a thing. kitchen is a place.", why_en:"Try 'the' in front: the box, the kitchen. Both make sense.", see:"[[Aisha]]<noun> carried the heavy [[box]]<noun> into the [[kitchen]]<noun>."},
+   {line:"Check the other words.", en:"heavy describes the box. carried is the action.", why_en:"heavy is an adjective and carried is a verb. Circle only Aisha, box and kitchen.", see:"[[Aisha]] {{carried}}<verb> the {{heavy}}<adjective> [[box]] into the [[kitchen]]."}]},
+ mistake:{lines:["The [[dog]] chased the [[ball]].", "Her [[courage]] surprised the [[village]].", "Sam [[ran]] to the [[shop]]."],
+  wrong:2,
+  fix_en:"ran is not a noun. It is the action, so it is a verb. The nouns are Sam and shop."}},
 
-"wcName": {
+"wordClass:verb": {title:"Verbs",
+ inTest:"Circle the two verbs in the sentence below.",
+ key:[
+  {term:"verb", def:"tells you what someone or something does or is."},
+  {term:"tense", def:"shows when something happens, in the past or the present."}],
  story:[
-  {em:"🏷️", en:"Eight names to know: noun, verb, adjective, adverb, pronoun, determiner, preposition, conjunction.",
-   fr:"Huit noms à connaître : nom, verbe, adjectif, adverbe, pronom, déterminant, préposition, conjonction."},
-  {em:"🤔", en:"The test does not ask you to use them. It asks you to name them, which is harder and worth more.",
-   fr:"Le test ne demande pas de les utiliser, mais de les nommer — plus difficile et plus payant."}],
- show:"naming the eight",
+  {em:"⚽", en:"Kofi kicks the ball. It flies into the net."},
+  {em:"💬", en:"kicks and flies tell you what happens. They are verbs. Every sentence needs a verb."}],
+ show:"Jamila walked home and opened the door.",
  steps:[
-  {line:"determiners come before nouns", en:"the, a, my, those, three — they point at a noun.",
-   fr:"the, a, my, those, three — ils désignent un nom.",
-   why_en:"If it sits in front of a noun and narrows down which one, it is a determiner.",
-   why_fr:"S'il précède un nom et précise lequel, c'est un déterminant."},
-  {line:"prepositions place things", en:"under, through, beside, after — where or when.",
-   fr:"under, through, beside, after — le lieu ou le moment.",
-   why_en:"Most prepositions fit the sentence 'the cat went ___ the box'.",
-   why_fr:"La plupart tiennent dans « the cat went ___ the box »."},
-  {line:"conjunctions join", en:"and, but, because, although — they hold two parts together.",
-   fr:"and, but, because, although — ils relient deux parties.",
-   why_en:"If removing it leaves two separate sentences, it was a conjunction.",
-   why_fr:"Si l'enlever laisse deux phrases séparées, c'était une conjonction."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"What class is 'those' in 'those children'?", ask_fr:"Quelle classe pour « those » ?", a:"determiner"},
-   {ask_en:"What class is 'beside' in 'beside the door'?", ask_fr:"Quelle classe pour « beside » ?", a:"preposition"},
-   {ask_en:"What class is 'although' in 'although she was tired'?", ask_fr:"Quelle classe pour « although » ?", a:"conjunction"},
- ]}
-},
+  {line:"Ask: what happens?", en:"Find the action. What did Jamila do?", why_en:"She walked. walked is the action, so it is a verb.", see:"Jamila [[walked]]<verb> home and opened the door."},
+  {line:"Look for every action.", en:"A sentence can have more than one verb.", why_en:"After a joining word like 'and', look again. Another verb often comes next.", see:"Jamila [[walked]]<verb> home and [[opened]]<verb> the door."},
+  {line:"Check: change the tense.", en:"Change the sentence from the past to the present.", why_en:"Verbs change their form. home and door stay the same, so they are not verbs.", see:"Jamila ~~walked~~ ^^walks^^ home and ~~opened~~ ^^opens^^ the door."}],
+ guided:{steps:[
+   {ask_en:"Type the verb: The baby laughed.", a:"laughed"},
+   {ask_en:"Type the verb: Priya is my friend.", a:"is"},
+   {ask_en:"This sentence has two verbs: We sang while Dad cooked. Type the second verb.", a:"cooked"}]},
+ examples:[
+  {show:"Tomasz was tired, so he went to bed.",
+   steps:[
+    {line:"Find the action.", en:"What did Tomasz do? He went to bed.", why_en:"went is the action, so it is a verb.", see:"Tomasz was tired, so he [[went]]<verb> to bed."},
+    {line:"Look for a 'being' verb.", en:"was does not show an action. It tells you how Tomasz was.", why_en:"is, am, are, was and were are verbs too. They tell you what someone is or was.", see:"Tomasz [[was]]<verb> tired, so he [[went]]<verb> to bed."},
+    {line:"Check: change the tense.", en:"Put the sentence in the present tense.", why_en:"Both words change. That shows they are both verbs.", see:"Tomasz ~~was~~ ^^is^^ tired, so he ~~went~~ ^^goes^^ to bed."}]}],
+ test:{en:"Circle the two verbs in the sentence below.",
+  show:"The crowd cheered when the runner finished.",
+  steps:[
+   {line:"Ask: what happened?", en:"What did the crowd do? They cheered.", why_en:"cheered is the first action.", see:"The crowd [[cheered]]<verb> when the runner finished."},
+   {line:"Look after the joining word.", en:"After 'when', ask: what did the runner do?", why_en:"The runner finished. finished is the second verb.", see:"The crowd [[cheered]]<verb> when the runner [[finished]]<verb>."},
+   {line:"Check the other words.", en:"crowd and runner name people. They are nouns.", why_en:"Circle cheered and finished only.", see:"The {{crowd}}<noun> [[cheered]] when the {{runner}}<noun> [[finished]]."}]},
+ mistake:{lines:["The dog [[barked]] loudly.", "We [[sang]] together.", "She gave me a big [[smile]]."],
+  wrong:2,
+  fix_en:"Here smile has 'a big' in front of it, so it names a thing. It is a noun. The verb in that sentence is gave."}},
 
-"tense": {
+"wordClass:adjective": {title:"Adjectives",
+ inTest:"Circle the two adjectives in the sentence below.",
+ key:[
+  {term:"adjective", def:"describes a noun. It tells you what kind, what colour or what size."},
+  {term:"noun", def:"names a person, place, animal or thing."}],
  story:[
-  {em:"🕰️", en:"Tense tells the reader when something happened. Get it wrong halfway through and the sentence trips.",
-   fr:"Le temps dit quand ça s'est passé. Le changer en cours de phrase la fait trébucher."},
-  {em:"🔗", en:"The test mostly checks consistency: if you start in the past, you finish in the past.",
-   fr:"Le test vérifie surtout la cohérence : si tu commences au passé, tu finis au passé."}],
- show:"Yesterday she walked home and opened the door.",
+  {em:"🐶", en:"Sam says, 'I have a dog.' You do not know much about it."},
+  {em:"🐕", en:"Sam says, 'I have a small, fluffy dog.' Now you can picture it. small and fluffy are adjectives."}],
+ show:"The old man carried a heavy bag.",
  steps:[
-  {line:"find the time word", en:"Yesterday tells you this is the past before you read the verbs.",
-   fr:"Yesterday dit que c'est du passé avant même de lire les verbes.",
-   why_en:"There is almost always a clue like this. Find it first and the verbs follow.",
-   why_fr:"Il y a presque toujours un indice. Trouve-le et les verbes suivent."},
-  {line:"all the verbs must match", en:"walked and opened, not walked and opens.",
-   fr:"walked et opened, pas walked et opens.",
-   why_en:"One verb in the wrong tense loses the mark even if the rest are right.",
-   why_fr:"Un seul verbe au mauvais temps fait perdre le point."},
-  {line:"helpers change the tense too", en:"was walking, had eaten — the helper is part of the verb.",
-   fr:"was walking, had eaten — l'auxiliaire fait partie du verbe.",
-   why_en:"Progressive needs was or were. Perfect needs had or have. Learn those two pairs.",
-   why_fr:"Le progressif demande was/were. Le parfait demande had/have."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"Yesterday I ___ (walk) to school", ask_fr:"Hier je ___ (walk) à l'école", a:"walked"},
-   {ask_en:"She ___ (eat) her lunch before she left. Use the past perfect", ask_fr:"Utilise le plus-que-parfait : she ___ (eat)", a:"had eaten"},
-   {ask_en:"While we ___ (talk), his phone rang. Use the past progressive", ask_fr:"Passé progressif : while we ___ (talk)", a:"were talking"},
- ]}
-},
+  {line:"Find the nouns first.", en:"Adjectives describe nouns, so find the nouns.", why_en:"man and bag are things you can point to. They are nouns.", see:"The old {{man}}<noun> carried a heavy {{bag}}<noun>."},
+  {line:"Look just before each noun.", en:"Which word tells you more about it?", why_en:"Ask: what kind of man? An old man. What kind of bag? A heavy bag.", see:"The [[old]]<adjective> {{man}} carried a [[heavy]]<adjective> {{bag}}."},
+  {line:"Check with 'very'.", en:"Most adjectives make sense with 'very' in front.", why_en:"very old and very heavy both work. 'very the' does not. The and a are determiners: words that come before a noun.", see:"^^very^^ [[old]] · ^^very^^ [[heavy]] · ~~very the~~"}],
+ guided:{steps:[
+   {ask_en:"Type the adjective: Mei wore a red coat.", a:"red"},
+   {ask_en:"Type the adjective that describes the bird: The tiny bird sat on a broken branch.", a:"tiny"},
+   {ask_en:"Type the adjective: The soup was hot.", a:"hot"}]},
+ examples:[
+  {show:"The pizza was hot, so Leo ate it slowly.",
+   steps:[
+    {line:"Find the noun.", en:"pizza is the thing in this sentence.", why_en:"Now look for a word that tells you about the pizza.", see:"The {{pizza}}<noun> was hot, so Leo ate it slowly."},
+    {line:"An adjective can come after the noun.", en:"Ask: what was the pizza like? It was hot.", why_en:"An adjective can come after is or was. hot describes the pizza, so it is an adjective.", see:"The {{pizza}} was [[hot]]<adjective>, so Leo ate it slowly."},
+    {line:"Check words that end in -ly.", en:"slowly tells you how Leo ate. It describes an action.", why_en:"A word that describes a verb is an adverb, not an adjective. Ask what the word describes: a thing or an action.", see:"The {{pizza}} was [[hot]]<adjective>, so Leo {{ate}} it {{slowly}}<adverb>."}]}],
+ test:{en:"Circle the two adjectives in the sentence below.",
+  show:"A bright light filled the empty room.",
+  steps:[
+   {line:"Find the nouns.", en:"light and room are things.", why_en:"Try 'the' in front: the light, the room. Both are nouns.", see:"A bright {{light}}<noun> filled the empty {{room}}<noun>."},
+   {line:"Find the describing words.", en:"What kind of light? A bright one. What kind of room? An empty one.", why_en:"bright and empty describe the nouns. They are adjectives.", see:"A [[bright]]<adjective> {{light}} filled the [[empty]]<adjective> {{room}}."},
+   {line:"Check the other words.", en:"filled is the action. A and the are determiners.", why_en:"Circle bright and empty only.", see:"A [[bright]] {{light}} __filled__<verb> the [[empty]] {{room}}."}]},
+ mistake:{lines:["Zara has a [[noisy]] puppy.", "The puppy barked [[noisily]].", "The garden was [[quiet]]."],
+  wrong:1,
+  fix_en:"noisily describes how the puppy barked. It describes a verb, so it is an adverb. noisy, in the first line, is the adjective."}},
 
-"voice": {
+"wordClass:adverb": {title:"Adverbs",
+ inTest:"Circle all the adverbs in the sentence below.",
+ key:[
+  {term:"adverb", def:"describes a verb. It tells you how, when, where or how often something happens."},
+  {term:"verb", def:"is a doing or being word, like run, ate or is."}],
  story:[
-  {em:"🎬", en:"Active: who did it comes first. Passive: what it was done to comes first.",
-   fr:"Actif : celui qui fait vient d'abord. Passif : ce qui subit vient d'abord."},
-  {em:"🕵️", en:"Rabia broke the mug — active. The mug was broken by Rabia — passive. Same event, different order.",
-   fr:"Rabia broke the mug — actif. The mug was broken by Rabia — passif. Même fait, autre ordre."}],
+  {em:"🚶", en:"Jack walked to school. That tells you what he did."},
+  {em:"🏃", en:"Jack walked quickly to school. Now you know how he walked. quickly is an adverb."}],
+ show:"She spoke quietly and left quickly.",
+ steps:[
+  {line:"Find the verbs first.", en:"Adverbs tell you about verbs, so find the actions.", why_en:"spoke and left are the actions. They are verbs.", see:"She {{spoke}}<verb> quietly and {{left}}<verb> quickly."},
+  {line:"Ask how, when, where or how often.", en:"How did she speak? How did she leave?", why_en:"The word that answers the question is the adverb.", see:"She {{spoke}} [[quietly]]<adverb> and {{left}} [[quickly]]<adverb>."},
+  {line:"Remember: not every adverb ends in -ly.", en:"often, soon, here, outside and together are adverbs too.", why_en:"Ask the question about the verb, even when there is no -ly. How often do we walk? Often.", see:"We [[often]]<adverb> {{walk}} to school [[together]]<adverb>."}],
+ guided:{steps:[
+   {ask_en:"Type the adverb: The tortoise moved slowly.", a:"slowly"},
+   {ask_en:"Type the adverb that tells you when: Ola will visit tomorrow.", a:"tomorrow"},
+   {ask_en:"Type the adverb that tells you where: The children played outside.", a:"outside"}]},
+ examples:[
+  {show:"Kofi runs fast.",
+   steps:[
+    {line:"Find the verb.", en:"runs is the action.", why_en:"Now ask a question about runs.", see:"Kofi {{runs}}<verb> fast."},
+    {line:"Ask: how does he run?", en:"He runs fast. fast describes the verb.", why_en:"fast has no -ly, but it answers 'how?'. So it is an adverb here.", see:"Kofi {{runs}} [[fast]]<adverb>."},
+    {line:"Compare with an adjective.", en:"In 'Kofi is a fast runner', fast describes runner.", why_en:"runner is a noun. A word that describes a noun is an adjective. Look at what the word describes each time.", see:"Kofi is a [[fast]]<adjective> {{runner}}<noun>."}]}],
+ test:{en:"Circle all the adverbs in the sentence below.",
+  show:"Yesterday, Amina carefully lifted the lid.",
+  steps:[
+   {line:"Find the verb.", en:"lifted is the action.", why_en:"Now ask how, when and where about lifted.", see:"Yesterday, Amina carefully {{lifted}}<verb> the lid."},
+   {line:"Ask: how did she lift it?", en:"She lifted it carefully.", why_en:"carefully answers 'how?', so it is an adverb.", see:"Yesterday, Amina [[carefully]]<adverb> {{lifted}} the lid."},
+   {line:"Ask: when did she lift it?", en:"She lifted it yesterday.", why_en:"Yesterday answers 'when?', so it is an adverb too. Circle Yesterday and carefully.", see:"[[Yesterday]]<adverb>, Amina [[carefully]]<adverb> {{lifted}} the lid."}]},
+ mistake:{lines:["Leo shouted [[loudly]].", "Leo has a [[loud]] voice.", "Leo [[always]] shouts."],
+  wrong:1,
+  fix_en:"loud describes the noun voice, so it is an adjective, not an adverb. loudly and always describe the verb shouted or shouts, so they are adverbs."}},
+
+"wordClass:pronoun": {title:"Pronouns",
+ inTest:"Circle all the pronouns in the sentence below.",
+ key:[
+  {term:"pronoun", def:"takes the place of a noun, so you do not have to repeat it."},
+  {term:"noun", def:"names a person, place, animal or thing."}],
+ story:[
+  {em:"🔁", en:"Priya saw Leo at the park. Priya waved at Leo. That sounds odd."},
+  {em:"👋", en:"Priya saw Leo at the park. She waved at him. She and him are pronouns. They stand in for the names."}],
+ show:"He passed her the ball.",
+ steps:[
+  {line:"Find words that stand for people.", en:"He and her stand for people we already know about.", why_en:"passed is a verb. ball is a noun. He and her are the pronouns.", see:"[[He]]<pronoun> passed [[her]]<pronoun> the ball."},
+  {line:"Swap in a name to check.", en:"Put a name where the word is.", why_en:"Jack passed Mei the ball. It makes sense, so He and her are pronouns.", see:"~~He~~ ^^Jack^^ passed ~~her~~ ^^Mei^^ the ball."},
+  {line:"Learn the common pronouns.", en:"I, you, he, she, it, we, they, me, him, her, us, them.", why_en:"mine, yours, his, hers, ours and theirs are pronouns too.", see:"[[He]]<pronoun> passed [[her]]<pronoun> the ball. [[She]]<pronoun> kicked [[it]]<pronoun>."}],
+ guided:{steps:[
+   {ask_en:"Type the pronoun: Tomasz dropped it.", a:"it"},
+   {ask_en:"Type the pronoun: The teacher thanked us.", a:"us"},
+   {ask_en:"Type a pronoun to replace 'Zara': ___ is my cousin.", a:"she"}]},
+ examples:[
+  {show:"Kofi lent me her pencil.",
+   steps:[
+    {line:"Find the easy pronoun.", en:"me stands for the person speaking.", why_en:"Swap in a name: Kofi lent Sam her pencil. It works, so me is a pronoun.", see:"Kofi lent [[me]]<pronoun> her pencil."},
+    {line:"Look at the word after 'her'.", en:"A noun comes straight after her: pencil.", why_en:"Here her tells you whose pencil it is. It does not stand on its own.", see:"Kofi lent [[me]]<pronoun> {{her}} __pencil__<noun>."},
+    {line:"Swap in a name with 's.", en:"Kofi lent me Aisha's pencil. That works.", why_en:"If a name fits, the word is a pronoun. If a name with 's fits, it is a determiner. So her is a determiner here.", see:"Kofi lent [[me]]<pronoun> ~~her~~ ^^Aisha's^^ pencil."}]}],
+ test:{en:"Circle all the pronouns in the sentence below.",
+  show:"We told him about her dog.",
+  steps:[
+   {line:"Find words that stand for people.", en:"We and him stand for people.", why_en:"Swap in names: Sam and Ola told Leo. It works.", see:"[[We]]<pronoun> told [[him]]<pronoun> about her dog."},
+   {line:"Check the word 'her'.", en:"A noun comes straight after her: dog.", why_en:"Swap in Aisha's: about Aisha's dog. A name with 's fits, so her is a determiner here.", see:"[[We]] told [[him]] about {{her}}<determiner> dog."},
+   {line:"Circle only the pronouns.", en:"Circle We and him.", why_en:"her is not circled, because it is doing a determiner's job here.", see:"[[We]]<pronoun> told [[him]]<pronoun> about her dog."}]},
+ mistake:{lines:["[[She]] gave them the letter.", "Kofi passed [[him]] the ball.", "That is [[my]] bike."],
+  wrong:2,
+  fix_en:"my comes before the noun bike and tells you whose bike it is. It is a determiner. The pronoun would be mine: That bike is mine."}},
+
+"wordClass:determiner": {title:"Determiners",
+ inTest:"Circle all the determiners in the sentence below.",
+ key:[
+  {term:"determiner", def:"comes before a noun and tells you which one, whose, or how many."}],
+ story:[
+  {em:"🍎", en:"Aisha asks for an apple. Any apple will do."},
+  {em:"🍏", en:"Then she asks for that apple. Now she means one apple only. an and that are determiners."}],
+ show:"Those children found three coins.",
+ steps:[
+  {line:"Find the nouns first.", en:"A determiner always goes with a noun.", why_en:"children and coins are the nouns. A noun names a person, place or thing.", see:"Those {{children}}<noun> found three {{coins}}<noun>."},
+  {line:"Look in front of each noun.", en:"Which word tells you which ones or how many?", why_en:"Those tells you which children. three tells you how many coins.", see:"[[Those]]<determiner> {{children}} found [[three]]<determiner> {{coins}}."},
+  {line:"Know the main determiners.", en:"a, an, the · this, that, these, those · my, your, our, their · some, every · numbers.", why_en:"Put a noun after the word. If it fits, it can be a determiner.", see:"[[a]] dog · [[the]] dog · [[this]] dog · [[my]] dog · [[some]] dogs"}],
+ guided:{steps:[
+   {ask_en:"Type the determiner: Leo ate an orange.", a:"an"},
+   {ask_en:"Type the determiner: Our cat is asleep.", a:"our"},
+   {ask_en:"Type the determiner: Kofi rode a big red bike.", a:"a"}]},
+ examples:[
+  {show:"This is my favourite book.",
+   steps:[
+    {line:"Find the noun.", en:"book is the only noun.", why_en:"Now look at the words in front of it.", see:"This is my favourite {{book}}<noun>."},
+    {line:"Look in front of the noun.", en:"favourite describes the book. my tells you whose book.", why_en:"favourite is an adjective. my is the determiner. The determiner comes first.", see:"This is [[my]]<determiner> favourite {{book}}."},
+    {line:"Check the word 'This'.", en:"The word after This is 'is', a verb. No noun comes after it.", why_en:"This stands on its own here, so it is a pronoun. In 'This book is my favourite', This is a determiner.", see:"{{This}}<pronoun> is [[my]]<determiner> favourite book."}]}],
+ test:{en:"Circle all the determiners in the sentence below.",
+  show:"My little brother ate some grapes.",
+  steps:[
+   {line:"Find the nouns.", en:"brother and grapes are the nouns.", why_en:"Determiners come in front of nouns, so look there.", see:"My little {{brother}}<noun> ate some {{grapes}}<noun>."},
+   {line:"Look in front of each noun.", en:"little describes brother. It is an adjective.", why_en:"My comes before little. It tells you whose brother. some tells you how many grapes.", see:"[[My]]<determiner> little {{brother}} ate [[some]]<determiner> {{grapes}}."},
+   {line:"Circle the determiners.", en:"Circle My and some.", why_en:"Do not circle little. It describes the noun, so it is an adjective.", see:"[[My]]<determiner> __little__<adjective> {{brother}} ate [[some]]<determiner> {{grapes}}."}]},
+ mistake:{lines:["[[The]] cat slept on the mat.", "[[Those]] are my shoes.", "[[Every]] child got a medal."],
+  wrong:1,
+  fix_en:"No noun comes after Those. It stands on its own, so it is a pronoun. In 'Those shoes are mine', Those is a determiner."}},
+
+"wordClass:preposition": {title:"Prepositions",
+ inTest:"Circle all the prepositions in the sentence below.",
+ key:[
+  {term:"preposition", def:"links a noun or pronoun to the rest of the sentence. It often tells you where or when."},
+  {term:"noun phrase", def:"is a group of words built around a noun, like 'the table'."}],
+ story:[
+  {em:"🐱", en:"Where is the cat? It is under the table. Now it is on the sofa."},
+  {em:"📍", en:"under and on tell you where the cat is. They are prepositions."}],
+ show:"The cat sat under the table beside the door.",
+ steps:[
+  {line:"Ask: where or when?", en:"Where did the cat sit? Under the table.", why_en:"under tells you where. It comes just before 'the table'.", see:"The cat sat [[under]]<preposition> the table beside the door."},
+  {line:"Look at what comes next.", en:"A preposition is followed by a noun phrase.", why_en:"'the table' and 'the door' are noun phrases. beside comes before 'the door', so it is a preposition too.", see:"The cat sat [[under]]<preposition> {{the table}} [[beside]]<preposition> {{the door}}."},
+  {line:"Try the box sentence.", en:"Many prepositions fit here: The cat went ___ the box.", why_en:"Some prepositions tell you when instead: before lunch, after school, during the film.", see:"The cat went ^^into^^ / ^^under^^ / ^^behind^^ the box."}],
+ guided:{steps:[
+   {ask_en:"Type the preposition: The ball rolled behind the shed.", a:"behind"},
+   {ask_en:"Type the preposition: Sam put the letter in the drawer.", a:"in"},
+   {ask_en:"Type the preposition that tells you when: We played after lunch.", a:"after"}]},
+ examples:[
+  {show:"We played football after we ate lunch.",
+   steps:[
+    {line:"Look at what comes after 'after'.", en:"After it comes 'we ate lunch'.", why_en:"That group has a verb: ate. A group of words with a verb is a clause.", see:"We played football after {{we ate lunch}}<clause>."},
+    {line:"A clause follows, so it is a conjunction.", en:"after joins two clauses here.", why_en:"A word that starts a clause like this is a subordinating conjunction, not a preposition.", see:"We played football [[after]]<conjunction> {{we ate lunch}}."},
+    {line:"Compare it with a preposition.", en:"In 'We played football after lunch', only a noun follows.", why_en:"No verb comes after it, so after is a preposition here. Always check what comes next.", see:"We played football [[after]]<preposition> {{lunch}}<noun>."}]}],
+ test:{en:"Circle all the prepositions in the sentence below.",
+  show:"Mei hid the present behind the sofa before her party.",
+  steps:[
+   {line:"Ask: where?", en:"Where did Mei hide the present? Behind the sofa.", why_en:"behind tells you where, and a noun phrase follows it.", see:"Mei hid the present [[behind]]<preposition> {{the sofa}} before her party."},
+   {line:"Ask: when?", en:"When did she hide it? Before her party.", why_en:"before is followed by 'her party', a noun phrase with no verb. So before is a preposition.", see:"Mei hid the present [[behind]]<preposition> {{the sofa}} [[before]]<preposition> {{her party}}."},
+   {line:"Circle the prepositions.", en:"Circle behind and before.", why_en:"hid is a verb. present, sofa and party are nouns.", see:"Mei hid the present [[behind]] the sofa [[before]] her party."}]},
+ mistake:{lines:["The dog slept [[under]] the bed.", "We left [[before]] the film ended.", "Leo waited [[outside]] the shop."],
+  wrong:1,
+  fix_en:"In line 2, 'the film ended' has a verb, ended. So before is a subordinating conjunction there. As a preposition: We left before the end of the film."}},
+
+"wordClass:conjunction": {title:"Conjunctions",
+ inTest:"Circle the conjunction in the sentence below.",
+ key:[
+  {term:"conjunction", def:"joins words or clauses. A clause is a group of words with a verb in it."},
+  {term:"subordinating conjunction", def:"starts a clause that adds extra information, like because, when, if, although or until."}],
+ story:[
+  {em:"☔", en:"Amina stayed inside. It was raining."},
+  {em:"🔗", en:"Amina stayed inside because it was raining. because joins the two ideas and tells you why."}],
+ show:"I stayed inside because it was raining.",
+ steps:[
+  {line:"Find the two parts.", en:"Each part has its own verb: stayed and was raining.", why_en:"A group of words with a verb is called a clause. This sentence has two clauses.", see:"{{I stayed inside}} because {{it was raining}}."},
+  {line:"Find the joining word.", en:"because links the two clauses.", why_en:"Take it out. You are left with two separate sentences: I stayed inside. It was raining.", see:"{{I stayed inside}} [[because]]<conjunction> {{it was raining}}."},
+  {line:"Know the two kinds.", en:"and, but and or are co-ordinating conjunctions. They join two equal parts.", why_en:"because, when, if, although and until are subordinating conjunctions. They add extra information.", see:"He ran fast [[but]]<co-ordinating> he did not win. · Call me [[when]]<subordinating> you get home."}],
+ guided:{steps:[
+   {ask_en:"Type the conjunction: You can have juice or milk.", a:"or"},
+   {ask_en:"Type the conjunction: We waited until the bus arrived.", a:"until"},
+   {ask_en:"Type the conjunction: Although she was tired, Zara carried on.", a:"although"}]},
+ examples:[
+  {show:"Although she was tired, she carried on.",
+   steps:[
+    {line:"Find the two clauses.", en:"'she was tired' and 'she carried on' each have a verb.", why_en:"So this sentence has two clauses.", see:"Although {{she was tired}}, {{she carried on}}."},
+    {line:"Look at the start of the sentence.", en:"Although joins the two clauses. It just comes first.", why_en:"A subordinating conjunction can start a sentence. A comma goes after its clause.", see:"[[Although]]<conjunction> {{she was tired}}^^,^^ {{she carried on}}."},
+    {line:"Check: move the clause.", en:"Put the Although part at the end.", why_en:"It still makes sense, and although still joins the clauses. So it is a conjunction.", see:"{{She carried on}} [[although]]<conjunction> {{she was tired}}."}]}],
+ test:{en:"Circle the conjunction in the sentence below.",
+  show:"We waited until the bus arrived.",
+  steps:[
+   {line:"Find the two clauses.", en:"'We waited' and 'the bus arrived' each have a verb.", why_en:"Now find the word that joins them.", see:"{{We waited}} until {{the bus arrived}}."},
+   {line:"Find the joining word.", en:"until joins the two clauses.", why_en:"A clause with a verb, arrived, comes after until. So until is a conjunction here.", see:"{{We waited}} [[until]]<conjunction> {{the bus arrived}}."},
+   {line:"Compare it with a preposition.", en:"In 'We waited until lunch', only a noun follows until.", why_en:"There, until is a preposition. Here, circle until as the conjunction.", see:"We waited [[until]]<preposition> {{lunch}}<noun>."}]},
+ mistake:{lines:["I like apples [[and]] pears.", "Kofi smiled [[when]] he saw the cake.", "Priya ran [[across]] the road."],
+  wrong:2,
+  fix_en:"across is followed by 'the road', a noun phrase with no verb. So across is a preposition, not a conjunction."}},
+
+"wcName": {title:"Name that word",
+ inTest:"Tick one box to show the word class of the underlined word.",
+ key:[
+  {term:"word class", def:"is the name for the job a word does in a sentence, such as noun, verb or adjective."}],
+ story:[
+  {em:"💡", en:"'Turn on the light.' Here light names a thing. It is a noun."},
+  {em:"🪶", en:"'This bag is light.' Here light describes the bag. It is an adjective. So always look at the sentence."}],
+ show:"We walked through the park.",
+ steps:[
+  {line:"Read the whole sentence.", en:"Find the word you are asked about.", why_en:"The words around it tell you its job.", see:"We walked __through__ the park."},
+  {line:"Look at what comes straight after.", en:"'the park' comes next. It is a noun phrase, a group of words built around a noun.", why_en:"A noun or noun phrase next: it may be a determiner, an adjective or a preposition. A clause with a verb next: it may be a conjunction.", see:"We walked __through__ {{the park}}<noun phrase>."},
+  {line:"Ask what job it does.", en:"through tells you where we walked. It links 'walked' to 'the park'.", why_en:"A word that links a noun phrase and tells you where or when is a preposition.", see:"We walked [[through]]<preposition> {{the park}}."},
+  {line:"Check with a swap.", en:"Swap in another word from the same class.", why_en:"across is a preposition, and it fits. So through is a preposition.", see:"We walked ~~through~~ ^^across^^ the park."}],
+ guided:{steps:[
+   {ask_en:"Type the word class of 'quickly': Sam ran quickly.", a:"adverb"},
+   {ask_en:"Type the word class of 'Those': Those children found three coins.", a:"determiner"},
+   {ask_en:"Type the word class of 'them': She gave them the letter.", a:"pronoun"}]},
+ examples:[
+  {show:"Kofi will ring when he gets home.",
+   steps:[
+    {line:"Read the whole sentence.", en:"The word to name is when.", why_en:"when is not asking a question here. So look at its job.", see:"Kofi will ring __when__ he gets home."},
+    {line:"Look at what comes straight after.", en:"'he gets home' comes next. It has a verb: gets.", why_en:"A group of words with a verb is a clause.", see:"Kofi will ring __when__ {{he gets home}}<clause>."},
+    {line:"Ask what job it does.", en:"when joins 'Kofi will ring' to 'he gets home'.", why_en:"Take it out and you have two sentences. So when is a conjunction.", see:"{{Kofi will ring}} [[when]]<conjunction> {{he gets home}}."}]}],
+ test:{en:"Tick one box to show the word class of the underlined word.",
+  show:"__Although__ she was tired, she carried on.",
+  steps:[
+   {line:"Look at what comes straight after.", en:"'she was tired' comes next. It has a verb: was.", why_en:"A clause follows, so the word may be a conjunction.", see:"__Although__ {{she was tired}}<clause>, she carried on."},
+   {line:"Ask what job it does.", en:"Although joins 'she was tired' to 'she carried on'.", why_en:"It joins two clauses, so it is a conjunction. It does not have to be in the middle.", see:"[[Although]]<conjunction> {{she was tired}}, {{she carried on}}."},
+   {line:"Tick the answer.", en:"Tick conjunction.", why_en:"Check: take Although out. You are left with two sentences: She was tired. She carried on.", see:"~~Although~~ She was tired^^.^^ She carried on."}]},
+ mistake:{lines:["The [[old]]<adjective> man carried a heavy bag.", "[[My]]<pronoun> sister borrowed some books.", "The rain fell [[steadily]]<adverb> all night."],
+  wrong:1,
+  fix_en:"My comes before the noun sister and tells you whose sister. It is a determiner, not a pronoun."}},
+
+"tense": {title:"Getting the tense right",
+ inTest:"Complete the sentence with the verb in the past progressive.",
+ key:[
+  {term:"tense", def:"shows when something happens: in the past or in the present."},
+  {term:"progressive", def:"shows an action that is or was still going on. It uses a form of be and a verb ending in -ing: was walking."}],
+ story:[
+  {em:"⚽", en:"Kofi scored a goal yesterday. He tells his mum about it."},
+  {em:"🕰️", en:"He says \"I scored\", not \"I score\". The verb tells her it is over."}],
+ show:"Yesterday Amina walked home and opened the door.",
+ steps:[
+  {line:"Find the time clue.", en:"Yesterday tells you this happened in the past.", why_en:"Look for words like yesterday, last week, now or every day. Find the clue before you write the verb.", see:"[[Yesterday]]<time clue> Amina walked home and opened the door."},
+  {line:"Find every verb.", en:"A verb is a doing or being word. Here there are two: walked and opened.", why_en:"Underline each verb in the sentence. Each one needs to be in the right tense.", see:"[[Yesterday]] Amina {{walked}}<verb> home and {{opened}}<verb> the door."},
+  {line:"Make them all match.", en:"Both verbs are in the simple past. Most simple past verbs end in -ed.", why_en:"Some verbs change instead: bring becomes brought, fly becomes flew. Say the sentence aloud to check.", see:"[[Yesterday]] Amina {{walk}}^^ed^^ home and {{open}}^^ed^^ the door."}],
+ guided:{steps:[
+   {ask_en:"Write the verb in the simple past: Last week I ___ (bring) my violin to school.", a:"brought"},
+   {ask_en:"Write the verb in the present tense: The plane ___ (fly) high above the clouds.", a:"flies"},
+   {ask_en:"Write the verb in the past progressive: While we ___ (talk), the bell rang.", a:"were talking"}]},
+ examples:[
+  {show:"While Leo and Zara were talking, his phone started ringing.",
+   steps:[
+    {line:"Read the tense name.", en:"The question asks for the past progressive. This needs two words.", why_en:"Progressive always means a form of be plus a verb ending in -ing.", see:"While Leo and Zara __talk__, his phone started ringing."},
+    {line:"Choose was or were.", en:"Use was for one person. Use were for more than one, or for you.", why_en:"Look at who is doing it. Leo and Zara are two people, so use were.", see:"While {{Leo and Zara}}<two people> [[were]] __talk__, his phone started ringing."},
+    {line:"Add -ing to the verb.", en:"talk becomes talking. Now the verb is were talking.", why_en:"Read it back. It shows the talking was still going on when the phone rang.", see:"While {{Leo and Zara}} [[were talk]]^^ing^^, his phone started ringing."}]}],
+ test:{en:"Write the verb in the past perfect: I ___ (eat) breakfast before I left.",
+  show:"I had eaten breakfast before I left.",
+  steps:[
+   {line:"Past perfect uses had.", en:"The past perfect shows something that happened before another past event.", why_en:"Write had first. It never changes, for any person.", see:"I [[had]] ___ breakfast before I left."},
+   {line:"Choose the right verb form.", en:"After had, eat becomes eaten, not ate.", why_en:"Say \"I have eaten\" in your head. The word after have is the one you need after had.", see:"I [[had]] ^^eaten^^ breakfast before I ~~ate~~ left."},
+   {line:"Check the order of events.", en:"First the eating happened. Then the leaving happened.", why_en:"The past perfect goes with the event that happened first.", see:"I [[had eaten]]<first> breakfast before I {{left}}<second>."}]},
+ mistake:{lines:["Yesterday Mei walked to the park.", "She __sees__ a dog and __stroked__ it.", "Zara has finished her homework now."],
+  wrong:1,
+  fix_en:"The verbs in line 2 do not match. sees is present but stroked is past. The story is in the past, so write: She saw a dog and stroked it."}},
+
+"voice": {title:"Active and passive",
+ inTest:"Is this sentence written in the active or the passive? Tick one.",
+ key:[
+  {term:"active sentence", def:"puts the doer first. The subject does the action: Rabia broke the mug."},
+  {term:"passive sentence", def:"puts the thing the action is done to first: The mug was broken by Rabia."}],
+ story:[
+  {em:"☕", en:"Rabia broke the mug. Rabia did it, so she comes first."},
+  {em:"🔄", en:"The mug was broken by Rabia. Now the mug comes first. It is the same event."}],
  show:"The mug was broken by Rabia.",
  steps:[
-  {line:"who or what is first?", en:"If the doer is first, it is active. If the thing done to is first, it is passive.",
-   fr:"Si l'auteur vient en premier, c'est actif. Sinon, c'est passif.",
-   why_en:"That single question answers almost every active-or-passive question in the test.",
-   why_fr:"Cette seule question répond à presque tout dans le test."},
-  {line:"look for was or were plus a verb", en:"was broken, are harmed, is maintained — that shape is passive.",
-   fr:"was broken, are harmed — cette forme est passive.",
-   why_en:"Passive almost always has a form of 'to be' in front of the verb.",
-   why_fr:"Le passif a presque toujours une forme de « to be » devant le verbe."},
-  {line:"the doer can vanish", en:"The treasure was stolen — passive, and nobody says who did it.",
-   fr:"The treasure was stolen — passif, et on ne dit pas qui.",
-   why_en:"That is why the passive gets used: it lets you leave the doer out.",
-   why_fr:"C'est pour ça qu'on l'utilise : il permet d'omettre l'auteur."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"'The meal was enjoyed by everyone' — type active or passive", ask_fr:"Tape active ou passive", a:"passive"},
-   {ask_en:"'Pollution is harming the trees' — active or passive?", ask_fr:"active ou passive ?", a:"active"},
-   {ask_en:"'The park is maintained by the council' — active or passive?", ask_fr:"active ou passive ?", a:"passive"},
- ]}
-},
+  {line:"Find the verb.", en:"The verb is the action. Here it is \"was broken\".", why_en:"Include any small word just before it, like was, is or are.", see:"The mug [[was broken]]<verb> by Rabia."},
+  {line:"Ask who did the action.", en:"Rabia did the breaking. Rabia is the doer.", why_en:"Ask yourself: who broke it? The answer is the doer.", see:"The mug [[was broken]] by {{Rabia}}<doer>."},
+  {line:"Is the doer at the start?", en:"No. The mug is at the start, and the mug did nothing. So this sentence is passive.", why_en:"The subject is who or what the sentence is about. If the subject did the action, it is active. If not, it is passive.", see:"__The mug__<subject> [[was broken]] by {{Rabia}}<doer>. → passive"}],
+ guided:{steps:[
+   {ask_en:"Type the doer: The window was cleaned by Sam.", a:"Sam"},
+   {ask_en:"Type active or passive: Everyone enjoyed the meal.", a:"active"},
+   {ask_en:"Type active or passive: The trees are being harmed by pollution.", a:"passive"}]},
+ examples:[
+  {show:"The treasure was stolen.",
+   steps:[
+    {line:"Find the verb.", en:"The verb is \"was stolen\".", why_en:"Look for was, were, is or are just before the verb. This often means passive.", see:"The treasure [[was stolen]]<verb>."},
+    {line:"Ask who did the action.", en:"The sentence does not say who stole it. There is no doer.", why_en:"A passive sentence can leave the doer out. There is no by part here.", see:"The treasure [[was stolen]] ^^by ...?^^"},
+    {line:"Check the subject.", en:"The treasure is the subject. It did not steal anything. So it is passive.", why_en:"To make it active, a doer must come first: Someone stole the treasure.", see:"__The treasure__<subject> [[was stolen]]. → passive"}]}],
+ test:{en:"Is this sentence active or passive? Tick one. Pollution is harming the trees.",
+  show:"Pollution is harming the trees.",
+  steps:[
+   {line:"Find the verb.", en:"The verb is \"is harming\".", why_en:"It has the word is in it. That alone does not make it passive.", see:"Pollution [[is harming]]<verb> the trees."},
+   {line:"Ask who did the action.", en:"Pollution is doing the harming. Pollution is the doer.", why_en:"Ask: what is harming the trees? The answer is pollution.", see:"{{Pollution}}<doer> [[is harming]] the trees."},
+   {line:"Is the doer at the start?", en:"Yes. The doer is the subject, so this sentence is active.", why_en:"Tick active. The passive would be: The trees are being harmed by pollution.", see:"{{Pollution}}<subject and doer> [[is harming]] __the trees__. → active"}]},
+ mistake:{lines:["Leo kicked the ball. — active", "The ball was kicked by Leo. — passive", "The cake was eaten. — active"],
+  wrong:2,
+  fix_en:"The cake was eaten is passive. The cake did not eat anything; it had the eating done to it. It does not say who ate it, but it is still passive."}},
 
-"modal": {
+"modal": {title:"Modal verbs",
+ inTest:"What does the modal verb show? Tick one: certain, possible or expected.",
+ key:[
+  {term:"modal verb", def:"shows how sure we are that something will happen. It comes just before the main verb: might walk."}],
  story:[
-  {em:"🎚️", en:"Modal verbs are a dial for how certain something is. must, will, might, could, should.",
-   fr:"Les verbes modaux règlent le degré de certitude. must, will, might, could, should."},
-  {em:"↔️", en:"They will walk home. They might walk home. One is a fact, the other is a maybe.",
-   fr:"They will walk home. They might walk home. Un fait, ou un peut-être."}],
- show:"They might walk home.",
+  {em:"🌧️", en:"Priya looks out of the window. Grey clouds are coming."},
+  {em:"☂️", en:"\"It might rain,\" she says. She is not sure. \"It will rain\" means she is sure."}],
+ show:"They might walk home from the station.",
  steps:[
-  {line:"find the modal", en:"It sits just before the main verb.",
-   fr:"Il se place juste avant le verbe principal.",
-   why_en:"must, shall, will, should, would, can, could, may, might — that is the whole list.",
-   why_fr:"must, shall, will, should, would, can, could, may, might — voilà la liste."},
-  {line:"how sure is it?", en:"will and must are certain. might and could are possible.",
-   fr:"will et must : certain. might et could : possible.",
-   why_en:"The test asks you to explain the difference in words, so practise saying it.",
-   why_fr:"Le test demande d'expliquer la différence, alors entraîne-toi à le dire."},
-  {line:"should is different", en:"should is what ought to happen, not what will.",
-   fr:"should, c'est ce qui devrait arriver, pas ce qui arrivera.",
-   why_en:"Expectation, not certainty. That distinction has been asked before.",
-   why_fr:"Attente, pas certitude. Cette distinction a déjà été demandée."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"'I must leave now' — type certain or possible", ask_fr:"Tape certain ou possible", a:"certain"},
-   {ask_en:"'We could go to the beach' — certain or possible?", ask_fr:"certain ou possible ?", a:"possible"},
-   {ask_en:"'She will finish it tonight' — certain or possible?", ask_fr:"certain ou possible ?", a:"certain"},
- ]}
-},
+  {line:"Find the modal verb.", en:"It sits just before the main verb. The main verb is walk, so the modal verb is might.", why_en:"Look for one of these: will, must, might, may, could, should.", see:"They [[might]]<modal verb> {{walk}}<main verb> home from the station."},
+  {line:"Put it in its group.", en:"will and must show it is certain. might, may and could show it is possible. should shows it is expected.", why_en:"Learn the three groups. Then you only need to find the word.", see:"They [[might]]<possible> {{walk}} home from the station."},
+  {line:"Check the meaning.", en:"Say it with maybe: Maybe they will walk home. That fits, so might shows it is possible.", why_en:"If maybe fits, it is possible. If it is sure to happen, it is certain.", see:"They ~~might~~ ^^maybe will^^ walk home from the station. → possible"}],
+ guided:{steps:[
+   {ask_en:"Type the modal verb: We could go to the beach if it stays dry.", a:"could"},
+   {ask_en:"Type certain, possible or expected: I must be at school early tomorrow.", a:"certain"},
+   {ask_en:"Type certain, possible or expected: You should wear a helmet on your bike.", a:"expected"}]},
+ examples:[
+  {show:"He should apologise for what he said.",
+   steps:[
+    {line:"Find the modal verb.", en:"The main verb is apologise. Just before it is should.", why_en:"should is a modal verb, so it tells you how sure the sentence is.", see:"He [[should]]<modal verb> {{apologise}}<main verb> for what he said."},
+    {line:"Ask: is it sure to happen?", en:"No. We do not know if he will say sorry.", why_en:"should does not mean it will happen. So it is not certain.", see:"He [[should]] {{apologise}} for what he said. → not certain"},
+    {line:"Ask: is it the right thing to do?", en:"Yes. Saying sorry is what he ought to do. So should shows it is expected.", why_en:"If you can swap in ought to, choose expected.", see:"He ~~should~~ ^^ought to^^ {{apologise}} for what he said."}]}],
+ test:{en:"Tick one sentence where the modal verb shows that something is certain.",
+  show:"We could go to the beach. / She will finish the book tonight. / They might walk home.",
+  steps:[
+   {line:"Find each modal verb.", en:"The three modal verbs are could, will and might.", why_en:"Underline the word just before each main verb.", see:"We [[could]] go to the beach. / She [[will]] finish the book tonight. / They [[might]] walk home."},
+   {line:"Cross out the possible ones.", en:"could and might show something is possible. They are not certain.", why_en:"Cross out the ones you know are wrong first.", see:"~~We could go to the beach.~~ / She [[will]] finish the book tonight. / ~~They might walk home.~~"},
+   {line:"Tick the certain one.", en:"will shows it is certain. Tick: She will finish the book tonight.", why_en:"Read it back. It sounds sure, so it is certain.", see:"She [[will]]<certain> finish the book tonight. ^^✓^^"}]},
+ mistake:{lines:["I [[will]] come to your party. — certain", "I [[might]] come to your party. — certain", "I [[should]] come to your party. — expected"],
+  wrong:1,
+  fix_en:"might does not mean sure. It means maybe. So I might come to your party shows it is possible, not certain."}},
 
-"clause": {
+"clause": {title:"Main, subordinate and relative clauses",
+ inTest:"What is the underlined part of the sentence? Tick one: main clause, subordinate clause, relative clause or noun phrase.",
+ key:[
+  {term:"clause", def:"is a group of words that has a verb in it."},
+  {term:"noun phrase", def:"is a group of words built around a noun, with no verb: the beautiful grey elephants."}],
  story:[
-  {em:"🧱", en:"A clause is a piece of sentence with its own verb. Most sentences are built from two or more.",
-   fr:"Une proposition est un morceau de phrase avec son propre verbe."},
-  {em:"🏠", en:"A main clause can stand alone. A subordinate clause cannot — it leans on the main one.",
-   fr:"Une principale tient seule. Une subordonnée s'appuie sur elle."}],
+  {em:"✏️", en:"Kofi wrote: \"Because it was raining.\" His teacher said it did not make sense."},
+  {em:"🏠", en:"Kofi added more: \"Because it was raining, we stayed in.\" Now it makes sense."}],
  show:"I walked to school as we live on the same road.",
  steps:[
-  {line:"cover half and read it", en:"'I walked to school' works alone. That is the main clause.",
-   fr:"« I walked to school » tient seul. C'est la principale.",
-   why_en:"This test works every time and needs nothing memorised.",
-   why_fr:"Ce test marche à tous les coups et ne demande rien à retenir."},
-  {line:"the other half leans", en:"'as we live on the same road' cannot stand alone. Subordinate.",
-   fr:"« as we live on the same road » ne tient pas seul. Subordonnée.",
-   why_en:"The joining word at the front — as, because, although, before — is what makes it lean.",
-   why_fr:"Le mot de liaison au début est ce qui la rend dépendante."},
-  {line:"relative clauses describe a noun", en:"'who lives on a farm' tells you which uncle. It starts with who, which or that.",
-   fr:"« who lives on a farm » précise quel oncle. Elle commence par who, which ou that.",
-   why_en:"A relative clause is a kind of subordinate clause, sitting next to the noun it describes.",
-   why_fr:"Une relative est une subordonnée placée près du nom qu'elle décrit."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"'Because it was raining' — main or subordinate? Type one", ask_fr:"principale ou subordonnée ?", a:"subordinate"},
-   {ask_en:"'The dog barked' — main or subordinate?", ask_fr:"principale ou subordonnée ?", a:"main"},
-   {ask_en:"'which my uncle gave me' — type relative or main", ask_fr:"relative ou principale ?", a:"relative"},
- ]}
-},
+  {line:"Look for a verb.", en:"The underlined part has a verb: live. A verb is a doing or being word.", why_en:"If there is a verb, it is a clause. If there is no verb, it is a noun phrase.", see:"I walked to school __as we [[live]]<verb> on the same road__."},
+  {line:"Check the first word.", en:"It starts with as. As is a subordinating conjunction. This is a joining word like because, when or although.", why_en:"It does not start with who, which or that. So it is not a relative clause.", see:"I walked to school __[[as]]<subordinating conjunction> we live on the same road__."},
+  {line:"Does it make sense on its own?", en:"\"As we live on the same road.\" This does not make sense alone. So it is a subordinate clause.", why_en:"Cover the rest of the sentence and read the underlined part. A main clause makes sense on its own.", see:"{{I walked to school}}<main clause> [[as we live on the same road]]<subordinate clause>."}],
+ guided:{steps:[
+   {ask_en:"Type the subordinating conjunction: Before we entered the classroom, we greeted our friends.", a:"before"},
+   {ask_en:"Type the relative pronoun: The wheel, which first appeared 5000 years ago, changed everything.", a:"which"},
+   {ask_en:"Hazel uses a wheelchair so we went up the ramp. Is \"Hazel uses a wheelchair\" a main clause or a subordinate clause?", a:"main clause"}]},
+ examples:[
+  {show:"My uncle, who lives on a farm, is going to plant potatoes.",
+   steps:[
+    {line:"Look for a verb.", en:"The underlined part has a verb: lives. So it is a clause.", why_en:"Find the verb inside the underlined words only.", see:"My uncle, __who [[lives]]<verb> on a farm__, is going to plant potatoes."},
+    {line:"Check the first word.", en:"It starts with who. Who is a relative pronoun. Who, which and that are relative pronouns.", why_en:"When the part starts with who, which or that, check what it tells you about.", see:"My uncle, __[[who]]<relative pronoun> lives on a farm__, is going to plant potatoes."},
+    {line:"Find the noun it describes.", en:"It tells you more about my uncle. So it is a relative clause.", why_en:"A relative clause sits just after the noun it describes. It often has commas round it.", see:"{{My uncle}}<noun>, [[who lives on a farm]]<relative clause>, is going to plant potatoes."}]}],
+ test:{en:"What is the underlined part of the sentence? Tick one. The beautiful grey elephants walked slowly through the forest.",
+  show:"The beautiful grey elephants walked slowly through the forest.",
+  steps:[
+   {line:"Look for a verb.", en:"The underlined part is The beautiful grey elephants. There is no verb in it.", why_en:"walked is a verb, but it is not underlined. Only look inside the underline.", see:"__The beautiful grey elephants__ {{walked}}<not underlined> slowly through the forest."},
+   {line:"Find the main noun.", en:"The words are built around one noun: elephants. A noun names a person, place or thing.", why_en:"beautiful and grey are adjectives. They describe the elephants.", see:"__The beautiful grey [[elephants]]<noun>__ walked slowly through the forest."},
+   {line:"Tick noun phrase.", en:"No verb, and built around a noun. So it is a noun phrase.", why_en:"Because it has adjectives added, it is also called an expanded noun phrase.", see:"[[The beautiful grey elephants]]<noun phrase> walked slowly through the forest."}]},
+ mistake:{lines:["__The tall green bike__ was in the shed. — noun phrase", "We went inside __when the bell rang__. — main clause", "The girl __who sits next to me__ is called Aisha. — relative clause"],
+  wrong:1,
+  fix_en:"\"When the bell rang\" does not make sense on its own. It starts with when, a subordinating conjunction. So it is a subordinate clause, not a main clause."}},
 
-"syn": {
+"syn": {title:"Synonyms",
+ inTest:"Tick the word that is closest in meaning to rapid.",
+ key:[
+  {term:"synonym", def:"is a word that means the same, or nearly the same, as another word."}],
  story:[
-  {em:"🎨", en:"Synonyms are words that mean nearly the same. Nearly, not exactly — that is why they are useful.",
-   fr:"Les synonymes ont un sens proche. Proche, pas identique."},
-  {em:"📈", en:"This is the most-asked thing in the whole English test. Eight times in three years.",
-   fr:"C'est ce qu'on demande le plus dans tout le test. Huit fois en trois ans."}],
- show:"vast → enormous",
+  {em:"🐘", en:"Zara saw a huge elephant at the zoo. She could also write “an enormous elephant”."},
+  {em:"✏️", en:"Huge and enormous are synonyms. Using synonyms stops you repeating the same word."}],
+ show:"The field behind the school is vast.",
  steps:[
-  {line:"put it in the sentence", en:"Swap the word in and see whether the sentence still means the same.",
-   fr:"Remplace le mot et vois si la phrase garde son sens.",
-   why_en:"A synonym has to fit the sentence, not just the dictionary.",
-   why_fr:"Un synonyme doit convenir à la phrase, pas seulement au dictionnaire."},
-  {line:"watch the strength", en:"vast is bigger than big. furious is angrier than annoyed.",
-   fr:"vast est plus grand que big. furious est plus fort que annoyed.",
-   why_en:"The test often offers a word with the right meaning but the wrong strength.",
-   why_fr:"Le test propose souvent un mot au bon sens mais de mauvaise intensité."},
-  {line:"read all four first", en:"One will fit better than the rest.",
-   fr:"Lis les quatre avant de choisir.",
-   why_en:"Choosing the first one that looks right is how these marks get lost.",
-   why_fr:"Choisir le premier qui semble bon fait perdre ces points."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"A synonym for 'rapid'", ask_fr:"Un synonyme de « rapid »", a:"quick"},
-   {ask_en:"A synonym for 'courageous'", ask_fr:"Un synonyme de « courageous »", a:"brave"},
-   {ask_en:"A synonym for 'ancient'", ask_fr:"Un synonyme de « ancient »", a:"very old"},
- ]}
-},
+  {line:"Find the word to match.", en:"The word is vast. It means very big.", why_en:"If you are not sure, read the sentence. The other words help you guess the meaning.", see:"The field behind the school is [[vast]]."},
+  {line:"Try each choice in its place.", en:"Put each word into the sentence. Read it again.", why_en:"Cross out any word that changes the meaning. Tiny, gentle and narrow all change it.", see:"The field behind the school is ~~tiny~~ ~~gentle~~ ~~narrow~~."},
+  {line:"Pick the word that keeps the meaning.", en:"Enormous means very big. So does vast.", why_en:"Read the sentence with your answer. It should mean the same as before.", see:"The field behind the school is ~~vast~~ ^^enormous^^."}],
+ guided:{steps:[
+   {ask_en:"Which word means the same as rapid: slow, quick or quiet? Type it.", a:"quick"},
+   {ask_en:"Which word means the same as courageous: tired, polite or brave? Type it.", a:"brave"},
+   {ask_en:"Which words mean the same as furious: pleased, very angry or curious? Type them.", a:"very angry"}]},
+ examples:[
+  {show:"Leo visited an ancient castle.",
+   steps:[
+    {line:"Find the word to match.", en:"The word is ancient. It means very old.", why_en:"Think of other ancient things you know, like the pyramids.", see:"Leo visited an [[ancient]] castle."},
+    {line:"Cross out the opposite.", en:"One choice is modern. That means new, the opposite of ancient.", why_en:"An opposite is often in the list. Cross it out first.", see:"[[ancient]]: ~~modern~~ clean brave very old"},
+    {line:"The answer can be two words.", en:"The synonym here is very old. It is two words, and that is fine.", why_en:"Choose the meaning that matches, even if it is a short phrase.", see:"Leo visited a ^^very old^^ castle."}]}],
+ test:{en:"Tick the word that is closest in meaning to miserable.",
+  show:"Kofi felt miserable when his team lost. (cheerful / noisy / very unhappy / eager)",
+  steps:[
+   {line:"Find the word to match.", en:"Kofi's team lost. So miserable must be a sad feeling.", why_en:"Use the sentence to work out the meaning.", see:"Kofi felt [[miserable]] when {{his team lost}}."},
+   {line:"Cross out words that do not fit.", en:"Cheerful is the opposite. Noisy and eager do not mean sad.", why_en:"Try each one in the sentence. Ask: does it still mean the same?", see:"Kofi felt ~~cheerful~~ ~~noisy~~ ~~eager~~ when his team lost."},
+   {line:"Tick the one that is left.", en:"Very unhappy means the same as miserable.", why_en:"Read the sentence once more with your answer in it.", see:"Kofi felt ^^very unhappy^^ when his team lost."}]},
+ mistake:{lines:["Rapid means the same as quick.", "Courageous means the same as brave.", "Furious means the same as pleased."],
+  wrong:2,
+  fix_en:"Furious means very angry. Pleased is nearly the opposite. Write: Furious means the same as very angry."}},
 
-"ant": {
+"ant": {title:"Antonyms",
+ inTest:"Tick the word that is opposite in meaning to rough.",
+ key:[
+  {term:"antonym", def:"is a word that means the opposite of another word."}],
  story:[
-  {em:"↕️", en:"Antonyms are opposites. rough and smooth, generous and selfish.",
-   fr:"Les antonymes sont des contraires."},
-  {em:"⚠️", en:"The test puts synonyms among the choices to catch you. Read the question word: same, or opposite?",
-   fr:"Le test glisse des synonymes parmi les choix. Lis bien : même sens, ou contraire ?"}],
- show:"rough → smooth",
+  {em:"🐱", en:"Aisha strokes her cat. Its fur feels smooth. The doormat feels rough."},
+  {em:"↔️", en:"Smooth and rough are opposites. They are antonyms."}],
+ show:"The path up the hill was rough.",
  steps:[
-  {line:"check what is being asked", en:"Same meaning, or opposite? They look like the same question.",
-   fr:"Même sens, ou contraire ? Les deux questions se ressemblent.",
-   why_en:"This is the trap. Half the wrong answers are synonyms of the word.",
-   why_fr:"C'est le piège. La moitié des mauvaises réponses sont des synonymes."},
-  {line:"find the true opposite", en:"bumpy and coarse are near rough, not opposite to it.",
-   fr:"bumpy et coarse sont proches de rough, pas son contraire.",
-   why_en:"An opposite sits at the other end of the same idea, not just somewhere else.",
-   why_fr:"Un contraire est à l'autre bout de la même idée."},
-  {line:"test it in a sentence", en:"'The stone was rough' becomes 'The stone was smooth'. It flips.",
-   fr:"« The stone was rough » devient « smooth ». Ça bascule.",
-   why_en:"If flipping the word does not flip the meaning, it is not the opposite.",
-   why_fr:"Si changer le mot ne renverse pas le sens, ce n'est pas le contraire."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"The opposite of 'vivid'", ask_fr:"Le contraire de « vivid »", a:"dull"},
-   {ask_en:"The opposite of 'generous'", ask_fr:"Le contraire de « generous »", a:"selfish"},
-   {ask_en:"The opposite of 'temporary'", ask_fr:"Le contraire de « temporary »", a:"permanent"},
- ]}
-},
+  {line:"Read the question word.", en:"The question says opposite. You need an antonym, not a synonym.", why_en:"Underline the word opposite in the question before you choose.", see:"Which word means the __opposite__ of [[rough]]?"},
+  {line:"Cross out words that mean the same.", en:"Bumpy, coarse and uneven are close to rough. They are synonyms.", why_en:"Cross out every word that means nearly the same. The antonym is what is left.", see:"[[rough]]: ~~bumpy~~ ~~coarse~~ ~~uneven~~ smooth"},
+  {line:"Test it in the sentence.", en:"The path was smooth. The meaning has flipped.", why_en:"If the sentence now means the opposite, you have the antonym.", see:"The path up the hill was ~~rough~~ ^^smooth^^."}],
+ guided:{steps:[
+   {ask_en:"Which word means the opposite of vivid: dull, bright or colourful? Type it.", a:"dull"},
+   {ask_en:"Which word means the opposite of generous: kind, selfish or giving? Type it.", a:"selfish"},
+   {ask_en:"Which word means the opposite of temporary: brief, short or permanent? Type it.", a:"permanent"}]},
+ examples:[
+  {show:"The pond in the garden is shallow.",
+   steps:[
+    {line:"Read the question word.", en:"You need the opposite of shallow. Shallow means not far to the bottom.", why_en:"Picture it. A shallow pond only comes up to your ankles.", see:"The pond in the garden is [[shallow]]."},
+    {line:"Different is not the same as opposite.", en:"Flat, wide and thin are different words. They are not the opposite.", why_en:"An opposite is at the other end of the same idea. Here the idea is how far down.", see:"[[shallow]]: ~~flat~~ ~~wide~~ ~~thin~~ deep"},
+    {line:"Test it in the sentence.", en:"A deep pond is far to the bottom. That is the opposite of shallow.", why_en:"Read the new sentence. Check that the meaning has flipped.", see:"The pond in the garden is ~~shallow~~ ^^deep^^."}]}],
+ test:{en:"Tick the word that is opposite in meaning to ancient.",
+  show:"Mei's grandad rides an ancient bike. (modern / old / aged / historic)",
+  steps:[
+   {line:"Read the question word.", en:"The question says opposite. Ancient means very old.", why_en:"Underline opposite in the question so you remember.", see:"Mei's grandad rides an [[ancient]] bike."},
+   {line:"Cross out words that mean the same.", en:"Old, aged and historic all mean nearly the same as ancient.", why_en:"These are synonyms. Cross them out.", see:"[[ancient]]: ~~old~~ ~~aged~~ ~~historic~~ modern"},
+   {line:"Tick the antonym.", en:"Modern means new. That is the opposite of very old.", why_en:"Read it in the sentence. The bike is now new, not old.", see:"Mei's grandad rides a ^^modern^^ bike."}]},
+ mistake:{lines:["The opposite of generous is selfish.", "The opposite of shallow is deep.", "The opposite of vivid is bright."],
+  wrong:2,
+  fix_en:"Vivid and bright mean nearly the same, so they are synonyms. Write: The opposite of vivid is dull."}},
 
-"prefix": {
+"prefix": {title:"Prefixes",
+ inTest:"Add a prefix to the word possible to make it mean the opposite. Write the whole word.",
+ key:[
+  {term:"prefix", def:"is a group of letters added to the start of a word. It changes the word's meaning."},
+  {term:"root word", def:"is the word you start with, before you add anything to it."}],
  story:[
-  {em:"🚫", en:"A prefix goes on the front of a word and changes its meaning. Usually to the opposite.",
-   fr:"Un préfixe se met devant un mot et change son sens."},
-  {em:"🔤", en:"im, in, dis, un, de, mis, re, over. Which one depends on the word, and you mostly know by ear.",
-   fr:"im, in, dis, un, de, mis, re, over. Le choix dépend du mot."}],
+  {em:"🧩", en:"Priya could not finish the puzzle. It was impossible! Im- means not."},
+  {em:"🏰", en:"Jack's sandcastle fell down. He had to rebuild it. Re- means again."}],
  show:"possible → impossible",
  steps:[
-  {line:"say it with each one", en:"unpossible sounds wrong. impossible sounds right.",
-   fr:"unpossible sonne faux. impossible sonne juste.",
-   why_en:"Your ear has heard these thousands of times. It is more reliable than a rule here.",
-   why_fr:"Ton oreille les a entendus des milliers de fois. Plus fiable qu'une règle."},
-  {line:"im before m and p", en:"impossible, immature, impatient.",
-   fr:"im devant m et p : impossible, immature, impatient.",
-   why_en:"This one is an actual rule and it holds almost always.",
-   why_fr:"Celle-ci est une vraie règle et elle tient presque toujours."},
-  {line:"keep the whole word", en:"imposible is a spelling mistake, not a prefix mistake.",
-   fr:"imposible est une faute d'orthographe, pas de préfixe.",
-   why_en:"The prefix joins on. Nothing gets removed from the word underneath.",
-   why_fr:"Le préfixe s'ajoute. Rien n'est retiré au mot d'origine."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"Add a prefix to 'correct' to mean not correct", ask_fr:"Préfixe pour « correct »", a:"incorrect"},
-   {ask_en:"Add a prefix to 'appear' to mean stop being seen", ask_fr:"Préfixe pour « appear »", a:"disappear"},
-   {ask_en:"Add a prefix to 'build' to mean build again", ask_fr:"Préfixe pour « build »", a:"rebuild"},
- ]}
-},
+  {line:"Find the root word.", en:"The root word is possible. You need it to mean not possible.", why_en:"Read the question carefully. Does it want not, again, or undo?", see:"[[possible]]<root word>"},
+  {line:"Choose the prefix.", en:"Un-, in-, im- and dis- can all mean not. Say each one aloud.", why_en:"Pick the one that makes a real word. Im- often goes before words starting with m or p. Other prefixes: re- means again, mis- means wrongly, de- means undo, over- means too much, sub- means under.", see:"~~unpossible~~ ~~inpossible~~ ^^im^^possible"},
+  {line:"Write the whole word.", en:"Put the prefix on the front. Keep every letter of the root word.", why_en:"Check it: im + possible = impossible.", see:"^^im^^[[possible]] = impossible"}],
+ guided:{steps:[
+   {ask_en:"Add a prefix to correct to make it mean not correct. Write the whole word.", a:"incorrect"},
+   {ask_en:"Add a prefix to build to make it mean build again. Write the whole word.", a:"rebuild"},
+   {ask_en:"Add a prefix to spell to make it mean spell wrongly. Write the whole word.", a:"misspell"}]},
+ examples:[
+  {show:"mature → immature",
+   steps:[
+    {line:"Find the root word.", en:"The root word is mature. It means grown-up and sensible.", why_en:"You need it to mean not mature.", see:"[[mature]]<root word>"},
+    {line:"Choose the prefix.", en:"Mature starts with m. So the prefix is im-.", why_en:"Say it aloud: immature. It sounds right.", see:"^^im^^[[mature]]"},
+    {line:"Keep both m's.", en:"The prefix ends in m. The root word starts with m. Write both.", why_en:"Never drop a letter when you add a prefix. im + mature = immature.", see:"i[[m]]{{m}}ature = immature"}]}],
+ test:{en:"Add a prefix to the word appear to make it mean the opposite. Write the whole word.",
+  show:"Sam watched the rabbit appear. Then he watched it ______.",
+  steps:[
+   {line:"Find the root word.", en:"The root word is appear. The opposite is to go out of sight.", why_en:"Think about what the rabbit does next in a magic trick.", see:"[[appear]]<root word>"},
+   {line:"Choose the prefix.", en:"Say each one: unappear, inappear, disappear. Only disappear is a real word.", why_en:"Dis- can mean not or the opposite.", see:"~~unappear~~ ~~inappear~~ ^^dis^^appear"},
+   {line:"Write the whole word.", en:"Write the prefix, then every letter of appear.", why_en:"Check it: dis + appear = disappear. One s, two p's.", see:"Then he watched it ^^dis^^[[appear]]."}]},
+ mistake:{lines:["un + happy = unhappy", "mis + spell = mispell", "re + build = rebuild"],
+  wrong:1,
+  fix_en:"Keep every letter of the root word spell. Write: mis + spell = misspell, with a double s."}},
 
-"suffix": {
+"suffix": {title:"Suffixes",
+ inTest:"Add the suffix ment to the word develop. Write the new word.",
+ key:[
+  {term:"suffix", def:"is a group of letters added to the end of a word. It can change the word class."}],
  story:[
-  {em:"🔚", en:"A suffix goes on the end. It usually changes what job the word does.",
-   fr:"Un suffixe se met à la fin. Il change souvent le rôle du mot."},
-  {em:"🔄", en:"develop is a verb. development is a noun. Same word, different job.",
-   fr:"develop est un verbe. development est un nom."}],
- show:"develop → development",
+  {em:"😊", en:"Amina is kind. Her kindness helps everyone. Kind is an adjective. Kindness is a noun."},
+  {em:"🔤", en:"-ment, -ness and -ion make nouns. -ous, -ful and -less make adjectives. -ise and -ify make verbs. -ly makes adverbs."}],
+ show:"motivate + ion → motivation",
  steps:[
-  {line:"what job do you need?", en:"-ment and -ness make nouns. -ous and -ful make adjectives. -ly makes adverbs.",
-   fr:"-ment et -ness font des noms. -ous et -ful des adjectifs. -ly des adverbes.",
-   why_en:"Knowing what job you need narrows the choice to one or two straight away.",
-   why_fr:"Savoir le rôle voulu réduit tout de suite le choix."},
-  {line:"the spelling can change", en:"outrage becomes outrageous. beauty becomes beautiful.",
-   fr:"outrage donne outrageous. beauty donne beautiful.",
-   why_en:"y usually turns into i, and a silent e often drops. Those two cover most of it.",
-   why_fr:"Le y devient souvent i, et le e muet tombe souvent."},
-  {line:"check it against a sentence", en:"'the development of the town' works. 'the developness' does not.",
-   fr:"« the development » marche. « the developness » non.",
-   why_en:"If you cannot say it in a sentence, it is not the right suffix.",
-   why_fr:"Si tu ne peux pas le dire dans une phrase, ce n'est pas le bon suffixe."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"Add -ness to 'weak'", ask_fr:"Ajoute -ness à « weak »", a:"weakness"},
-   {ask_en:"Add -less to 'power'", ask_fr:"Ajoute -less à « power »", a:"powerless"},
-   {ask_en:"Add -ous to 'outrage'", ask_fr:"Ajoute -ous à « outrage »", a:"outrageous"},
- ]}
-},
+  {line:"Find the root word and the suffix.", en:"The root word is motivate. The suffix is -ion.", why_en:"The root word is the word you start with.", see:"[[motivate]] + {{ion}}"},
+  {line:"Check the end of the root word.", en:"Motivate ends in e. The suffix starts with a vowel, i. So drop the e.", why_en:"Look at the last letter every time. An e or a y often changes.", see:"motivat~~e~~ + {{ion}}"},
+  {line:"Join them and check the word.", en:"Motivation is a noun. It is the name of a feeling.", why_en:"Say it in a sentence: “Ola has lots of motivation.” If it sounds right, it is right.", see:"[[motivat]]^^ion^^ = motivation<noun>"}],
+ guided:{steps:[
+   {ask_en:"Add the suffix ness to weak. Write the new word.", a:"weakness"},
+   {ask_en:"Add the suffix less to power. Write the new word.", a:"powerless"},
+   {ask_en:"Add the suffix ful to care. The suffix ful has one l. Write the new word.", a:"careful"}]},
+ examples:[
+  {show:"outrage + ous → outrageous",
+   steps:[
+    {line:"Find the root word and the suffix.", en:"The root word is outrage. The suffix is -ous.", why_en:"Outrageous means very shocking. It is an adjective.", see:"[[outrage]] + {{ous}}"},
+    {line:"Check the end of the root word.", en:"Outrage ends in ge. Here you keep the e.", why_en:"The e keeps the g soft, so it sounds like j. Without it you would say outra-gus.", see:"outra[[ge]] + {{ous}}"},
+    {line:"Join them and check the word.", en:"Write every letter: outrage + ous.", why_en:"Say it aloud: out-ray-jus. The e is still there.", see:"outrag[[e]]^^ous^^ = outrageous<adjective>"}]}],
+ test:{en:"Add a suffix to the word develop to make a noun. Write the new word.",
+  show:"The ______ of the new park took two years.",
+  steps:[
+   {line:"Find what job the word needs.", en:"The gap comes after the. It needs a noun.", why_en:"A noun names a thing. Noun suffixes are -ment, -ness and -ion.", see:"[[The]] ______ of the new park took two years."},
+   {line:"Try each noun suffix.", en:"Say each one: developness, developion, development.", why_en:"Only development is a real word.", see:"~~developness~~ ~~developion~~ develop^^ment^^"},
+   {line:"Write the new word.", en:"Develop ends in p. Nothing changes. Just add -ment.", why_en:"Read the sentence with your word in it.", see:"The [[development]]<noun> of the new park took two years."}]},
+ mistake:{lines:["care + ful = carefull", "quick + ly = quickly", "weak + ness = weakness"],
+  wrong:0,
+  fix_en:"The suffix -ful has only one l. Write: care + ful = careful."}},
 
-"standard": {
+"standard": {title:"Standard English",
+ inTest:"Circle the verb that completes the sentence in Standard English.",
+ key:[
+  {term:"Standard English", def:"is the form of English we use in writing and when we speak formally."}],
  story:[
-  {em:"🗣️", en:"Standard English is the form used in writing and in formal speaking. It is not better English — it is the expected one.",
-   fr:"L'anglais standard est celui de l'écrit et du formel. Ce n'est pas un « meilleur » anglais."},
-  {em:"🎯", en:"We was going. We were going. Both are said out loud every day, but only one is Standard.",
-   fr:"We was / we were : les deux se disent, un seul est standard."}],
- show:"we was → we were",
+  {em:"⚽", en:"At the park, Jack says, “We was playing football.” Lots of people talk like this."},
+  {em:"✍️", en:"In his school diary, Jack writes, “We were playing football.” That is Standard English."}],
+ show:"We were going on a school trip.",
  steps:[
-  {line:"was is for one, were is for more", en:"I was, he was. We were, they were.",
-   fr:"I was, he was. We were, they were.",
-   why_en:"This one rule covers most of the marks in this part of the test.",
-   why_fr:"Cette seule règle couvre l'essentiel de cette partie."},
-  {line:"did, not done", en:"done needs a helper: I have done. On its own it is did.",
-   fr:"done demande un auxiliaire : I have done. Seul, c'est did.",
-   why_en:"Same for seen and saw, been and was. The helper is the deciding thing.",
-   why_fr:"Idem pour seen/saw. L'auxiliaire décide."},
-  {line:"could have, never could of", en:"It sounds like 'of' when spoken quickly. It is never written that way.",
-   fr:"Ça sonne comme « of » à l'oral. Ça ne s'écrit jamais ainsi.",
-   why_en:"It is have, shortened to 've. That is why it sounds like of.",
-   why_fr:"C'est have, réduit à 've. D'où le son."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"we ___ going on a trip (was or were)", ask_fr:"we ___ going (was ou were)", a:"were"},
-   {ask_en:"The musicians ___ a sound check (did or done)", ask_fr:"(did ou done)", a:"did"},
-   {ask_en:"He ___ helped us (could have or could of)", ask_fr:"(could have ou could of)", a:"could have"},
- ]}
-},
+  {line:"Find the subject.", en:"The subject is who or what does the verb. Here it is we.", why_en:"Ask: who was going? We were.", see:"[[We]]<subject> ______ going on a school trip."},
+  {line:"Match the verb to the subject.", en:"I, he, she and it go with was. We, you and they go with were.", why_en:"Say both: we was, we were. Pick were for we.", see:"[[We]] ~~was~~ ^^were^^ going on a school trip."},
+  {line:"Read the whole sentence.", en:"We were going on a school trip. This is Standard English.", why_en:"Other pairs to know: she doesn't, not she don't. Those tricks, not them tricks. Could have, not could of.", see:"[[We]] {{were}} going on a school trip."}],
+ guided:{steps:[
+   {ask_en:"We ___ the film last week. Type saw or seen.", a:"saw"},
+   {ask_en:"She ___ like mushrooms. Type doesn't or don't.", a:"doesn't"},
+   {ask_en:"I like ___ trainers in the window. Type them or those.", a:"those"}]},
+ examples:[
+  {show:"The musicians did a sound check.",
+   steps:[
+    {line:"Look for a helper verb.", en:"Done and seen need a helper verb: have, has or had.", why_en:"Look just before the gap. Is there a have, has or had?", see:"The musicians ______ a sound check."},
+    {line:"No helper, so use did.", en:"There is no helper here. So the answer is did.", why_en:"The same works for saw and seen. No helper: saw.", see:"The musicians ~~done~~ ^^did^^ a sound check."},
+    {line:"With a helper, use done.", en:"Add have and the verb changes to done.", why_en:"Both of these are Standard English.", see:"The musicians {{have}} [[done]] a sound check."}]}],
+ test:{en:"Circle the words that complete the sentence in Standard English.",
+  show:"Tomasz could have / could of helped us.",
+  steps:[
+   {line:"Say it aloud.", en:"When we talk fast, could have sounds like could've.", why_en:"Could've sounds like could of. That is why people write it.", see:"Tomasz [[could've]] helped us."},
+   {line:"Remember what 've means.", en:"The 've is short for have. It is never of.", why_en:"After could, should, would, might and must, always write have.", see:"could[['ve]] = could {{have}}"},
+   {line:"Circle the answer.", en:"Circle could have.", why_en:"Read the sentence with your answer in it.", see:"Tomasz ~~could of~~ ^^could have^^ helped us."}]},
+ mistake:{lines:["Kofi doesn't like rain.", "We saw a fox last night.", "I like them shoes in the window."],
+  wrong:2,
+  fix_en:"Use those before a noun, not them. Write: I like those shoes in the window."}},
 
-"formal": {
+"formal": {title:"Formal and informal words",
+ inTest:"Which is the more formal word for buy? Tick one.",
+ key:[
+  {term:"formal", def:"language is used for serious writing, such as a letter to a head teacher."},
+  {term:"informal", def:"language is used when you talk or write to friends and family."}],
  story:[
-  {em:"👔", en:"Formal writing is what you use for a letter to a head teacher. Informal is what you use to a friend.",
-   fr:"Le formel s'utilise pour une lettre officielle. L'informel avec un ami."},
-  {em:"🔁", en:"ask becomes request. buy becomes purchase. Same meaning, different clothes.",
-   fr:"ask devient request. buy devient purchase. Même sens, autre habit."}],
- show:"ask → request",
+  {em:"💬", en:"Ola texts her friend: “Can I ask you something?”"},
+  {em:"✉️", en:"Ola writes to the head teacher: “I would like to request a meeting.” Request is more formal than ask."}],
+ show:"The school will purchase a new bench.",
  steps:[
-  {line:"who is reading it?", en:"A stranger in a position of authority gets the formal word.",
-   fr:"Un inconnu en position d'autorité reçoit le mot formel.",
-   why_en:"Formality is about the reader, not about the writer being clever.",
-   why_fr:"Le niveau de langue dépend du lecteur, pas de la sophistication de l'auteur."},
-  {line:"formal words are often longer", en:"think about becomes consider. find out becomes discover.",
-   fr:"think about devient consider. find out devient discover.",
-   why_en:"Two-word verbs are usually the informal one. One long word is usually the formal one.",
-   why_fr:"Les verbes en deux mots sont souvent informels."},
-  {line:"do not overdo it", en:"Formal does not mean strange. It still has to sound like English.",
-   fr:"Formel ne veut pas dire bizarre. Ça doit rester de l'anglais.",
-   why_en:"The test offers one word that is too odd on purpose. Leave it.",
-   why_fr:"Le test propose exprès un mot trop étrange. Laisse-le."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"A more formal word for 'buy'", ask_fr:"Un mot plus formel pour « buy »", a:"purchase"},
-   {ask_en:"A more formal word for 'ask'", ask_fr:"Un mot plus formel pour « ask »", a:"request"},
-   {ask_en:"A more formal word for 'find out'", ask_fr:"Un mot plus formel pour « find out »", a:"discover"},
- ]}
-},
+  {line:"Find the informal word.", en:"Buy is an everyday word. You use it with friends.", why_en:"Ask: would I say this to my friend at break time? If yes, it is informal.", see:"The school will [[buy]] a new bench."},
+  {line:"Find the formal word.", en:"Formal words are often longer. Purchase means the same as buy.", why_en:"Check that the meaning is the same. A formal word must not change the meaning.", see:"[[buy]] = {{purchase}}"},
+  {line:"Put it in the sentence.", en:"The school will purchase a new bench. This sounds like a letter.", why_en:"Read it aloud. It should sound serious but still make sense.", see:"The school will ~~buy~~ ^^purchase^^ a new bench."}],
+ guided:{steps:[
+   {ask_en:"Which is the more formal word for tell: inform, permit or obtain? Type it.", a:"inform"},
+   {ask_en:"Which is the more formal word for get: consider, obtain or funds? Type it.", a:"obtain"},
+   {ask_en:"Which is the more formal word for let: permit, request or discover? Type it.", a:"permit"}]},
+ examples:[
+  {show:"We had to postpone the match.",
+   steps:[
+    {line:"Find the informal words.", en:"Put off is two words. Together they mean move to a later time.", why_en:"Informal verbs are often two words, like put off, find out and set up.", see:"We had to [[put off]] the match."},
+    {line:"Find one formal word.", en:"Postpone means the same as put off.", why_en:"One formal word often replaces two informal words.", see:"[[put off]] = {{postpone}}"},
+    {line:"Swap both words.", en:"Take out put and off. Write postpone in their place.", why_en:"Do not leave off behind. “Postpone off” is wrong.", see:"We had to ~~put off~~ ^^postpone^^ the match."}]}],
+ test:{en:"Which is the more formal word for think about? Tick one.",
+  show:"Please think about our idea. (consider / establish / permit / funds)",
+  steps:[
+   {line:"Find the informal words.", en:"Think about is two everyday words.", why_en:"You need one formal word with the same meaning.", see:"Please [[think about]] our idea."},
+   {line:"Try each choice.", en:"Establish means set up. Permit means let. Funds means money.", why_en:"Cross out any word that changes the meaning.", see:"Please ~~establish~~ ~~permit~~ ~~funds~~ our idea."},
+   {line:"Tick the formal word.", en:"Consider means think about. Tick consider.", why_en:"Read it in the sentence. It sounds like a polite letter.", see:"Please ~~think about~~ ^^consider^^ our idea."}]},
+ mistake:{lines:["We need to purchase new books.", "Please inform us if you are ill.", "The club will establish up a new team."],
+  wrong:2,
+  fix_en:"Establish replaces both words in set up. Do not keep up. Write: The club will establish a new team."}},
 
-"func": {
+"func": {title:"Kinds of sentence",
+ inTest:"What kind of sentence is this? Tick one: statement, question, command or exclamation.",
+ key:[
+  {term:"command", def:"tells someone to do something. It often starts with a verb: Pass the plates."},
+  {term:"exclamation", def:"starts with What or How and is a full sentence with a verb: What a lovely smell that is!"}],
  story:[
-  {em:"4️⃣", en:"Four kinds of sentence: statement, question, command, exclamation. Each has its own job and its own ending.",
-   fr:"Quatre types de phrases : déclarative, interrogative, impérative, exclamative."},
-  {em:"❗", en:"An exclamation must start with What or How and have a verb. 'What a brilliant song this is!' Not just anything with an exclamation mark.",
-   fr:"Une exclamative commence par What ou How et contient un verbe. Pas juste un point d'exclamation."}],
- show:"the four kinds",
+  {em:"🍕", en:"At tea time, Ola's family say four kinds of sentence."},
+  {em:"💬", en:"\"The pizza is ready.\" \"Is it hot?\" \"Pass the plates.\" \"What a lovely smell that is!\""}],
+ show:"How I hate tidying my bedroom",
  steps:[
-  {line:"statements tell you something", en:"'We watched the game together.' Full stop.",
-   fr:"« We watched the game together. » Point.",
-   why_en:"Most sentences are statements. Check the others first and this one is what is left.",
-   why_fr:"La plupart sont déclaratives. Vérifie les autres d'abord."},
-  {line:"commands tell you to do something", en:"'Hold the handrail.' They usually start with the verb.",
-   fr:"« Hold the handrail. » Elles commencent souvent par le verbe.",
-   why_en:"A command has no visible subject — the 'you' is understood.",
-   why_fr:"L'impératif n'a pas de sujet visible — le « you » est sous-entendu."},
-  {line:"exclamations are the strict one", en:"They must begin What or How AND have a verb.",
-   fr:"Elles doivent commencer par What ou How ET avoir un verbe.",
-   why_en:"'What a mess!' is not an exclamation in this test — no verb. This is the marks people lose.",
-   why_fr:"« What a mess ! » n'en est pas une ici — pas de verbe. C'est là qu'on perd des points."},
- ],
- guided:{show:"", steps:[
-   {ask_en:"'Watch where you're going' — which kind?", ask_fr:"Quel type ?", a:"command"},
-   {ask_en:"'How I hate tidying my room' — which kind?", ask_fr:"Quel type ?", a:"exclamation"},
-   {ask_en:"'Are you coming tonight' — which kind?", ask_fr:"Quel type ?", a:"question"},
- ]}
-},
+  {line:"Read the words, not the ending.", en:"In this practice there is no punctuation at the end. You decide from the words.", why_en:"Start with the first word. Here it is How.", see:"[[How]]<first word> I hate tidying my bedroom"},
+  {line:"Is it asking something?", en:"A question asks something and needs an answer. This does not ask anything.", why_en:"How can start a question, like How did you get here? Check if someone could answer it.", see:"[[How]] I hate tidying my bedroom ~~?~~"},
+  {line:"Is it a full sentence with a verb?", en:"Yes. It has a subject and a verb: I hate. So it is an exclamation.", why_en:"An exclamation starts with What or How and has a verb. Finish it with an exclamation mark.", see:"[[How]] {{I hate}}<subject + verb> tidying my bedroom^^!^^"}],
+ guided:{steps:[
+   {ask_en:"Type the kind of sentence: Watch where you're going", a:"command"},
+   {ask_en:"Type the kind of sentence: Do you know when it starts", a:"question"},
+   {ask_en:"Type the kind of sentence: What a brilliant song this is", a:"exclamation"}]},
+ examples:[
+  {show:"Hold the handrail to keep steady",
+   steps:[
+    {line:"Look at the first word.", en:"The first word is Hold. Hold is a verb.", why_en:"When a sentence starts with a verb like hold, help or watch, think command.", see:"[[Hold]]<verb> the handrail to keep steady"},
+    {line:"Is someone being told to do something?", en:"Yes. It tells you to hold the handrail.", why_en:"A command does not need the word you. It is already clear who should do it.", see:"{{(You)}} [[hold]] the handrail to keep steady"},
+    {line:"Name it and finish it.", en:"It is a command. It ends with a full stop, or an exclamation mark if it is urgent.", why_en:"An exclamation mark does not make it an exclamation. It is still a command.", see:"[[Hold]] the handrail to keep steady^^.^^ → command"}]}],
+ test:{en:"Tick one sentence that is an exclamation.",
+  show:"What time does the film start / What a shame you can't come / Watch where you're going / We watched the game together",
+  steps:[
+   {line:"Find the ones that start with What or How.", en:"Two sentences start with What.", why_en:"Only these two can be exclamations. Cross out the others.", see:"[[What]] time does the film start / [[What]] a shame you can't come / ~~Watch where you're going~~ / ~~We watched the game together~~"},
+   {line:"Is one asking something?", en:"What time does the film start asks for an answer. It is a question.", why_en:"Someone could answer it: at six o'clock. So it is not an exclamation.", see:"~~What time does the film start~~<question> / [[What]] a shame you can't come"},
+   {line:"Check for a verb.", en:"What a shame you can't come has a subject and verb: you can't come. Tick it.", why_en:"It shows strong feeling and is a full sentence. So it is an exclamation.", see:"[[What]] a shame {{you can't come}}<subject + verb>^^!^^ ^^✓^^"}]},
+ mistake:{lines:["Your bedroom is always neat. — statement", "Help me tidy my bedroom. — command", "What a mess! — exclamation"],
+  wrong:2,
+  fix_en:"What a mess! has no verb, so the test does not count it as an exclamation. Add a subject and a verb: What a mess this room is!"}}
 };
 
 
@@ -1566,6 +2344,15 @@ const T={
  listen:{en:"Hear the word",fr:"\u00c9couter le mot"},
  check:{en:"Check",fr:"V\u00e9rifier"},
  whyans:{en:"Why",fr:"Pourquoi"},
+ intest:{en:"In the test",fr:"Au test"},
+ keywords:{en:"Key words",fr:"Mots cl\u00e9s"},
+ another:{en:"Another one",fr:"Un autre exemple"},
+ showhow:{en:"Show me how",fr:"Montre-moi comment"},
+ hide:{en:"Hide",fr:"Cacher"},
+ spot:{en:"Spot the mistake",fr:"Trouve l\u2019erreur"},
+ spotsub:{en:"Tap the line that has the mistake.",fr:"Touche la ligne qui a l\u2019erreur."},
+ notthat:{en:"That line is right. Look again.",fr:"Cette ligne est juste. Regarde encore."},
+ found:{en:"Yes.",fr:"Oui."},
  /* v11 */
  situation:{en:"Why it matters",fr:"Pourquoi c\u2019est utile"},
  example:{en:"Worked example",fr:"Exemple d\u00e9taill\u00e9"},
@@ -2083,6 +2870,12 @@ function stopHTML(){
 function lessonHTML(s,T2){
  const src=(VIDEO[s.g]||{})[L];
  const back=V.resumeAt!==undefined;
+ /* v14: learn it in the order a teacher would teach it. What the test asks
+    and the key words first, so the child knows what they are aiming at and
+    what the words mean; then why it matters; then the example. */
+ const top=`${T2.inTest?`<div class="intest"><b>${esc(t("intest"))}</b><span>${esc(T2.inTest)}</span></div>`:""}
+  ${(T2.key||[]).length?`<h2 class="lh">${esc(t("keywords"))}</h2><div class="card kwcard">${T2.key.map(k=>
+   `<p class="kw">${An2(k.term)} <b>${esc(k.term)}</b> ${esc(k.def)}</p>`).join("")}</div>`:""}`;
  const written=`<h2 class="lh">${esc(t("situation"))}</h2>
   ${T2.story.slice(0,2).map(c=>`<div class="card story"><div class="storyem">${c.em}</div>
     <p class="storyline">${esc(c[L]||c.en)}</p></div>`).join("")}
@@ -2097,9 +2890,11 @@ function lessonHTML(s,T2){
     <span class="jt num">${mmss(marks[i])}</span><span class="jx">${esc(st[L]||st.en)}</span></button>`).join("")}</div>`;
  }
  return `<div class="wrap">
-  <h1 class="lt">${esc(s[L]||s.en)}</h1>
+  <h1 class="lt">${esc(T2.title||s[L]||s.en)}</h1>
+  ${top}
   ${src?film+(V.read?`<button class="linkbtn readit" onclick="toggleRead()">${esc(t("hideit"))}</button>${written}`
     :`<button class="go2 quiet readit" onclick="toggleRead()">${esc(t("readit"))}</button>`):written}
+  ${extrasHTML(T2)}
   <button class="go2" onclick="toGuided()">${esc(back?t("backq"):t("trywith"))}</button>
   ${back?"":`<button class="go2 quiet" onclick="skipTeach()">${esc(t("iknow"))}</button>`}</div>`;
 }
@@ -2120,6 +2915,41 @@ function exampleHTML(s,T2){
  </div>`;
 }
 function stepNext(){V.step=(V.step||0)+1;render()}
+/* "A colon" / "An adverb": the definition reads as one sentence */
+const An2=term=>/^[aeiou]/i.test(term)?"An":"A";
+/* ---- after the main example ----
+   Another one, folded away; a test-style question with the working behind a
+   tap so the child can try it first; and a short set of lines with one
+   mistake to find. */
+function stepsList(steps,key){
+ return `<div class="exsteps">${steps.map((st,i)=>{ const k=key+i, open=!!(V.why||{})[k];
+  return `<button class="sbtn" onclick="showWhy('${k}')" aria-expanded="${open}">
+   <b>${esc(seePlain(st.line))}</b><span>${esc(st[L]||st.en)}</span>
+   ${st.see?`<div class="seebox sm">${seeHTML(st.see)}</div>`:""}
+   ${open?`<i>${esc(w(st,"why"))}</i>`:""}</button>`; }).join("")}</div>`;
+}
+function extrasHTML(T2){
+ const op=V.open||{}; let h="";
+ const ex=(T2.examples||[])[0];
+ if(ex) h+=`<button class="fold" onclick="openX('ex')" aria-expanded="${!!op.ex}">${esc(t("another"))}
+   <small>${op.ex?esc(t("hide")):"\u25be"}</small></button>
+  ${op.ex?`<div class="card lesson ex"><div class="qmid long">${esc(seePlain(ex.show))}</div>${stepsList(ex.steps,"x")}</div>`:""}`;
+ const ts=T2.test;
+ if(ts) h+=`<h2 class="lh">${esc(t("intest"))}</h2>
+  <div class="card lesson ex"><p class="wq">${esc(ts.en)}</p><div class="qmid long">${seeHTML(ts.show)}</div>
+   ${op.test?stepsList(ts.steps,"t"):`<button class="go2 quiet small" onclick="openX('test')">${esc(t("showhow"))}</button>`}</div>`;
+ const m=T2.mistake;
+ if(m){ const found=V.mk===m.wrong;
+  h+=`<h2 class="lh">${esc(t("spot"))}</h2><p class="lhsub">${esc(t("spotsub"))}</p>
+  <div class="card lesson ex"><div class="mlines">${m.lines.map((ln,i)=>{
+    const cls=found&&i===m.wrong?" bad":(V.mk===i&&i!==m.wrong?" nope":"");
+    return `<button class="mline${cls}" onclick="spot(${i})">${seeHTML(ln)}</button>`; }).join("")}</div>
+   ${found?`<div class="note fixnote"><b>${esc(t("found"))}</b> ${esc(m.fix_en)}</div>`
+    :V.mk!==undefined?`<p class="hint" style="margin-top:8px">${esc(t("notthat"))}</p>`:""}</div>`; }
+ return h;
+}
+function openX(k){ if(!V.open) V.open={}; V.open[k]=!V.open[k]; render(); }
+function spot(i){ V.mk=i; render(); }
 function allSteps(){V.step=LESSON(byId(V.id)).steps.length-1;render()}
 function toggleRead(){V.read=!V.read;render()}
 /* the bare steps, a tap away in practice */
@@ -2127,9 +2957,9 @@ function peekHTML(T2){
  if(!T2) return "";
  if(!V.peek) return `<button class="linkbtn" onclick="togglePeek()">${esc(t("peek"))}</button>`;
  return `<div class="card peekcard" id="peek"><div class="peekhead">
-   <div class="qmid">${esc(T2.show||"")}</div>
+   <div class="qmid long">${esc(seePlain(T2.show||""))}</div>
    <button class="linkbtn" onclick="togglePeek()">${esc(t("close"))}</button></div>
-  <ol class="rsteps small">${T2.steps.map(st=>`<li>${esc(st.line)}</li>`).join("")}</ol></div>`;
+  <ol class="rsteps small">${T2.steps.map(st=>`<li>${esc(seePlain(st.line))}</li>`).join("")}</ol></div>`;
 }
 function togglePeek(){V.peek=!V.peek;if(V.peek){V.focus="peek";V.near=true}render()}
 function seekTo(sec){const v=document.getElementById("theVid");if(v){try{v.currentTime=sec;v.play()}catch(e){}}}
@@ -2161,7 +2991,8 @@ function checkGuided(){
  const el=document.getElementById("win"); if(el) V.typed=el.value;
  const T2=LESSON(byId(V.id)), steps=T2.guided.steps;
  if(!V.typed.trim()) return;
- if(norm(V.typed)===norm(steps[Math.min(V.g,steps.length-1)].a)){
+ const want=norm(steps[Math.min(V.g,steps.length-1)].a), got=norm(V.typed);
+ if(got===want||(/ clause$/.test(want)&&got===want.replace(/ clause$/,""))){
   V.g++; V.typed=""; V.miss=0;
   if(V.g>=steps.length){V.ph="drill";V.i=0;V.bad=0;newQ();S.at={id:V.id,ph:"drill",i:0};save()}
  } else { V.miss++; V.typed=""; }
