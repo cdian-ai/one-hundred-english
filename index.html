@@ -42,9 +42,11 @@ header{padding:10px 14px 8px;background:var(--paper);position:relative;z-index:5
 .lang button.on{background:var(--band);color:#fff}
 .track{height:6px;border-radius:999px;background:var(--line);margin-top:9px;overflow:hidden}
 .track i{display:block;height:100%;background:var(--band);width:0;transition:width .5s}
-main{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+/* v11: main used to start at y=0, under the header, so the first line of every
+   screen was hidden. render() measures the header and sets --hh. */
+main{position:absolute;left:0;right:0;bottom:0;top:var(--hh,74px);overflow-y:auto;-webkit-overflow-scrolling:touch;
  padding:0 14px calc(30px + env(safe-area-inset-bottom))}
-.pad{height:104px}
+.pad{height:40px}
 .wrap{max-width:520px;margin:0 auto}
 .mhead{text-align:center;margin:16px 0 14px}
 .mhead h1{margin:0;font-size:var(--t7);font-weight:650}
@@ -102,9 +104,11 @@ main{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 .go2{width:100%;max-width:340px;border:0;border-radius:14px;background:var(--band);color:#fff;
  font:inherit;font-size:var(--t5);font-weight:700;padding:15px;margin-top:16px;cursor:pointer}
 .go2.quiet{background:#fff;color:var(--ink2);border:1.5px solid var(--line)}
-.back{position:fixed;left:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:6;
- width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
- font-size:var(--t5);color:var(--ink2);cursor:pointer}
+/* v11: the back button floated at the bottom left on top of the answers. It
+   lives in the header now, left of the title. */
+.back{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
+ font-size:var(--t6);line-height:1;color:var(--ink2);cursor:pointer;padding:0 0 3px}
+.back[hidden]{display:none}
 .tally{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .tally i{width:7px;height:7px;border-radius:50%;background:var(--line)}
 .tally i.on{background:var(--band)}.tally i.bad{background:var(--no)}
@@ -318,6 +322,45 @@ main{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 .listen:active{background:#F2F4FB}
 .hrow.single .htitle{flex:1 1 auto}
 
+/* ---- v11: the lesson page, teaching first ---- */
+.lt{margin:14px 0 4px;font-size:var(--t6);font-weight:650;line-height:1.25;text-align:center}
+.ex .qmid{margin:0 0 8px}
+.qmid.long{font-size:var(--t5);line-height:1.5}
+.exsteps{width:100%;display:flex;flex-direction:column;gap:8px;margin-top:8px;text-align:left}
+.sbtn{display:block;width:100%;border:0;border-left:3px solid var(--band);background:transparent;
+ font:inherit;text-align:left;padding:8px 4px 8px 12px;cursor:pointer;color:inherit;min-height:44px}
+.sbtn:active{background:#F2F4FB}
+.sbtn b{display:block;font-size:var(--t5);color:var(--ink)}
+.sbtn span{display:block;font-size:var(--t4);color:var(--ink2);margin-top:3px;line-height:1.5}
+.sbtn i{display:block;font-style:normal;font-size:var(--t3);color:#6A4A05;background:var(--sun-bg);
+ border-radius:10px;padding:7px 10px;margin-top:7px;line-height:1.5}
+.sbtn small{display:inline-block;font-size:var(--t2);color:var(--muted);margin-top:4px}
+.sbtn.old{border-left-color:var(--line)}
+.sbtn.old b{color:var(--band)}
+.exnav{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin-top:12px}
+.exnav .go2{margin-top:0;flex:1 1 auto}
+.linkbtn{border:0;background:transparent;font:inherit;font-size:var(--t3);color:var(--ink2);
+ text-decoration:underline;cursor:pointer;padding:12px 6px;min-height:44px;white-space:nowrap;flex:0 0 auto}
+.readit{width:100%;margin:4px 0 8px}
+.card.peekcard{align-items:stretch;text-align:left;padding:14px 16px;margin-top:10px;width:100%;
+ box-shadow:none;border:1.5px solid var(--line)}
+.peekhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.peekhead .qmid{margin:0;font-size:var(--t5)}
+.rsteps.small li{font-size:var(--t4)}
+.inside{display:flex}
+.inside .ic{flex:1 1 0}
+.note.stuck{margin:0 0 10px;max-width:none;width:100%;text-align:left;display:flex;flex-direction:column;gap:8px}
+.stuckbtns{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.stuckbtns .go2{margin-top:0;max-width:none}
+.ver{margin:10px 0 0;font-size:var(--t1);color:var(--muted);letter-spacing:.06em}
+/* tap where the punctuation goes: a gap between every pair of words */
+.sent.gaps{line-height:2.1}
+.gap{border:0;border-bottom:2px dotted #C9C2B6;width:18px;height:30px;margin:0 1px;vertical-align:-8px;padding:0;
+ font:inherit;cursor:pointer;border-radius:4px}
+.gap.ok{width:auto;min-width:14px;border-bottom-color:var(--yes);color:var(--yes);font-weight:700;font-size:var(--t6);background:var(--yes-bg)}
+.gap.no{border-bottom-color:var(--no);background:var(--no-bg)}
+.sent u{text-decoration-thickness:2px;text-underline-offset:4px}
+
 /* ---- the house brand, course layer ---- */
 .mwrap{display:flex;justify-content:center;margin:2px 0 4px}
 .mascot{display:block}
@@ -354,12 +397,12 @@ main{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 .tbar{margin-top:10px}
 .tnum{top:10px;right:12px}
 </style></head><body>
-<header><div class="hrow single">
+<header id="hdr"><div class="hrow single">
+ <button class="back" id="back" aria-label="Back" onclick="goMap()" hidden>&lsaquo;</button>
  <div class="htitle"><b id="hT">One Hundred</b><span id="hS">Year 6 SATs English</span></div>
  </div>
  <div class="track"><i id="bar"></i></div></header>
 <main id="main"><div id="app"></div><div class="pad"></div></main>
-<button class="back" id="back" onclick="goMap()" hidden>&lsaquo;</button>
 <script>
 
 /* ================= question generators =================
@@ -371,6 +414,8 @@ main{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
    Content banks rather than arithmetic: each generator draws from sentences
    written for it, seeded so a question is stable while on screen and different
    next visit. */
+/* Bumped once per phase of work, shown small under "About this course". */
+const VERSION="v11";
 const R = s => { let x=(s*1103515245+12345)&0x7fffffff; return ()=>(x=(x*1103515245+12345)&0x7fffffff)/0x7fffffff; };
 const pick=(r,a)=>a[Math.floor(r()*a.length)];
 const shuffle=(r,a)=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
@@ -451,6 +496,7 @@ const PUNCT=[
  {k:"comma",sent:"We lifted the log and found worms|,| woodlice|,| snails and slugs.",
   ask:"the commas in the list",n:2},
 ];
+const PUNCTSET={comma:["comma","brackets"],semicolon:["semicolon","dash"],colon:["colon"],hyphen:["hyphen"]};
 /* Each row carries its own four options, written out. Generating the wrong
    ones by string surgery produced duplicates — an apostrophe question with two
    identical choices teaches nothing and cannot be answered. */
@@ -520,13 +566,13 @@ const SPELL=[
  {c:"S46",r:"the suffix -ous",w:[["hazardous","The broken pavement was quite ___."],
    ["famous","We met a ___ writer."],["jealousy","I hid my ___ when my friend won."]]},
  {c:"S47",r:"\u2013tion, \u2013sion, \u2013ssion, \u2013cian",w:[["session","The afternoon ___ will start at 2 o'clock."],
-   ["suggestion","I have a ___ to your problem."],["solution","I have a ___ to your problem."],
+   ["suggestion","Can I make a ___ for our class trip?"],["solution","I have a ___ to your problem."],
    ["registration","The children were asked to be quiet during ___."]]},
  {c:"S56",r:"words ending -able and -ible",w:[["probably","I will ___ go to the museum on Saturday."],
    ["affordable","The new phone is lightweight and ___."],["memorable","Sports day was a ___ event."]]},
  {c:"S60",r:"silent letters",w:[["knitting","I've been ___ a jumper."],["island","The swans nested on an ___ in the lake."],
    ["knight","There was a brave ___ in the story."]]},
- {c:"S61",r:"homophones",w:[["four","We used plain ___ to make bread."],["through","The children walked home ___ the park."],
+ {c:"S61",r:"homophones",w:[["flour","We used plain ___ to make bread."],["through","The children walked home ___ the park."],
    ["passed","They ___ a bridge on their way to school."],["queue","We waited in the ___ to buy tickets."]]},
  {c:"S53",r:"endings like -cious and -tious",w:[["suspicious","The cat was ___ of the new food."],
    ["nutritious","The cook served a ___ meal."],["delicious","The meal was ___."]]},
@@ -562,8 +608,12 @@ const GEN={
   return {ask:"choose", sent:sent.replace(/\|/g,""), q:"What word class is <b>"+w+"</b>?",
           opts:shuffle(r,opts.concat([c])), a:c};
  },
- punct(r,lvl){
-  const p=pick(r,PUNCT);
+ punct(r,lvl,kind){
+  /* v11: every punctuation subtopic drew from all six kinds, so "Colons"
+     asked about brackets. A subtopic now asks about its own marks; the
+     paper, the check and today's practice still mix them. */
+  const pool=kind?PUNCT.filter(p=>PUNCTSET[kind].includes(p.k)):PUNCT;
+  const p=pick(r,pool);
   return {ask:"tapGaps", sent:p.sent, hint:"Where does "+p.ask+" go? Tap the place.", a:p.n, lab:p.k};
  },
  apostrophe(r){
@@ -621,7 +671,11 @@ const GEN={
  tense(r){
   const [sent,ans,name]=pick(r,TENSE);
   const w=sent.match(/\|([^|]+)\|/)[1];
-  return {ask:"type", sent:sent.replace(/\|([^|]+)\|/g,"______"),
+  /* v11: every marked verb became a blank but only the first was asked for,
+     so "Oliver ______ proud when he ______ his medal" had two gaps and one
+     answer box. The other verbs are now shown already in the right tense. */
+  let k=0;
+  return {ask:"type", sent:sent.replace(/\|([^|]+)\|/g,()=>k++===0?"______":ans[k-1]),
           q:"Put <b>"+w+"</b> into the "+name+" tense.", a:ans[0], hint:"One word, or two if it needs a helper."};
  },
  modal(r){
@@ -669,12 +723,12 @@ const CAMPS=[
  {id:"t1", em:"\u2049\ufe0f", en:"Punctuation", fr:"Ponctuation",
   sub_en:"14 marks \u2014 the biggest part of Paper 1",
   sub_fr:"14 points \u2014 la plus grande partie", stops:[
-  {g:"punct",n:12,code:"G5.9",en:"Commas and brackets",fr:"Virgules et parenth\u00e8ses",
+  {g:"punct",arg:"comma",n:12,code:"G5.9",en:"Commas and brackets",fr:"Virgules et parenth\u00e8ses",
    sub_en:"asked 8 times in three years",sub_fr:"8 fois en trois ans"},
-  {g:"punct",n:10,code:"G5.11 / G5.12",en:"Semi-colons and dashes",fr:"Points-virgules et tirets",
+  {g:"punct",arg:"semicolon",n:10,code:"G5.11 / G5.12",en:"Semi-colons and dashes",fr:"Points-virgules et tirets",
    sub_en:"joining two whole sentences",sub_fr:"relier deux phrases"},
-  {g:"punct",n:8,code:"G5.10",en:"Colons",fr:"Deux-points",sub_en:"before a list or an explanation",sub_fr:"avant une liste"},
-  {g:"punct",n:8,code:"G5.13",en:"Hyphens",fr:"Traits d'union",sub_en:"ready-made, build-up",sub_fr:"ready-made"},
+  {g:"punct",arg:"colon",n:8,code:"G5.10",en:"Colons",fr:"Deux-points",sub_en:"before a list or an explanation",sub_fr:"avant une liste"},
+  {g:"punct",arg:"hyphen",n:8,code:"G5.13",en:"Hyphens",fr:"Traits d'union",sub_en:"ready-made, build-up",sub_fr:"ready-made"},
   {g:"apostrophe",n:12,code:"G5.8",en:"Apostrophes",fr:"Apostrophes",sub_en:"owning things, and missing letters",sub_fr:"possession et lettres manquantes"},
   {g:"contract",n:10,code:"G5.8",en:"Shortened words",fr:"Formes contract\u00e9es",sub_en:"don't, she'll, won't",sub_fr:"don't, she'll"},
  ]},
@@ -1222,7 +1276,7 @@ const T={
          fr:"Pour l\u2019enfant qui passe les tests, et l\u2019adulte \u00e0 c\u00f4t\u00e9."},
  covwhat:{en:"Every topic here was counted out of the 2024, 2025 and 2026 papers \u2014 150 questions, tagged by the exam board with what they test. There are about 43 things on this paper and they come back every single year.",
           fr:"Chaque sujet a \u00e9t\u00e9 compt\u00e9 dans les tests 2024, 2025 et 2026 \u2014 150 questions. Il y a environ 43 choses \u00e0 savoir, et elles reviennent chaque ann\u00e9e."},
- covhow:{en:"Each topic is taught before it is practised: a video, the method written out, then practice.",
+ covhow:{en:"Each topic is taught before it is practised: what it is, a worked example step by step, one you do together, then practice.",
           fr:"Chaque sujet est enseign\u00e9 avant d\u2019\u00eatre travaill\u00e9 : une vid\u00e9o, la m\u00e9thode \u00e9crite, puis l\u2019entra\u00eenement."},
  covfr:{en:"In English or French \u2014 change it any time at the top.",
         fr:"En anglais ou en fran\u00e7ais \u2014 changez \u00e0 tout moment en haut."},
@@ -1297,6 +1351,20 @@ const T={
  tapgap:{en:"Tap where it goes",fr:"Touche l\u2019endroit"},
  listen:{en:"Hear the word",fr:"\u00c9couter le mot"},
  check:{en:"Check",fr:"V\u00e9rifier"},
+ /* v11 */
+ situation:{en:"Why it matters",fr:"Pourquoi c\u2019est utile"},
+ example:{en:"Worked example",fr:"Exemple d\u00e9taill\u00e9"},
+ nextstep:{en:"Next step",fr:"\u00c9tape suivante"},
+ allsteps:{en:"Show all steps",fr:"Voir toutes les \u00e9tapes"},
+ tapwhy:{en:"tap for why",fr:"touche pour savoir pourquoi"},
+ trywith:{en:"Try one with me",fr:"Essayons-en un ensemble"},
+ backq:{en:"Back to my questions",fr:"Retour \u00e0 mes questions"},
+ readit:{en:"Read it instead",fr:"Le lire plut\u00f4t"},
+ hideit:{en:"Hide the written version",fr:"Cacher la version \u00e9crite"},
+ peek:{en:"Show me the steps",fr:"Montre-moi les \u00e9tapes"},
+ close:{en:"Close",fr:"Fermer"},
+ exagain:{en:"See the example again",fr:"Revoir l\u2019exemple"},
+ goback:{en:"Back",fr:"Retour"},
 };
 /* ================= the shell =================
    Lifted from the maths app on purpose: same cover, same name prompt, same
@@ -1319,6 +1387,14 @@ const BANDS=["#4C5BA8"];
 const esc=s=>(s===undefined||s===null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const norm=x=>String(x).replace(/\s+/g," ").trim().toLowerCase().replace(/[.!?]$/,"").replace(/\u2019/g,"'");
 const byId=id=>ALL.filter(s=>s.id===id)[0];
+/* v11: lessons were keyed by generator, so the eleven spelling subtopics all
+   showed the -tion lesson ("Silent letters" taught shun endings), the four
+   punctuation subtopics all showed paired commas, and the eight word classes
+   shared one lesson. A lesson can now be written for one subtopic, keyed
+   "generator:arg" (e.g. "spell:S60", "wordClass:adverb"), and a subtopic with
+   no lesson of its own falls back to the generator's. */
+const LK=s=>s.arg===undefined?s.g:s.g+":"+(s.arg===null?"mixed":s.arg);
+const LESSON=s=>TEACH[LK(s)]||TEACH[s.g];
 const VIDEO={};
 const mmss=n=>Math.floor(n/60)+":"+String(n%60).padStart(2,"0");
 /* ---------- hearing the word ----------
@@ -1358,8 +1434,21 @@ function render(){
   :V.s==="cover"?coverHTML():V.s==="diag"?diagHTML()
   :V.s==="shelf"?homeHTML():V.s==="topic"?topicHTML()
   :V.s==="stop"?stopHTML():paperHTML();
- if(V.s!=="paper") main.scrollTop=0;
+ /* v11: the page jumped to the top on every tap, which also threw away a
+    child's place half way down a lesson. It resets only on a new screen. */
+ const screen=[V.s,V.id,V.ph,V.i,V.ci].join("|");
+ if(V.s!=="paper"&&screen!==lastScreen) main.scrollTop=0;
+ lastScreen=screen;
+ fitHeader();
+ if(V.focus){ const el=document.getElementById(V.focus), near=V.near; V.focus=null; V.near=false;
+  if(el&&near) el.scrollIntoView({block:"nearest"}); else if(el) main.scrollTop=Math.max(0,el.offsetTop-8); }
 }
+let lastScreen="";
+function fitHeader(){
+ const h=document.getElementById("hdr");
+ if(h) document.documentElement.style.setProperty("--hh",Math.ceil(h.getBoundingClientRect().bottom)+"px");
+}
+window.addEventListener("resize",fitHeader);
 /* ---------- cover ---------- */
 function coverArt(){
  const bits=[["A","var(--band)",20,26,-8],[";","var(--sun)",62,16,0],["\u2019","var(--band)",96,12,6],
@@ -1569,12 +1658,12 @@ function coverHTML(){
   <div class="inside">
    <span class="ic"><b class="num">${ALL.length}</b>${esc(t("nsub"))}</span>
    <span class="ic"><b class="num">${ALL.reduce((a,s)=>a+s.n,0)}</b>${esc(t("nq"))}</span>
-   <span class="ic"><b class="num">${Object.keys(TEACH).length}</b>${esc(t("nvid"))}</span>
+   ${Object.keys(VIDEO).length?`<span class="ic"><b class="num">${Object.keys(VIDEO).length}</b>${esc(t("nvid"))}</span>`:""}
   </div>
   <div class="peek">${CAMPS.map(c=>`<span class="pk">${c.em}</span>`).join("")}</div>
   ${V.more?`<div class="card covcard">
     <p class="covwho">${esc(t("covwho"))}</p><p class="covp">${esc(t("covwhat"))}</p>
-    <p class="covp">${esc(t("covhow"))}</p><p class="covsm">${esc(t("covfr"))}</p></div>`
+    <p class="covp">${esc(t("covhow"))}</p><p class="ver">${VERSION}</p></div>`
    :`<button class="covmore" onclick="showMore()">${esc(t("covmore"))}</button>`}
   </div>`;
 }
@@ -1718,13 +1807,13 @@ function sessionHTML(){
   <p class="step">${esc(t("todays"))} \u00b7 ${V.i+1} ${esc(t("of"))} ${V.qs.length}</p>
   <div class="sesbar"><i style="width:${V.i/V.qs.length*100}%"></i></div>
   <p class="sestop">${esc(cur.s[L]||cur.s.en)}</p>
-  <div class="card">${V.shown
+  <div class="card">${!V.shown&&V.miss>=2?stuckNote(LESSON(cur.s),"sesShow"):""}
+   ${V.shown
    ? `<div class="reveal"><p class="rl">${esc(t("theans"))}</p>
       <p class="ra">${esc(Array.isArray(cur.q.a)?cur.q.a.join(", "):cur.q.a)}</p></div>`
    : SESBODY(cur.q)}
    <div class="tally">${dots}</div></div>
   ${V.shown?`<button class="go2" onclick="sesNext()">${esc(t("moveon"))}</button>`:""}
-  ${!V.shown&&V.miss>=2?`<button class="go2 quiet small" onclick="sesShow()">${esc(t("giveup"))}</button>`:""}
   </div>`;
 }
 function sesShow(){V.shown=true;render()}
@@ -1763,55 +1852,84 @@ function topicHTML(){
 /* ---------- a subtopic ---------- */
 function openStop(id){
  const s=byId(id);
- V={s:"stop",id,ph:"lesson",i:0,g:0,typed:"",pick:null,bad:0,miss:0,why:{},topicFrom:lastTopic};
+ V={s:"stop",id,ph:"lesson",i:0,step:0,g:0,typed:"",pick:null,bad:0,miss:0,why:{},topicFrom:lastTopic};
  S.at={id,ph:"lesson",i:0}; save(); render();
 }
 function newQ(){const s=byId(V.id);V.q=GEN[s.g](R(Date.now()%99991+V.i*7919),s.lvl||1,s.arg);V.typed="";V.pick=null;V.miss=0}
 function stopHTML(){
- const s=byId(V.id), T2=TEACH[s.g];
+ const s=byId(V.id), T2=LESSON(s);
  if(V.ph==="lesson") return lessonHTML(s,T2);
  if(V.ph==="guided") return guidedHTML(s,T2);
  if(V.ph==="done") return doneHTML(s);
  return drillHTML(s,T2);
 }
+/* v11: the page opened on a video that did not exist (a play button and a
+   file name), then timecodes, then the bare steps under "not for learning
+   from", then an apology, and the teaching came last. Now a child scrolling
+   down meets why it matters, the worked example one step at a time, then the
+   buttons. The bare steps moved into practice. */
 function lessonHTML(s,T2){
  const src=(VIDEO[s.g]||{})[L];
- const marks=T2.steps.map((st,i)=>st.at!==undefined?st.at:Math.round(8+i*11));
- return `<div class="wrap"><p class="step">${esc(s[L]||s.en)}</p>
-  <h2 class="lh first">${esc(t("vidmain"))}</h2>
-  <div class="vidbox">${src
-   ?`<video class="vid" id="theVid" controls playsinline preload="metadata" src="${esc(src)}"></video>`
-   :`<div class="vidph"><span class="vidplay">\u25b6</span><span class="vidt">
-     <b>${esc(t("vidwatch"))}</b><small>${esc(t("vidsoon"))} \u00b7 ${esc(s.g)}-${L}.mp4 \u00b7 ${esc(t("vidlen"))}</small>
-     </span></div>`}</div>
-  <p class="jumph">${esc(t("vidjump"))}</p>
-  <div class="jumps">${T2.steps.map((st,i)=>`<button class="jump" onclick="seekTo(${marks[i]})">
-   <span class="jt num">${mmss(marks[i])}</span><span class="jx">${esc(st[L]||st.en)}</span></button>`).join("")}</div>
-  <h2 class="lh">${esc(t("method"))}</h2>
-  <p class="lhsub">${esc(t("methodsub"))}</p>
-  <div class="card recall">${T2.show?`<div class="qmid">${esc(T2.show)}</div>`:""}
-   <ol class="rsteps">${T2.steps.map(st=>`<li>${esc(st.line)}</li>`).join("")}</ol></div>
-  ${src?"":`<h2 class="lh">${esc(t("why"))}?</h2>
-   <p class="fallback">${esc(t("nofilm"))}</p>
-   ${T2.story.map(c=>`<div class="card story"><div class="storyem">${c.em}</div>
-     <p class="storyline">${esc(c[L]||c.en)}</p></div>`).join("")}
-   <div class="card lesson"><div class="steps">${T2.steps.map((st,i)=>`<div class="stepline">
-     <b>${esc(st.line)}</b><span>${esc(st[L]||st.en)}</span>
-     ${(V.why||{})[i]?`<i>${esc(w(st,"why"))}</i>`
-      :`<button class="whybtn" onclick="showWhy(${i})">${esc(t("why"))}?</button>`}
-    </div>`).join("")}</div></div>`}
-  <button class="go2" onclick="toGuided()">${esc(t("practise"))}</button>
-  <button class="go2 quiet" onclick="skipTeach()">${esc(t("iknow"))}</button></div>`;
+ const back=V.resumeAt!==undefined;
+ const written=`<h2 class="lh">${esc(t("situation"))}</h2>
+  ${T2.story.slice(0,2).map(c=>`<div class="card story"><div class="storyem">${c.em}</div>
+    <p class="storyline">${esc(c[L]||c.en)}</p></div>`).join("")}
+  <h2 class="lh">${esc(t("example"))}</h2>
+  ${exampleHTML(s,T2)}`;
+ let film="";
+ if(src){
+  const marks=T2.steps.map((st,i)=>st.at!==undefined?st.at:Math.round(8+i*11));
+  film=`<div class="vidbox"><video class="vid" id="theVid" controls playsinline preload="metadata" src="${esc(src)}"></video></div>
+   <p class="jumph">${esc(t("vidjump"))}</p>
+   <div class="jumps">${T2.steps.map((st,i)=>`<button class="jump" onclick="seekTo(${marks[i]})">
+    <span class="jt num">${mmss(marks[i])}</span><span class="jx">${esc(st[L]||st.en)}</span></button>`).join("")}</div>`;
+ }
+ return `<div class="wrap">
+  <h1 class="lt">${esc(s[L]||s.en)}</h1>
+  ${src?film+(V.read?`<button class="linkbtn readit" onclick="toggleRead()">${esc(t("hideit"))}</button>${written}`
+    :`<button class="go2 quiet readit" onclick="toggleRead()">${esc(t("readit"))}</button>`):written}
+  <button class="go2" onclick="toGuided()">${esc(back?t("backq"):t("trywith"))}</button>
+  ${back?"":`<button class="go2 quiet" onclick="skipTeach()">${esc(t("iknow"))}</button>`}</div>`;
 }
+/* the worked example, one step at a time; tap a step for its reason */
+function exampleHTML(s,T2){
+ const n=T2.steps.length, upto=Math.min(V.step||0,n-1), last=upto>=n-1;
+ return `<div class="card lesson ex" id="ex">
+  ${T2.show?`<div class="qmid${T2.show.length>24?" long":""}">${esc(T2.show)}</div>`:""}
+  <div class="exsteps">${T2.steps.slice(0,upto+1).map((st,i)=>{
+   const open=!!(V.why||{})[i];
+   return `<button class="sbtn${i<upto?" old":""}" onclick="showWhy(${i})" aria-expanded="${open}">
+    <b>${esc(st.line)}</b><span>${esc(st[L]||st.en)}</span>
+    ${open?`<i>${esc(w(st,"why"))}</i>`:(i===upto?`<small>${esc(t("tapwhy"))}</small>`:"")}</button>`;
+  }).join("")}</div>
+  ${last?"":`<div class="exnav"><button class="go2" onclick="stepNext()">${esc(t("nextstep"))}</button>
+   <button class="linkbtn" onclick="allSteps()">${esc(t("allsteps"))}</button></div>`}
+ </div>`;
+}
+function stepNext(){V.step=(V.step||0)+1;render()}
+function allSteps(){V.step=LESSON(byId(V.id)).steps.length-1;render()}
+function toggleRead(){V.read=!V.read;render()}
+/* the bare steps, a tap away in practice */
+function peekHTML(T2){
+ if(!T2) return "";
+ if(!V.peek) return `<button class="linkbtn" onclick="togglePeek()">${esc(t("peek"))}</button>`;
+ return `<div class="card peekcard" id="peek"><div class="peekhead">
+   <div class="qmid">${esc(T2.show||"")}</div>
+   <button class="linkbtn" onclick="togglePeek()">${esc(t("close"))}</button></div>
+  <ol class="rsteps small">${T2.steps.map(st=>`<li>${esc(st.line)}</li>`).join("")}</ol></div>`;
+}
+function togglePeek(){V.peek=!V.peek;if(V.peek){V.focus="peek";V.near=true}render()}
 function seekTo(sec){const v=document.getElementById("theVid");if(v){try{v.currentTime=sec;v.play()}catch(e){}}}
-function showWhy(i){if(!V.why)V.why={};V.why[i]=1;render()}
+function showWhy(i){if(!V.why)V.why={};V.why[i]=!V.why[i];render()}
 function skipTeach(){V.ph="drill";V.i=0;V.bad=0;newQ();S.at={id:V.id,ph:"drill",i:0};save();render()}
 function toGuided(){
  if(V.resumeAt!==undefined){const at=V.resumeAt;V.resumeAt=undefined;
   V.ph="drill";V.i=at;V.bad=0;newQ();S.at={id:V.id,ph:"drill",i:at};save();render();return}
  V.ph="guided";V.g=0;V.typed="";V.miss=0;S.at={id:V.id,ph:"guided",i:0};save();render();
 }
-function backToLesson(){V.resumeAt=V.i;V.ph="lesson";V.why={};render()}
+/* three wrong: back to the lesson with every step showing, scrolled to the example */
+function backToLesson(){const s=byId(V.id);V.resumeAt=V.i;V.ph="lesson";V.why={};
+ V.step=LESSON(s).steps.length-1;V.read=true;if(!(VIDEO[s.g]||{})[L])V.focus="ex";render()}
 function guidedHTML(s,T2){
  const steps=T2.guided.steps, q=steps[Math.min(V.g,steps.length-1)];
  return `<div class="wrap"><p class="step">${esc(s[L]||s.en)}</p>${phaseBar(1)}
@@ -1819,15 +1937,16 @@ function guidedHTML(s,T2){
    <div class="steps">${steps.slice(0,V.g).map(x=>
     `<div class="stepline done"><b>${esc(x.a)}</b><span>${esc(w(x,"ask"))}</span></div>`).join("")}</div>
    <p class="qq">${esc(w(q,"ask"))}</p>
+   ${V.miss>=2?`<div class="note">${esc(t("look"))} \u2014 ${esc(w(T2.steps[Math.min(V.g,T2.steps.length-1)],"why"))}</div>`:""}
    <input class="wordin" id="win" type="text" value="${esc(V.typed)}" oninput="V.typed=this.value"
     placeholder="\u2026" autocapitalize="none" autocorrect="off" spellcheck="false">
    <button class="go2" onclick="checkGuided()">${esc(t("check"))}</button>
-   ${V.miss>=2?`<div class="note">${esc(t("look"))} \u2014 ${esc(w(T2.steps[Math.min(V.g,2)],"why"))}</div>`:""}
+   ${peekHTML(T2)}
   </div></div>`;
 }
 function checkGuided(){
  const el=document.getElementById("win"); if(el) V.typed=el.value;
- const T2=TEACH[byId(V.id).g], steps=T2.guided.steps;
+ const T2=LESSON(byId(V.id)), steps=T2.guided.steps;
  if(!V.typed.trim()) return;
  if(norm(V.typed)===norm(steps[Math.min(V.g,steps.length-1)].a)){
   V.g++; V.typed=""; V.miss=0;
@@ -1851,14 +1970,21 @@ function qBody(q,isDiag){
     onclick="tapWord('${p.replace(/'/g,"\\'")}','${done}')">${esc(p)}</button>`:esc(p)).join("")}</p>`;
  }
  if(q.ask==="tapGaps"){
-  const parts=q.sent.split("|");
-  const picked=V.pick||[];
-  return `<p class="hint">${esc(q.hint)}</p><p class="sent">${parts.map((p,i)=>
-   i%2===1?`<button class="gap${picked.includes(i)?" on":""}" onclick="tapGap(${i},'${done}')"></button>`
-    :esc(p)).join("")}</p>`;
+  /* v11: the only gap drawn was the right one, so one tap always scored and
+     the question taught nothing. Now there is a gap between every pair of
+     words; the right ones show the mark when tapped, a wrong one turns red. */
+  const G=gapModel(q.sent), picked=V.pick||[];
+  return `<p class="hint">${esc(q.hint)}</p><p class="sent gaps">${G.words.map((wd,i)=>{
+   if(i===G.words.length-1) return esc(wd);
+   const sl=G.slots[i], on=picked.includes(i);
+   return esc(wd)+`<button class="gap${on?(sl.ok?" ok":" no"):""}" aria-label="gap after ${esc(wd)}"
+    onclick="tapGap(${i},'${done}')">${on&&sl.ok?esc(sl.mark):""}</button>`;
+  }).join("")}</p>`;
  }
  if(q.ask==="choose"){
-  return `${q.sent?`<p class="sent">${esc(q.sent)}</p>`:""}
+  /* v11: "the underlined part" was asked about with nothing underlined */
+  const sentHTML=q.marked?q.marked.split("|").map((p,i)=>i%2?`<u>${esc(p)}</u>`:esc(p)).join(""):esc(q.sent||"");
+  return `${q.sent?`<p class="sent">${sentHTML}</p>`:""}
    <p class="qq">${q.q}</p>
    <div class="opts">${q.opts.map(o=>`<button class="opt${V.pick===o?(o===q.a?" yes":" no"):""}"
     onclick="tapOpt('${String(o).replace(/'/g,"\\'")}','${done}')">${esc(o)}</button>`).join("")}</div>`;
@@ -1884,10 +2010,26 @@ function tapWord(word,done){
  } else if(V.pick.some(x=>!need.includes(x))){ V.miss=(V.miss||0)+1; markWrong(done); }
  render();
 }
+/* The sentence without its marks, split into words, with a slot after every
+   word but the last. A slot is right if the mark was written straight after
+   that word, so "Pepper |(|a black cat" puts the bracket in the gap after
+   Pepper and "ready|-|made" puts the hyphen after ready. */
+function gapModel(sent){
+ const parts=String(sent).split("|"), words=[], slots=[];
+ parts.forEach((p,i)=>{
+  if(i%2===1){ if(words.length) slots[words.length-1]={ok:true,mark:p.trim()}; return; }
+  p.split(/\s+/).filter(Boolean).forEach(wd=>{ words.push(wd); slots[words.length-1]=slots[words.length-1]||{ok:false}; });
+ });
+ /* a word split by a hyphen mark ("ready|-|made") arrives as two words */
+ return {words, slots:words.map((_,i)=>slots[i]||{ok:false})};
+}
 function tapGap(i,done){
  const q=V.q||V.qs[V.i]; if(!V.pick)V.pick=[];
- if(!V.pick.includes(i))V.pick.push(i);
- if(V.pick.length>=q.a) finish(true,done);
+ if(V.pick.includes(i)) return;
+ V.pick.push(i);
+ const G=gapModel(q.sent), need=G.slots.map((s,k)=>s.ok?k:-1).filter(k=>k>=0);
+ if(!G.slots[i].ok){ V.miss=(V.miss||0)+1; markWrong(done); }
+ if(need.every(k=>V.pick.includes(k))) finish(!V.pick.some(k=>!G.slots[k].ok),done);
  render();
 }
 function tapOpt(o,done){
@@ -1924,17 +2066,26 @@ function drillHTML(s,T2){
  const q=V.q, dots=Array.from({length:s.n}).map((_,k)=>`<i class="${k<V.i?"on":""}"></i>`).join("");
  return `<div class="wrap"><p class="step">${esc(s[L]||s.en)} \u00b7 ${V.i+1} ${esc(t("of"))} ${s.n}</p>
   ${phaseBar(2)}
-  <div class="card">${V.shown?"":qBody(q,false)}
+  <div class="card">${!V.shown&&V.miss>=2?stuckNote(T2,"giveUp",V.bad>=3?againBtn(s):""):""}
+   ${V.shown?"":qBody(q,false)+peekHTML(T2)}
    ${V.shown?`<div class="reveal"><p class="rl">${esc(t("theans"))}</p>
      <p class="ra">${esc(Array.isArray(q.a)?q.a.join(", "):q.a)}</p>
      ${q.clip||q.ask==="type"?`<button class="listen" onclick="say('${String(q.a).replace(/'/g,"\\'")}')">
       <span>\u{1f50a}</span>${esc(t("hearit"))}</button>`:""}</div>`:""}
-   ${!V.shown&&V.miss>=2?`<div class="note">${esc(t("look"))} \u2014 ${esc(w(T2.steps[0],"why"))}</div>`:""}
+   ${!V.shown&&V.miss<2&&V.bad>=3?againBtn(s):""}
    <div class="tally">${dots}</div></div>
   ${V.shown?`<button class="go2" onclick="moveOn()">${esc(t("moveon"))}</button>`:""}
-  ${!V.shown&&V.miss>=2?`<button class="go2 quiet small" onclick="giveUp()">${esc(t("giveup"))}</button>`:""}
-  ${!V.shown&&V.bad>=3?`<button class="go2 warm small" onclick="backToLesson()">\u25b6 ${esc(t("vidagain"))}</button>`:""}
   </div>`;
+}
+/* v11: the hint and the way out sit at the top of the card, where a stuck child
+   is looking; under the answers they were often off the bottom of the screen. */
+function stuckNote(T2,giveFn,extra){
+ const txt=T2?w(T2.steps[0],"why"):"";
+ return `<div class="note stuck">${txt?`<span>${esc(t("look"))} \u2014 ${esc(txt)}</span>`:""}
+  <span class="stuckbtns"><button class="go2 quiet small" onclick="${giveFn}()">${esc(t("giveup"))}</button>${extra||""}</span></div>`;
+}
+function againBtn(s){
+ return `<button class="go2 warm small" onclick="backToLesson()">${(VIDEO[s.g]||{})[L]?"\u25b6 "+esc(t("vidagain")):esc(t("exagain"))}</button>`;
 }
 function advance(){
  const s=byId(V.id); V.i++; V.typed=""; V.pick=null; V.miss=0; V.shown=false;
