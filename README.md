@@ -6,6 +6,31 @@ One HTML file, no build step, no backend. English and French.
 Companion to [ks2-maths](https://github.com/cdian-ai/ks2-maths) — same shell,
 same cover, same subtopic page, so the two read as one product.
 
+## v2: the Woven design, and Reading (October 2026, branch `v2-woven-design`)
+
+Rebuilt in the same design as One Hundred Maths v2 (indigo for English, Nuuru in
+the English hat, Nunito): Home with six topic tiles and ten blocks each (block 8
+is the "ready" line), topic and part pages, the daily ten, a forgiving streak,
+Ready for SATs, For parents and Mocks. English only for now; the French text is
+still in the data.
+
+- **Six topics, 58 parts**: Word classes, Sentences & clauses, Verbs, tenses &
+  Standard English, Punctuation, Spelling & vocabulary, and **Reading**. The 37
+  original subtopics are reused; about 20 grammar and punctuation areas that were
+  missing now have practice (subject and object, question tags, relative clauses,
+  present perfect, progressive, subjunctive, speech, bullet points and more).
+- **Every word is tappable** in "tap the noun" questions (before, only the right
+  words were buttons, which gave the answer away), and punctuation questions put
+  a gap between every pair of words (before, every gap was a right one).
+- **The Year 3–6 word lists**, all read aloud in a sentence, and bigger banks.
+- **Reading**, with texts written for the course (a story, a non-fiction text
+  about wells, and a poem), questions on all eight skills (2a–2h), and the long
+  answers compared with a full-mark answer and self-marked.
+- **Three mocks**: grammar and punctuation (50 questions, 45 min), spelling (20
+  words read aloud) and reading (all three texts, 60 min).
+- **Video scripts v2**: `scripts/ks2-english-video-scripts-v2-2026-10-30.csv`,
+  38 films covering the parts (parts that teach the same method share a film).
+
 ## What it is built from
 
 The **2024, 2025 and 2026 mark schemes** — 150 questions, each tagged by the

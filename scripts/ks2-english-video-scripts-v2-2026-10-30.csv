@@ -1,0 +1,270 @@
+video_id,language,parts,timecode,section,line
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,0:00,the situation,"Every word in a sentence has a job. The word class is the name of the job, not the name of the word."
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,0:13,why it matters,The same word can do different jobs. 'He folds the letter' — verb. 'The letter had folds' — noun.
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,0:24,into the method,Here is how to do it.
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,0:27,step 1 — what is it doing here?,"Ask what the word is doing in this sentence, not what it usually is. This is the trick the test uses most: a word you know as one class doing another job."
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,0:43,"step 2 — nouns name, verbs do","castle and hill name things. stood is what happened. If you can put 'the' in front of it, it is probably a noun."
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,0:56,step 3 — adjectives and adverbs describe,"crumbling describes the castle. An adverb would describe the standing. Adjectives describe things, adverbs describe actions. That is the difference in one line."
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,1:09,step 4 — the tall tree with silver leaves,A noun phrase is the noun plus the words that tell you more about it. Find the noun first: tree.
+wordClass-wc-0-en,en,wc.0 Nouns and noun phrases,1:20,close,That is the whole method. Try one yourself.
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,0:00,the situation,"Every word in a sentence has a job. The word class is the name of the job, not the name of the word."
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,0:13,why it matters,The same word can do different jobs. 'He folds the letter' — verb. 'The letter had folds' — noun.
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,0:24,into the method,Here is how to do it.
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,0:27,step 1 — what is it doing here?,"Ask what the word is doing in this sentence, not what it usually is. This is the trick the test uses most: a word you know as one class doing another job."
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,0:43,"step 2 — nouns name, verbs do","castle and hill name things. stood is what happened. If you can put 'the' in front of it, it is probably a noun."
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,0:56,step 3 — adjectives and adverbs describe,"crumbling describes the castle. An adverb would describe the standing. Adjectives describe things, adverbs describe actions. That is the difference in one line."
+wordClass-en,en,wc.1 Verbs; wc.2 Adjectives; wc.3 Conjunctions; wc.4 Pronouns; wc.5 Adverbs and adverbials; wc.6 Prepositions; wc.7 Determiners,1:09,close,That is the whole method. Try one yourself.
+wc-8-en,en,wc.8 Subject and object,0:00,the situation,“The goat ate the grass.” Who did the eating?
+wc-8-en,en,wc.8 Subject and object,0:07,why it matters,The one doing the verb is the subject. The one it’s done to is the object.
+wc-8-en,en,wc.8 Subject and object,0:17,into the method,Here is how to do it.
+wc-8-en,en,wc.8 Subject and object,0:20,step 1 — find the verb: ate,"Start with the verb, the action. Everything else is about who does it and to what."
+wc-8-en,en,wc.8 Subject and object,0:30,step 2 — who ate? the goat,The one doing it is the subject. The subject usually comes before the verb.
+wc-8-en,en,wc.8 Subject and object,0:39,step 3 — ate what? the grass,The one it’s done to is the object. The object usually comes after the verb.
+wc-8-en,en,wc.8 Subject and object,0:48,close,That is the whole method. Try one yourself.
+func-en,en,sc.0 Four sentence types,0:00,the situation,"Four kinds of sentence: statement, question, command, exclamation. Each has its own job and its own ending."
+func-en,en,sc.0 Four sentence types,0:10,why it matters,An exclamation must start with What or How and have a verb. 'What a brilliant song this is!' Not just anything with an exclamation mark.
+func-en,en,sc.0 Four sentence types,0:23,into the method,Here is how to do it.
+func-en,en,sc.0 Four sentence types,0:26,step 1 — statements tell you something,'We watched the game together.' Full stop. Most sentences are statements. Check the others first and this one is what is left.
+func-en,en,sc.0 Four sentence types,0:38,step 2 — commands tell you to do something,'Hold the handrail.' They usually start with the verb. A command has no visible subject — the 'you' is understood.
+func-en,en,sc.0 Four sentence types,0:49,step 3 — exclamations are the strict one,They must begin What or How AND have a verb. 'What a mess!' is not an exclamation in this test — no verb. This is the marks people lose.
+func-en,en,sc.0 Four sentence types,1:04,close,That is the whole method. Try one yourself.
+sc-1-en,en,sc.1 Question tags,0:00,the situation,"“It’s hot today, isn’t it?” The little question on the end is a question tag."
+sc-1-en,en,sc.1 Question tags,0:09,why it matters,Question tags check that someone agrees.
+sc-1-en,en,sc.1 Question tags,0:15,into the method,Here is how to do it.
+sc-1-en,en,sc.1 Question tags,0:18,step 1 — find the helping verb: are,You’re means you are. The tag repeats the helping verb.
+sc-1-en,en,sc.1 Question tags,0:25,step 2 — flip it: aren’t,"Positive sentence, negative tag. A negative sentence gets a positive tag: It isn’t raining, is it?"
+sc-1-en,en,sc.1 Question tags,0:35,step 3 — aren’t you?,Add the pronoun and a question mark. The tag always ends with a question mark.
+sc-1-en,en,sc.1 Question tags,0:44,close,That is the whole method. Try one yourself.
+sc-2-en,en,sc.2 Main clauses,0:00,the situation,“We ate under the mango tree because it was hot.”
+sc-2-en,en,sc.2 Main clauses,0:07,why it matters,Which part could stand on its own as a sentence?
+sc-2-en,en,sc.2 Main clauses,0:14,into the method,Here is how to do it.
+sc-2-en,en,sc.2 Main clauses,0:17,step 1 — cover half,Read each part on its own. A main clause makes sense alone.
+sc-2-en,en,sc.2 Main clauses,0:25,step 2 — “We ate under the mango tree” ✓,This works as a sentence. It has a subject and a verb and is complete.
+sc-2-en,en,sc.2 Main clauses,0:34,step 3 — “because it was hot” ✗,"This needs the rest. It starts with a subordinating conjunction, so it can’t stand alone."
+sc-2-en,en,sc.2 Main clauses,0:43,close,That is the whole method. Try one yourself.
+sc-3-en,en,sc.3 Relative clauses,0:00,the situation,"“My uncle, who lives in Labé, keeps bees.”"
+sc-3-en,en,sc.3 Relative clauses,0:06,why it matters,The part between the commas tells you more about my uncle.
+sc-3-en,en,sc.3 Relative clauses,0:14,into the method,Here is how to do it.
+sc-3-en,en,sc.3 Relative clauses,0:17,step 1 — find the noun: my uncle,What is the extra information about? A relative clause adds detail to a noun.
+sc-3-en,en,sc.3 Relative clauses,0:26,step 2 — who lives in Labé,"It starts with a relative pronoun. who for people, which for things, whose for belonging."
+sc-3-en,en,sc.3 Relative clauses,0:35,step 3 — remove it: still works,My uncle keeps bees. That shows it was extra information.
+sc-3-en,en,sc.3 Relative clauses,0:42,close,That is the whole method. Try one yourself.
+sc-4-en,en,sc.4 Expanded noun phrases,0:00,the situation,“a dog” tells you very little.
+sc-4-en,en,sc.4 Expanded noun phrases,0:06,why it matters,“a small brown dog with a red collar” paints a picture.
+sc-4-en,en,sc.4 Expanded noun phrases,0:14,into the method,Here is how to do it.
+sc-4-en,en,sc.4 Expanded noun phrases,0:17,step 1 — noun: dog,Find the main noun. Everything else is built around it.
+sc-4-en,en,sc.4 Expanded noun phrases,0:24,step 2 — before: small brown,Adjectives come before the noun. They describe it.
+sc-4-en,en,sc.4 Expanded noun phrases,0:30,step 3 — after: with a red collar,A prepositional phrase can follow it. It adds more detail.
+sc-4-en,en,sc.4 Expanded noun phrases,0:37,close,That is the whole method. Try one yourself.
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:00,the situation,"“I wanted to play, but it was raining.”"
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:06,why it matters,"Two main clauses, joined by one small word."
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:12,into the method,Here is how to do it.
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:15,step 1 — two main clauses,Each half could be a sentence. Co-ordinating conjunctions join equals.
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:22,step 2 — FANBOYS,"for, and, nor, but, or, yet, so. These are the co-ordinating conjunctions."
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:30,step 3 — but = contrast,"Choose the one that fits the meaning. and adds, but contrasts, or gives a choice, so gives a result."
+sc-5-en,en,sc.5 Co-ordinating conjunctions,0:41,close,That is the whole method. Try one yourself.
+clause-en,en,sc.6 Subordinate clauses,0:00,the situation,A clause is a piece of sentence with its own verb. Most sentences are built from two or more.
+clause-en,en,sc.6 Subordinate clauses,0:11,why it matters,A main clause can stand alone. A subordinate clause cannot — it leans on the main one.
+clause-en,en,sc.6 Subordinate clauses,0:21,into the method,Here is how to do it.
+clause-en,en,sc.6 Subordinate clauses,0:24,step 1 — cover half and read it,'I walked to school' works alone. That is the main clause. This test works every time and needs nothing memorised.
+clause-en,en,sc.6 Subordinate clauses,0:35,step 2 — the other half leans,"'as we live on the same road' cannot stand alone. Subordinate. The joining word at the front — as, because, although, before — is what makes it lean."
+clause-en,en,sc.6 Subordinate clauses,0:50,step 3 — relative clauses describe a noun,"'who lives on a farm' tells you which uncle. It starts with who, which or that. A relative clause is a kind of subordinate clause, sitting next to the noun it describes."
+clause-en,en,sc.6 Subordinate clauses,1:06,close,That is the whole method. Try one yourself.
+vt-0-en,en,vt.0 Simple past and present,0:00,the situation,“Yesterday Amina walked to the market.”
+vt-0-en,en,vt.0 Simple past and present,0:06,why it matters,The time word tells you the tense before you read the verb.
+vt-0-en,en,vt.0 Simple past and present,0:14,into the method,Here is how to do it.
+vt-0-en,en,vt.0 Simple past and present,0:17,step 1 — time word: yesterday,"Look for when it happens. Yesterday, last week: past. Every day, always: present."
+vt-0-en,en,vt.0 Simple past and present,0:25,step 2 — past: walk → walked,"Most verbs add -ed in the past. Some are irregular: go → went, win → won."
+vt-0-en,en,vt.0 Simple past and present,0:35,step 3 — walked,Yesterday Amina walked to the market. Check the whole sentence sounds right.
+vt-0-en,en,vt.0 Simple past and present,0:43,close,That is the whole method. Try one yourself.
+vt-1-en,en,vt.1 Present perfect,0:00,the situation,“She has finished her homework.”
+vt-1-en,en,vt.1 Present perfect,0:05,why it matters,"It happened in the past, but it matters now."
+vt-1-en,en,vt.1 Present perfect,0:12,into the method,Here is how to do it.
+vt-1-en,en,vt.1 Present perfect,0:15,step 1 — has or have,"Start with has (he, she, it) or have (I, you, we, they). That’s what makes it the present perfect."
+vt-1-en,en,vt.1 Present perfect,0:26,step 2 — past participle: finished,"Add the past participle. Irregular ones: seen, been, written, eaten."
+vt-1-en,en,vt.1 Present perfect,0:33,step 3 — has finished,She has finished her homework. The simple past would be: she finished.
+vt-1-en,en,vt.1 Present perfect,0:41,close,That is the whole method. Try one yourself.
+modal-en,en,vt.2 Modal verbs,0:00,the situation,"Modal verbs are a dial for how certain something is. must, will, might, could, should."
+modal-en,en,vt.2 Modal verbs,0:09,why it matters,"They will walk home. They might walk home. One is a fact, the other is a maybe."
+modal-en,en,vt.2 Modal verbs,0:19,into the method,Here is how to do it.
+modal-en,en,vt.2 Modal verbs,0:22,step 1 — find the modal,"It sits just before the main verb. must, shall, will, should, would, can, could, may, might — that is the whole list."
+modal-en,en,vt.2 Modal verbs,0:34,step 2 — how sure is it?,"will and must are certain. might and could are possible. The test asks you to explain the difference in words, so practise saying it."
+modal-en,en,vt.2 Modal verbs,0:47,step 3 — should is different,"should is what ought to happen, not what will. Expectation, not certainty. That distinction has been asked before."
+modal-en,en,vt.2 Modal verbs,0:58,close,That is the whole method. Try one yourself.
+vt-3-en,en,vt.3 Progressive tenses,0:00,the situation,"“While we were eating, the lights went out.”"
+vt-3-en,en,vt.3 Progressive tenses,0:06,why it matters,The eating was going on when something else happened.
+vt-3-en,en,vt.3 Progressive tenses,0:13,into the method,Here is how to do it.
+vt-3-en,en,vt.3 Progressive tenses,0:16,step 1 — form of be: were,"Past progressive uses was or were. Present progressive uses am, is or are."
+vt-3-en,en,vt.3 Progressive tenses,0:24,step 2 — -ing verb: eating,Add the -ing form. That shows it was going on.
+vt-3-en,en,vt.3 Progressive tenses,0:31,step 3 — were eating,While we were eating dinner… It shows an action in progress.
+vt-3-en,en,vt.3 Progressive tenses,0:39,close,That is the whole method. Try one yourself.
+tense-en,en,vt.4 Consistent tense,0:00,the situation,Tense tells the reader when something happened. Get it wrong halfway through and the sentence trips.
+tense-en,en,vt.4 Consistent tense,0:10,why it matters,"The test mostly checks consistency: if you start in the past, you finish in the past."
+tense-en,en,vt.4 Consistent tense,0:20,into the method,Here is how to do it.
+tense-en,en,vt.4 Consistent tense,0:23,step 1 — find the time word,Yesterday tells you this is the past before you read the verbs. There is almost always a clue like this. Find it first and the verbs follow.
+tense-en,en,vt.4 Consistent tense,0:37,step 2 — all the verbs must match,"walked and opened, not walked and opens. One verb in the wrong tense loses the mark even if the rest are right."
+tense-en,en,vt.4 Consistent tense,0:49,step 3 — helpers change the tense too,"was walking, had eaten — the helper is part of the verb. Progressive needs was or were. Perfect needs had or have. Learn those two pairs."
+tense-en,en,vt.4 Consistent tense,1:03,close,That is the whole method. Try one yourself.
+vt-5-en,en,vt.5 The subjunctive,0:00,the situation,"“If I were you, I would ask for help.”"
+vt-5-en,en,vt.5 The subjunctive,0:07,why it matters,"You’re not me, so it isn’t real. That’s when the subjunctive is used."
+vt-5-en,en,vt.5 The subjunctive,0:15,into the method,Here is how to do it.
+vt-5-en,en,vt.5 The subjunctive,0:18,step 1 — is it real or wished?,Wishes and ‘if’ situations that aren’t real. Also demands: She insisted that he be on time.
+vt-5-en,en,vt.5 The subjunctive,0:28,step 2 — use were,"Even with I, he or she. In speech people say was, but the formal form is were."
+vt-5-en,en,vt.5 The subjunctive,0:38,step 3 — If I were you,"If I were you, I would ask for help. It sounds formal, and the test asks for it."
+vt-5-en,en,vt.5 The subjunctive,0:49,close,That is the whole method. Try one yourself.
+voice-en,en,vt.6 Active and passive,0:00,the situation,Active: who did it comes first. Passive: what it was done to comes first.
+voice-en,en,vt.6 Active and passive,0:09,why it matters,"Rabia broke the mug — active. The mug was broken by Rabia — passive. Same event, different order."
+voice-en,en,vt.6 Active and passive,0:20,into the method,Here is how to do it.
+voice-en,en,vt.6 Active and passive,0:23,step 1 — who or what is first?,"If the doer is first, it is active. If the thing done to is first, it is passive. That single question answers almost every active-or-passive question in the test."
+voice-en,en,vt.6 Active and passive,0:38,step 2 — look for was or were plus a verb,"was broken, are harmed, is maintained — that shape is passive. Passive almost always has a form of 'to be' in front of the verb."
+voice-en,en,vt.6 Active and passive,0:51,step 3 — the doer can vanish,"The treasure was stolen — passive, and nobody says who did it. That is why the passive gets used: it lets you leave the doer out."
+voice-en,en,vt.6 Active and passive,1:05,close,That is the whole method. Try one yourself.
+standard-en,en,vt.7 Standard English,0:00,the situation,Standard English is the form used in writing and in formal speaking. It is not better English — it is the expected one.
+standard-en,en,vt.7 Standard English,0:13,why it matters,"We was going. We were going. Both are said out loud every day, but only one is Standard."
+standard-en,en,vt.7 Standard English,0:24,into the method,Here is how to do it.
+standard-en,en,vt.7 Standard English,0:27,"step 1 — was is for one, were is for more","I was, he was. We were, they were. This one rule covers most of the marks in this part of the test."
+standard-en,en,vt.7 Standard English,0:39,"step 2 — did, not done","done needs a helper: I have done. On its own it is did. Same for seen and saw, been and was. The helper is the deciding thing."
+standard-en,en,vt.7 Standard English,0:53,"step 3 — could have, never could of","It sounds like 'of' when spoken quickly. It is never written that way. It is have, shortened to 've. That is why it sounds like of."
+standard-en,en,vt.7 Standard English,1:07,close,That is the whole method. Try one yourself.
+formal-en,en,vt.8 Formal and informal,0:00,the situation,Formal writing is what you use for a letter to a head teacher. Informal is what you use to a friend.
+formal-en,en,vt.8 Formal and informal,0:12,why it matters,"ask becomes request. buy becomes purchase. Same meaning, different clothes."
+formal-en,en,vt.8 Formal and informal,0:19,into the method,Here is how to do it.
+formal-en,en,vt.8 Formal and informal,0:22,step 1 — who is reading it?,"A stranger in a position of authority gets the formal word. Formality is about the reader, not about the writer being clever."
+formal-en,en,vt.8 Formal and informal,0:34,step 2 — formal words are often longer,think about becomes consider. find out becomes discover. Two-word verbs are usually the informal one. One long word is usually the formal one.
+formal-en,en,vt.8 Formal and informal,0:47,step 3 — do not overdo it,Formal does not mean strange. It still has to sound like English. The test offers one word that is too odd on purpose. Leave it.
+formal-en,en,vt.8 Formal and informal,1:00,close,That is the whole method. Try one yourself.
+pu-0-en,en,pu.0 Capital letters and end marks,0:00,the situation,“on saturday we went to labé”
+pu-0-en,en,pu.0 Capital letters and end marks,0:06,why it matters,"Something’s missing at the start, in the middle and at the end."
+pu-0-en,en,pu.0 Capital letters and end marks,0:14,into the method,Here is how to do it.
+pu-0-en,en,pu.0 Capital letters and end marks,0:17,step 1 — capital at the start: On,Every sentence starts with a capital. It shows where the sentence begins.
+pu-0-en,en,pu.0 Capital letters and end marks,0:25,"step 2 — names: Saturday, Labé","Days, months, people and places get capitals. They are proper nouns."
+pu-0-en,en,pu.0 Capital letters and end marks,0:33,step 3 — end mark: .,Telling: full stop. Asking: ? Strong feeling: ! Choose by what the sentence does.
+pu-0-en,en,pu.0 Capital letters and end marks,0:42,close,That is the whole method. Try one yourself.
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,0:00,the situation,"Punctuation is not decoration. It tells the reader where to stop, where to pause, and what belongs together."
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,0:11,why it matters,"Brackets and paired commas always come in twos. If you have put one in, you owe the sentence another."
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,0:22,into the method,Here is how to do it.
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,0:25,step 1 — find the extra bit,"Read the sentence without the middle part. Does it still work? If it still works, that middle part is extra information and needs a pair of marks around it."
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,0:40,step 2 — put a mark at each end,"One before the extra bit, one after. One comma on its own is the commonest punctuation mistake there is. They come in pairs."
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,0:53,step 3 — read it aloud,"The pause should fall where the marks are. If you would not pause there when speaking, the mark is probably in the wrong place."
+punctAt-en,en,pu.1 Commas in lists; pu.2 Commas for meaning and fronted adverbials; pu.6 Colons; pu.7 Semicolons; pu.8 Single dashes; pu.9 Hyphens,1:06,close,That is the whole method. Try one yourself.
+pu-3-en,en,pu.3 Inverted commas for speech,0:00,the situation,“Where are you going?” asked Kofi.
+pu-3-en,en,pu.3 Inverted commas for speech,0:06,why it matters,The spoken words go inside the inverted commas.
+pu-3-en,en,pu.3 Inverted commas for speech,0:12,into the method,Here is how to do it.
+pu-3-en,en,pu.3 Inverted commas for speech,0:15,step 1 — find the spoken words,Where are you going Only these go inside.
+pu-3-en,en,pu.3 Inverted commas for speech,0:21,step 2 — “ … ”,Open and close the inverted commas round them. Like a speech bubble.
+pu-3-en,en,pu.3 Inverted commas for speech,0:29,step 3 — ? inside,The punctuation that ends the speech goes inside. Then carry on: asked Kofi.
+pu-3-en,en,pu.3 Inverted commas for speech,0:37,close,That is the whole method. Try one yourself.
+apostrophe-pu-4-en,en,pu.4 Apostrophes,0:00,the situation,"Two jobs, one mark. An apostrophe either shows that something belongs to someone, or that letters are missing."
+apostrophe-pu-4-en,en,pu.4 Apostrophes,0:11,why it matters,The dog's bowl is one dog. The dogs' bowl is more than one dog. That single mark changes how many dogs there are.
+apostrophe-pu-4-en,en,pu.4 Apostrophes,0:24,into the method,Here is how to do it.
+apostrophe-pu-4-en,en,pu.4 Apostrophes,0:27,step 1 — who owns it?,"Work out the owner first, before you write anything. The apostrophe goes straight after the owner, and the owner is not always what you expect."
+apostrophe-pu-4-en,en,pu.4 Apostrophes,0:40,step 2 — one owner: 's,"One car, so the apostrophe goes before the s: the car's horn. You are not making it plural. You are saying it belongs to one thing."
+apostrophe-pu-4-en,en,pu.4 Apostrophes,0:54,step 3 — more than one: s',"Several teachers, so the apostrophe goes after the s: the teachers' room. Say the owner out loud first. If it already ends in s, the apostrophe goes after it."
+apostrophe-pu-4-en,en,pu.4 Apostrophes,1:09,step 4 — do not → don’t,An apostrophe also shows where letters are missing. The apostrophe goes where the letters were.
+apostrophe-pu-4-en,en,pu.4 Apostrophes,1:18,close,That is the whole method. Try one yourself.
+punct-en,en,"pu.5 Brackets, dashes and commas",0:00,the situation,"Punctuation is not decoration. It tells the reader where to stop, where to pause, and what belongs together."
+punct-en,en,"pu.5 Brackets, dashes and commas",0:11,why it matters,"Brackets and paired commas always come in twos. If you have put one in, you owe the sentence another."
+punct-en,en,"pu.5 Brackets, dashes and commas",0:22,into the method,Here is how to do it.
+punct-en,en,"pu.5 Brackets, dashes and commas",0:25,step 1 — find the extra bit,"Read the sentence without the middle part. Does it still work? If it still works, that middle part is extra information and needs a pair of marks around it."
+punct-en,en,"pu.5 Brackets, dashes and commas",0:40,step 2 — put a mark at each end,"One before the extra bit, one after. One comma on its own is the commonest punctuation mistake there is. They come in pairs."
+punct-en,en,"pu.5 Brackets, dashes and commas",0:53,step 3 — read it aloud,"The pause should fall where the marks are. If you would not pause there when speaking, the mark is probably in the wrong place."
+punct-en,en,"pu.5 Brackets, dashes and commas",1:06,close,That is the whole method. Try one yourself.
+pu-10-en,en,pu.10 Bullet points,0:00,the situation,"A list of what to bring, set out as bullet points."
+pu-10-en,en,pu.10 Bullet points,0:08,why it matters,The test checks the points are set out the same way.
+pu-10-en,en,pu.10 Bullet points,0:16,into the method,Here is how to do it.
+pu-10-en,en,pu.10 Bullet points,0:19,step 1 — colon before the list,"An introducing sentence, then a colon. It says a list is coming."
+pu-10-en,en,pu.10 Bullet points,0:27,step 2 — • a cup / • a tea bag,"Every point starts the same way. All lower case, or all capitals."
+pu-10-en,en,pu.10 Bullet points,0:35,step 3 — be consistent,Same punctuation at the end of each point. Consistency is what gets the mark.
+pu-10-en,en,pu.10 Bullet points,0:44,close,That is the whole method. Try one yourself.
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,0:00,the situation,"Synonyms are words that mean nearly the same. Nearly, not exactly — that is why they are useful."
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,0:11,why it matters,This is the most-asked thing in the whole English test. Eight times in three years.
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,0:20,into the method,Here is how to do it.
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,0:23,step 1 — put it in the sentence,"Swap the word in and see whether the sentence still means the same. A synonym has to fit the sentence, not just the dictionary."
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,0:36,step 2 — watch the strength,vast is bigger than big. furious is angrier than annoyed. The test often offers a word with the right meaning but the wrong strength.
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,0:49,step 3 — read all four first,One will fit better than the rest. Choosing the first one that looks right is how these marks get lost.
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,1:00,step 4 — generous ↔ selfish,An antonym means the opposite. Check whether the question asks for the same or the opposite.
+syn-sp-0-en,en,sp.0 Synonyms and antonyms,1:10,close,That is the whole method. Try one yourself.
+prefix-en,en,sp.1 Prefixes,0:00,the situation,A prefix goes on the front of a word and changes its meaning. Usually to the opposite.
+prefix-en,en,sp.1 Prefixes,0:10,why it matters,"im, in, dis, un, de, mis, re, over. Which one depends on the word, and you mostly know by ear."
+prefix-en,en,sp.1 Prefixes,0:21,into the method,Here is how to do it.
+prefix-en,en,sp.1 Prefixes,0:24,step 1 — say it with each one,unpossible sounds wrong. impossible sounds right. Your ear has heard these thousands of times. It is more reliable than a rule here.
+prefix-en,en,sp.1 Prefixes,0:36,step 2 — im before m and p,"impossible, immature, impatient. This one is an actual rule and it holds almost always."
+prefix-en,en,sp.1 Prefixes,0:45,step 3 — keep the whole word,"imposible is a spelling mistake, not a prefix mistake. The prefix joins on. Nothing gets removed from the word underneath."
+prefix-en,en,sp.1 Prefixes,0:56,close,That is the whole method. Try one yourself.
+suffix-en,en,sp.2 Suffixes and word families,0:00,the situation,A suffix goes on the end. It usually changes what job the word does.
+suffix-en,en,sp.2 Suffixes and word families,0:09,why it matters,"develop is a verb. development is a noun. Same word, different job."
+suffix-en,en,sp.2 Suffixes and word families,0:17,into the method,Here is how to do it.
+suffix-en,en,sp.2 Suffixes and word families,0:20,step 1 — what job do you need?,-ment and -ness make nouns. -ous and -ful make adjectives. -ly makes adverbs. Knowing what job you need narrows the choice to one or two straight away.
+suffix-en,en,sp.2 Suffixes and word families,0:34,step 2 — the spelling can change,"outrage becomes outrageous. beauty becomes beautiful. y usually turns into i, and a silent e often drops. Those two cover most of it."
+suffix-en,en,sp.2 Suffixes and word families,0:47,step 3 — check it against a sentence,"'the development of the town' works. 'the developness' does not. If you cannot say it in a sentence, it is not the right suffix."
+suffix-en,en,sp.2 Suffixes and word families,1:00,close,That is the whole method. Try one yourself.
+spellList-en,en,sp.3 Year 3–6 word lists,0:00,the situation,"You hear a word, and a sentence with a gap. You write the word in."
+spellList-en,en,sp.3 Year 3–6 word lists,0:09,why it matters,"Twenty words, twenty marks. Each one belongs to a spelling pattern, and the patterns come back every year."
+spellList-en,en,sp.3 Year 3–6 word lists,0:20,into the method,Here is how to do it.
+spellList-en,en,sp.3 Year 3–6 word lists,0:23,"step 1 — session, solution, station",Say the word slowly and listen for the pattern at the end. Most spelling marks are lost by writing what a word sounds like. The pattern tells you more than the sound.
+spellList-en,en,sp.3 Year 3–6 word lists,0:39,"step 2 — –tion, –sion, –ssion, –cian","Four spellings, one sound. Which one you need depends on the word it came from. solve becomes solution, permit becomes permission. Find the word underneath."
+spellList-en,en,sp.3 Year 3–6 word lists,0:52,"step 3 — write it, then read it back","Check it looks right, not just sounds right. You have seen these words in books hundreds of times. Trust your eye."
+spellList-en,en,sp.3 Year 3–6 word lists,1:04,close,That is the whole method. Try one yourself.
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",0:00,the situation,"You hear a word, and a sentence with a gap. You write the word in."
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",0:09,why it matters,"Twenty words, twenty marks. Each one belongs to a spelling pattern, and the patterns come back every year."
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",0:20,into the method,Here is how to do it.
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",0:23,"step 1 — session, solution, station",Say the word slowly and listen for the pattern at the end. Most spelling marks are lost by writing what a word sounds like. The pattern tells you more than the sound.
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",0:39,"step 2 — –tion, –sion, –ssion, –cian","Four spellings, one sound. Which one you need depends on the word it came from. solve becomes solution, permit becomes permission. Find the word underneath."
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",0:52,"step 3 — write it, then read it back","Check it looks right, not just sounds right. You have seen these words in books hundreds of times. Trust your eye."
+spell-en,en,"sp.4 Tricky sounds; sp.5 Endings: -cious and -tious; sp.6 Endings: -sure, -ture, -sion, -tion; sp.7 Endings: -cial and -tial; sp.8 Endings: -ant, -ent, -able, -ible; sp.9 -gue, -que and ough; sp.10 Silent letters; sp.11 Homophones",1:04,close,That is the whole method. Try one yourself.
+rd-0-en,en,rd.0 Word meaning in context,0:00,the situation,The market was bustling.
+rd-0-en,en,rd.0 Word meaning in context,0:05,why it matters,"You may not know a word, but the words around it are clues."
+rd-0-en,en,rd.0 Word meaning in context,0:13,into the method,Here is how to do it.
+rd-0-en,en,rd.0 Word meaning in context,0:16,step 1 — read around it,"Traders calling, children running, a radio playing. The sentence gives the meaning away."
+rd-0-en,en,rd.0 Word meaning in context,0:24,step 2 — try a swap,"Put your guess in place of the word. If it still makes sense, you’re right."
+rd-0-en,en,rd.0 Word meaning in context,0:33,step 3 — busy and lively,bustling means full of busy activity. Check it fits the rest of the paragraph.
+rd-0-en,en,rd.0 Word meaning in context,0:42,close,That is the whole method. Try one yourself.
+rd-1-en,en,rd.1 Retrieval,0:00,the situation,How many years had Grandfather made the crossing?
+rd-1-en,en,rd.1 Retrieval,0:06,why it matters,"Retrieval means finding the answer in the text, not making it up."
+rd-1-en,en,rd.1 Retrieval,0:14,into the method,Here is how to do it.
+rd-1-en,en,rd.1 Retrieval,0:17,step 1 — find the key word,Look for ‘years’ or ‘crossing’. Skim the text for it.
+rd-1-en,en,rd.1 Retrieval,0:24,step 2 — read that sentence,“every winter for forty years” The answer is near the key word.
+rd-1-en,en,rd.1 Retrieval,0:32,step 3 — copy exactly,"forty If it says copy, copy the exact words."
+rd-1-en,en,rd.1 Retrieval,0:39,close,That is the whole method. Try one yourself.
+rd-2-en,en,rd.2 Summarising,0:00,the situation,Which title best sums up paragraphs 4 to 6?
+rd-2-en,en,rd.2 Summarising,0:07,why it matters,"Summarising means the main idea, not one small detail."
+rd-2-en,en,rd.2 Summarising,0:14,into the method,Here is how to do it.
+rd-2-en,en,rd.2 Summarising,0:17,step 1 — what happens overall?,Ama starts scared and ends brave. Look at the beginning and the end.
+rd-2-en,en,rd.2 Summarising,0:25,step 2 — ignore single details,The engine and the glasses are just details. A summary covers the whole part.
+rd-2-en,en,rd.2 Summarising,0:34,step 3 — Finding courage,It sums up the change. Check it fits every paragraph.
+rd-2-en,en,rd.2 Summarising,0:41,close,That is the whole method. Try one yourself.
+rd-3-en,en,rd.3 Inference,0:00,the situation,Ama says “No” a little too quickly.
+rd-3-en,en,rd.3 Inference,0:06,why it matters,The writer doesn’t say she’s scared. You work it out.
+rd-3-en,en,rd.3 Inference,0:13,into the method,Here is how to do it.
+rd-3-en,en,rd.3 Inference,0:16,step 1 — what does she do or say?,She answers too fast. Actions and words are clues.
+rd-3-en,en,rd.3 Inference,0:23,step 2 — what does it suggest?,She’s hiding her fear. That’s the inference.
+rd-3-en,en,rd.3 Inference,0:29,step 3 — give evidence,“a little too quickly” Always back it up with words from the text.
+rd-3-en,en,rd.3 Inference,0:37,close,That is the whole method. Try one yourself.
+rd-4-en,en,rd.4 Prediction,0:00,the situation,Dark clouds pile up. The goats huddle under a tree.
+rd-4-en,en,rd.4 Prediction,0:07,why it matters,"The text doesn’t say it will rain, but the clues do."
+rd-4-en,en,rd.4 Prediction,0:15,into the method,Here is how to do it.
+rd-4-en,en,rd.4 Prediction,0:18,step 1 — find the clues,"clouds, huddling goats, washing brought in Look at what is happening and how people act."
+rd-4-en,en,rd.4 Prediction,0:27,step 2 — what usually follows?,Rain. Use what you know about the world.
+rd-4-en,en,rd.4 Prediction,0:33,step 3 — explain with evidence,Because the clouds are dark and… A prediction needs a reason from the text.
+rd-4-en,en,rd.4 Prediction,0:42,close,That is the whole method. Try one yourself.
+rd-5-en,en,rd.5 Structure,0:00,the situation,Why are the steps in the recipe numbered?
+rd-5-en,en,rd.5 Structure,0:06,why it matters,"Structure is how a text is organised, and why."
+rd-5-en,en,rd.5 Structure,0:13,into the method,Here is how to do it.
+rd-5-en,en,rd.5 Structure,0:16,step 1 — notice the layout,"Numbers, headings, paragraphs, a mirrored ending. Ask why the writer set it out that way."
+rd-5-en,en,rd.5 Structure,0:25,step 2 — think about the reader,Numbers tell you what to do first. Structure helps the reader.
+rd-5-en,en,rd.5 Structure,0:33,step 3 — say the effect,It shows the order you must follow. Name the feature and its purpose.
+rd-5-en,en,rd.5 Structure,0:41,close,That is the whole method. Try one yourself.
+rd-6-en,en,rd.6 Language choice,0:00,the situation,“an engine thudded like a slow heartbeat”
+rd-6-en,en,rd.6 Language choice,0:06,why it matters,Writers choose words for their effect on you.
+rd-6-en,en,rd.6 Language choice,0:12,into the method,Here is how to do it.
+rd-6-en,en,rd.6 Language choice,0:15,step 1 — spot the technique,"like… : a simile. Simile, metaphor, personification, alliteration."
+rd-6-en,en,rd.6 Language choice,0:21,step 2 — what does it compare?,The engine to a heartbeat. Think of what a heartbeat is like.
+rd-6-en,en,rd.6 Language choice,0:29,step 3 — the effect,The ship feels alive and calm. Say what it makes the reader think or feel.
+rd-6-en,en,rd.6 Language choice,0:38,close,That is the whole method. Try one yourself.
+rd-7-en,en,rd.7 Comparison,0:00,the situation,How are Ama and her grandfather different?
+rd-7-en,en,rd.7 Comparison,0:06,why it matters,Comparing means finding what is alike and what is different.
+rd-7-en,en,rd.7 Comparison,0:13,into the method,Here is how to do it.
+rd-7-en,en,rd.7 Comparison,0:16,step 1 — look at one,Ama grips the rail and steps back. Find evidence for each.
+rd-7-en,en,rd.7 Comparison,0:24,step 2 — look at the other,"He rests his hands and laughs. Same kind of moment, different reaction."
+rd-7-en,en,rd.7 Comparison,0:32,step 3 — say how they differ,She is nervous; he is calm. Use a word like whereas or but.
+rd-7-en,en,rd.7 Comparison,0:40,close,That is the whole method. Try one yourself.
